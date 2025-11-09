@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ====== Database for Learning ======
+
+// === 1. model related to module directly === 
+// In each module, we have one theme, 1-n concepts, 1-n reflections.
+model Module {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  order_index Int      // to allow us arrange order
+  created_at  DateTime @default(now()) // DateTime + now() stores a Postgres timestamp automatically
+
+  // define relations with other data sets
+  theme       Theme?
+  concepts    Concept[]
+  reflections Reflection[]
+}
+
+model Theme {
+  id         Int      @id @default(autoincrement())
+
+  // relationship with Module
+  module     Module   @relation(fields:[module_id], references: [id])
+  module_id  Int      @unique // unique mean unique to model Module, it's a 1:1 relationship
+
+  // actual data
+  title      String
+  context    String   @db.Text
+  media_url  String   @db.Text
+  media_type String
+  question   String   @db.Text
+  created_at DateTime @default(now())
+}
+
+model Concept {
+  id          Int     @id @default(autoincrement())
+
+  // relationship with Module
+  module      Module @relation(fields:[module_id], references: [id])
+  module_id   Int
+
+  // relationship with sub-module
+  // 1 concept has 1 tutorial, 1 summary, n quizzes, n user progress
+  tutorial Tutorial?
+  summary Summary?
+  quizzes Quiz[]
+  User_concept_progress User_concept_progress[]
+
+  // actual data
+  order_index Int
+  title String
+  definition String @db.Text //? do we need it
+  why_it_works String @db.Text //? need it?
+  created_at  DateTime @default(now())
+}
+
+model Reflection {
+  id Int @id @default(autoincrement())
+
+  // relationship with Module
+  module     Module   @relation(fields:[module_id], references: [id])
+  module_id  Int      
+
+  // actual data
+  order_index Int
+  user_id Int 
+  time_spent Int  // Consider using Int for seconds/minutes instead of DateTime
+  module_summary String @db.Text
+  module_summary_media_url String @db.Text
+  learning_advice String @db.Text  // Added missing type
+  created_at  DateTime @default(now())
+  
+  // Add relation to User_response
+  user_responses User_response[]
+}
+
+// === 2. model related to concept directly === 
+
+model Tutorial {
+  id Int @id @default(autoincrement())
+  concept Concept @relation(fields:[concept_id], references: [id])
+  concept_id Int @unique
+  // Remove duplicate concept_id line
+  order_index Int
+  good_story String @db.Text
+  good_media_url String @db.Text
+  bad_story String @db.Text
+  bad_media_url String @db.Text
+  created_at  DateTime @default(now())
+  // Remove the duplicate "module Concepts" relation line
+}
+
+model Quiz {
+  id Int @id @default(autoincrement())
+  concept Concept @relation(fields:[concept_id], references: [id])
+  concept_id Int
+  // Remove duplicate concept_id line
+  order_index Int
+  question String @db.Text
+  question_type String
+  media_url String @db.Text
+  options Json @db.JsonB
+  correct_answer String
+  explanation String @db.Text
+  created_at  DateTime @default(now())
+  // Remove the duplicate "module Concepts" relation line
+  
+  // Add relation to User_response
+  user_responses User_response[]
+}
+
+model Summary {
+  id Int @id @default(autoincrement())
+  concept Concept @relation(fields:[concept_id], references: [id])
+  concept_id Int @unique
+  // Remove duplicate relation line
+  order_index Int
+  summary_content String @db.Text
+  next_chapter_intro String @db.Text
+  created_at  DateTime @default(now())
+}
+
+model User_concept_progress {
+  id Int @id @default(autoincrement())
+  // relationship with concept
+  concept Concept @relation(fields:[concept_id], references: [id])
+  concept_id Int
+  
+  user_id Int 
+  order_index Int
+  completed Boolean
+  time_spent Int
+  completed_at DateTime?
+  created_at  DateTime @default(now())
+  
+  @@unique([concept_id, user_id])
+}
+
+// user response related to quiz, reflection
+model User_response {
+  id Int @id @default(autoincrement())
+
+  // relationship with other model - make these optional
+  quiz Quiz? @relation(fields:[quiz_id], references: [id])
+  quiz_id Int?
+
+  reflection Reflection? @relation(fields:[reflection_id], references: [id])
+  reflection_id Int?
+
+  // actual data
+  user_id Int
+  response_type String // e.g., "quiz" or "reflection"
+  answer Json @db.JsonB
+  created_at  DateTime @default(now())
+  response_text String? @db.Text
+  is_correct Boolean?
+  time_spent Int?
+
+  // Ensure a user can only respond once per quiz or reflection
+  @@unique([quiz_id, user_id])
+  @@unique([reflection_id, user_id])
+}
