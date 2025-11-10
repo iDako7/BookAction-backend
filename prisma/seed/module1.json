@@ -7,7 +7,7 @@
   "theme": {
     "title": "Late-Night Texting",
     "context": "At midnight, Sam's friend Jordan kept texting about a game. Exhausted but caring, Sam waited until morning to say, “I feel tired when I get texts after 11 PM.” Jordan understood and explained his anxiety. They agreed Jordan would text earlier, leaving both friends feeling heard and respected.",
-    "media_url": "/media/late-night-texting-illustration.jpg",
+    "media_url": "/media/panda.png",
     "media_type": "image",
     "question": "How would you handle a situation where a friend's communication habits clash with your needs?"
   },
@@ -20,9 +20,9 @@
       "tutorial": {
         "order_index": 1,
         "good_story": "Maya felt upset when her sister borrowed her headphones without asking. Instead of yelling, she took a breath and said: 'I feel frustrated when my things are taken without permission because I was looking for them this morning. Can you please ask me next time?' Her sister apologized and promised to ask first.",
-        "good_media_url": "/media/i-statement-good-example.jpg",
+        "good_media_url": "/media/panda.png",
         "bad_story": "Tom was angry about his friend canceling plans. He texted: 'You ALWAYS bail on me! You're such a flake and you obviously don't care about our friendship!' His friend felt attacked and they ended up in a huge argument that could have been avoided.",
-        "bad_media_url": "/media/i-statement-bad-example.jpg"
+        "bad_media_url": "/media/panda.png"
       },
       "summary": {
         "order_index": 1,
@@ -34,7 +34,7 @@
           "order_index": 1,
           "question": "Your friend keeps interrupting you during conversations. Which is the best 'I' statement to address this?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "You never let me finish talking!",
             "I feel frustrated when I'm interrupted because I lose my train of thought",
@@ -48,7 +48,7 @@
           "order_index": 2,
           "question": "What are the three key parts of an effective 'I' statement?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "Blame, accusation, demand",
             "Feeling, situation, reason",
@@ -68,9 +68,9 @@
       "tutorial": {
         "order_index": 2,
         "good_story": "When Alex shared concerns about an upcoming test, their friend Jamie put down their phone, made eye contact, and said: 'So you're worried because you missed last week's classes? That makes sense. What topics are you most concerned about?' Alex felt truly heard and supported.",
-        "good_media_url": "/media/active-listening-good.jpg",
+        "good_media_url": "/media/panda.png",
         "bad_story": "While Emma was explaining why she was upset about being left out of weekend plans, her friend Kate kept scrolling Instagram, occasionally saying 'uh-huh' without looking up. Emma felt ignored and stopped sharing her feelings.",
-        "bad_media_url": "/media/active-listening-bad.jpg"
+        "bad_media_url": "/media/panda.png"
       },
       "summary": {
         "order_index": 2,
@@ -82,7 +82,7 @@
           "order_index": 1,
           "question": "Which of these behaviors shows active listening?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "Planning your response while they talk",
             "Checking your phone occasionally",
@@ -96,7 +96,7 @@
           "order_index": 2,
           "question": "Your friend is explaining why they're upset. What's the WORST listening response?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "Can you help me understand what specifically bothered you?",
             "That sounds really frustrating for you",
@@ -116,9 +116,9 @@
       "tutorial": {
         "order_index": 3,
         "good_story": "When friends pressured Lee to skip class, Lee calmly said: 'No thanks, I need to keep my attendance up for the team. You all have fun though!' The friends shrugged and respected the decision without pushing further.",
-        "good_media_url": "/media/boundaries-good.jpg",
+        "good_media_url": "/media/panda.png",
         "bad_story": "Casey felt uncomfortable sharing their phone password but when their partner insisted, Casey gave in saying 'I guess... if you really want it...' and felt resentful and violated afterward, wishing they had stood firm.",
-        "bad_media_url": "/media/boundaries-bad.jpg"
+        "bad_media_url": "/media/panda.png"
       },
       "summary": {
         "order_index": 3,
@@ -130,7 +130,7 @@
           "order_index": 1,
           "question": "A friend wants to copy your homework. Which response sets a clear boundary while being kind?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "Sure, whatever, just take it",
             "I'm not comfortable with that, but I can help explain the concepts to you",
@@ -144,7 +144,7 @@
           "order_index": 2,
           "question": "What's a sign that someone is NOT respecting your boundaries?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "They ask for clarification about your limits",
             "They accept your 'no' without argument",
@@ -164,9 +164,9 @@
       "tutorial": {
         "order_index": 4,
         "good_story": "During a heated discussion about group project roles, Sam felt anger rising. They said: 'I need a 5-minute break to collect my thoughts,' went for a quick walk, then returned calmer and suggested: 'Let's list everyone's strengths and divide tasks based on that.'",
-        "good_media_url": "/media/emotion-regulation-good.jpg",
+        "good_media_url": "/media/panda.png",
         "bad_story": "When criticized about their presentation, Jordan immediately snapped: 'Whatever! You think you're so perfect?' and stormed out, later regretting not taking time to process the feedback constructively.",
-        "bad_media_url": "/media/emotion-regulation-bad.jpg"
+        "bad_media_url": "/media/panda.png"
       },
       "summary": {
         "order_index": 4,
@@ -178,7 +178,7 @@
           "order_index": 1,
           "question": "You feel yourself getting very angry during an argument. What's the best first step?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "Say everything you're thinking immediately",
             "Storm out without explanation",
@@ -192,7 +192,7 @@
           "order_index": 2,
           "question": "According to brain science, what helps calm the stress response in your brain?",
           "question_type": "multiple_choice",
-          "media_url": null,
+          "media_url": "/media/panda.png",
           "options": [
             "Ignoring your feelings",
             "Naming and acknowledging your emotions",
@@ -207,7 +207,7 @@
   ],
   "reflection": {
     "module_summary": "Think of a recent disagreement or tense situation you had with someone. How did you communicate your feelings? If you reacted on impulse or kept feelings inside, how might you handle it differently now using an 'I' statement or a pause to calm down?",
-    "module_summary_media_url": "/media/reflection-disagreement.jpg",
+    "module_summary_media_url": "/media/panda.png",
     "learning_advice": "Practice using 'I' statements in low-stakes situations first. It gets easier with practice!"
   }
 }
