@@ -109,7 +109,7 @@ model Quiz {
   id Int @id @default(autoincrement())
   concept Concept @relation(fields:[concept_id], references: [id])
   concept_id Int
-  // Remove duplicate concept_id line
+
   order_index Int
   question String @db.Text
   question_type String
@@ -118,7 +118,6 @@ model Quiz {
   correct_answer String
   explanation String @db.Text
   created_at  DateTime @default(now())
-  // Remove the duplicate "module Concepts" relation line
   
   // Add relation to User_response
   user_responses User_response[]
@@ -128,7 +127,7 @@ model Summary {
   id Int @id @default(autoincrement())
   concept Concept @relation(fields:[concept_id], references: [id])
   concept_id Int @unique
-  // Remove duplicate relation line
+
   order_index Int
   summary_content String @db.Text
   next_chapter_intro String @db.Text
