@@ -5,7 +5,7 @@
   "license": "ISC",
   "author": "Dako Wei",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/src/app.js",
@@ -20,20 +20,19 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
-    "dotenv": "^16.6.1",
     "@prisma/client": "^6.19.0",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
-    "nodemon": "^3.1.10",
-    "prisma": "^6.19.0",
-    "typescript": "^5.9.3"
+    "tsx": "^4.20.6"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.20.6"
+    "nodemon": "^3.1.10",
+    "prisma": "^6.19.0",
+    "typescript": "^5.9.3"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "tsx prisma/seed.ts"
   }
 }
