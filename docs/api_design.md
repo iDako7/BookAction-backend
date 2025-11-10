@@ -1,4 +1,4 @@
-# API 设计
+# API Design
 
 ## **#1 Learning Homepage**
 
@@ -77,8 +77,8 @@ Response: {
 
 POST /api/quiz/{quizId}/submit
 Request: { userId: number, answer: string }
-Response: { 
-  isCorrect: boolean, 
+Response: {
+  isCorrect: boolean,
   explanation: string,
   conceptProgress: {...}
 }
@@ -110,7 +110,7 @@ Response: {
 
 POST /api/modules/{moduleId}/reflection/submit
 Request: { userId: number, response: string }
-Response: { 
+Response: {
   feedback: string,
   moduleComplete: boolean
 }

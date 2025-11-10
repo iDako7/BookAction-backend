@@ -8,14 +8,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/src/app.js",
+    "build": "tsc -p tsconfig.json",
+    "postinstall": "prisma generate",
     "dev": "nodemon --watch src --exec tsx src/app.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:db-push": "prisma db push",
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "dotenv": "^16.6.1",
     "@prisma/client": "^6.19.0",
     "express": "^5.1.0",
     "nodemon": "^3.1.10",
