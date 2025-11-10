@@ -1,0 +1,56 @@
+### Get learning homepage
+GET http://localhost:3000/api/users/1/learning_homepage
+Accept: application/json
+
+###
+
+### Get module theme
+GET http://localhost:3000/api/modules/1/theme
+Accept: application/json
+
+###
+
+### Get concept intro
+GET http://localhost:3000/api/concepts/1
+Accept: application/json
+
+###
+
+### Get concept quizzes
+GET http://localhost:3000/api/concepts/1/quiz
+Accept: application/json
+
+###
+
+### Get concept summary
+GET http://localhost:3000/api/concepts/1/summary
+Accept: application/json
+
+###
+
+### Submit quiz answer
+POST http://localhost:3000/api/quiz/1/submit
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "answer": "A"
+}
+
+###
+
+### Get module reflection prompt
+GET http://localhost:3000/api/modules/1/reflection
+Accept: application/json
+
+###
+
+### Submit module reflection
+POST http://localhost:3000/api/modules/1/reflection/submit
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "response": "Learnt a lot from this module."
+}
+
