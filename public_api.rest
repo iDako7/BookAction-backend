@@ -1,0 +1,55 @@
+### Get learning homepage (public)
+GET https://bookaction-backend.onrender.com/api/users/1/learning_homepage
+Accept: application/json
+
+###
+
+### Get module theme (public)
+GET https://bookaction-backend.onrender.com/api/modules/2/theme
+Accept: application/json
+
+###
+
+### Get concept intro (public)
+GET https://bookaction-backend.onrender.com/api/concepts/5
+Accept: application/json
+
+###
+
+### Get concept quizzes (public)
+GET https://bookaction-backend.onrender.com/api/concepts/5/quiz
+Accept: application/json
+
+###
+
+### Get concept summary (public)
+GET https://bookaction-backend.onrender.com/api/concepts/5/summary
+Accept: application/json
+
+###
+
+### Submit quiz answer (public)
+POST https://bookaction-backend.onrender.com/api/quiz/5/submit
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "answer": "A"
+}
+
+###
+
+### Get module reflection prompt (public)
+GET https://bookaction-backend.onrender.com/api/modules/2/reflection
+Accept: application/json
+
+###
+
+### Submit module reflection (public)
+POST https://bookaction-backend.onrender.com/api/modules/2/reflection/submit
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "response": "Learnt a lot from this module."
+}
