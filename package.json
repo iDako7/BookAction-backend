@@ -19,9 +19,7 @@
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio"
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
+
   "dependencies": {
     "dotenv": "^16.6.1",
     "@prisma/client": "^6.19.0",
