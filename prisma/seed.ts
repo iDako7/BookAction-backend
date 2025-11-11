@@ -8,7 +8,7 @@ async function main() {
   console.log("start seeding");
 
   // Clear existing data (optional for development)
-  //   await clearDatabase();
+  await clearDatabase();
 
   // create test user
   const userId = await (async () => {
