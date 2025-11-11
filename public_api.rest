@@ -29,7 +29,7 @@ Accept: application/json
 ###
 
 ### Submit quiz answer (public)
-POST https://bookaction-backend.onrender.com/api/quiz/5/submit
+POST https://bookaction-backend.onrender.com/api/quiz/1/submit
 Content-Type: application/json
 
 {
