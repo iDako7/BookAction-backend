@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ModuleService } from "../services/ModuleService";
 
 export class ModuleController {
+  // dependency injection, not the same as private xxx = new ModuleService()
   private moduleService: ModuleService;
 
   constructor(moduleService: ModuleService) {
