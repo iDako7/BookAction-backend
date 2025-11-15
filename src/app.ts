@@ -1,7 +1,7 @@
 import express from "express";
 import { getLearnHomepage, getResource } from "./services/LearnHomepage.js";
+import { PrismaClient } from "@prisma/client";
 import type {
-  Prisma,
   Theme,
   Concept,
   Tutorial,
@@ -9,6 +9,12 @@ import type {
   Summary,
   Reflection,
 } from "@prisma/client";
+import { ModuleRepository } from "./repositories/ModuleRepository.js";
+
+// 0. Test code
+const prisma = new PrismaClient();
+const testRepo = new ModuleRepository(prisma);
+testRepo.findModuleWithTheme(4).then(console.log);
 
 // 1. Create app
 const app = express();
