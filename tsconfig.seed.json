@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "tsBuildInfoFile": "./dist/prisma.tsbuildinfo"
+  },
+  "include": ["prisma/seed.ts"]
+}

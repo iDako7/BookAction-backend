@@ -1,6 +1,5 @@
 import express from "express";
-import { getLearnHomepage, getResource } from "./services/LearnHomepage.js";
-import { PrismaClient } from "@prisma/client";
+import { getLearnHomepage, getResource } from "./services/LearnHomepage";
 import type {
   Theme,
   Concept,
@@ -9,12 +8,11 @@ import type {
   Summary,
   Reflection,
 } from "@prisma/client";
-import { ModuleRepository } from "./repositories/ModuleRepository.js";
 
-// 0. Test code
-const prisma = new PrismaClient();
-const testRepo = new ModuleRepository(prisma);
-testRepo.findModuleWithTheme(4).then(console.log);
+import { PrismaClient } from "@prisma/client";
+import { ModuleRepository } from "./repositories/ModuleRepository";
+import { ModuleService } from "./services/ModuleService";
+import { ModuleController } from "./controller/ModuleController";
 
 // 1. Create app
 const app = express();
@@ -31,29 +29,39 @@ app.get("/api/users/:userId/learning_homepage", async (req, res) => {
     .catch(() => res.status(500).json({ err: "server error" }));
 });
 
+const prsisma = new PrismaClient();
+const moduleRepo = new ModuleRepository(prsisma);
+const moduleService = new ModuleService(moduleRepo);
+const moduleController = new ModuleController(moduleService);
+
 app.get("/api/modules/:moduleId/theme", async (req, res) => {
-  try {
-    const moduleId = Number.parseInt(req.params.moduleId, 10);
-    if (Number.isNaN(moduleId)) {
-      return res.status(400).json({ err: "invalid module id" });
-    }
-
-    const theme = (await getResource("theme", moduleId)) as Theme | null;
-    if (!theme) {
-      return res.status(404).json({ err: "theme not found" });
-    }
-
-    return res.json({
-      title: theme.title,
-      context: theme.context,
-      mediaUrl: theme.media_url,
-      mediaType: theme.media_type,
-      question: theme.question,
-    });
-  } catch (err) {
-    res.status(500).json({ err: "server error" });
-  }
+  moduleController.getTheme(req, res);
 });
+
+// old version of "/api/modules/:moduleId/theme"
+// app.get("/api/modules/:moduleId/theme", async (req, res) => {
+//   try {
+//     const moduleId = Number.parseInt(req.params.moduleId, 10);
+//     if (Number.isNaN(moduleId)) {
+//       return res.status(400).json({ err: "invalid module id" });
+//     }
+
+//     const theme = (await getResource("theme", moduleId)) as Theme | null;
+//     if (!theme) {
+//       return res.status(404).json({ err: "theme not found" });
+//     }
+
+//     return res.json({
+//       title: theme.title,
+//       context: theme.context,
+//       mediaUrl: theme.media_url,
+//       mediaType: theme.media_type,
+//       question: theme.question,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ err: "server error" });
+//   }
+// });
 
 app.get("/api/concepts/:conceptId", async (req, res) => {
   try {

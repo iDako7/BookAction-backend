@@ -25,5 +25,13 @@
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
-  }
+  },
+
+  // Git/Source Control settings
+  // Show count badge on source control icon (like VS Code)
+  "scm.countBadge": "all",
+  // Enable git decorations
+  "git.decorations.enabled": true,
+  // Show diff decorations in the editor
+  "scm.diffDecorations": "all"
 }

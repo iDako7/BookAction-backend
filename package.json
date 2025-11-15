@@ -4,14 +4,13 @@
   "description": "back-end part of BookAction project",
   "license": "ISC",
   "author": "Dako Wei",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/src/app.js",
     "build": "tsc -p tsconfig.json",
     "postinstall": "prisma generate",
-    "dev": "nodemon --watch src --exec tsx src/app.ts",
+    "dev": "nodemon --watch src --exec ts-node --project tsconfig.json src/app.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
@@ -19,15 +18,13 @@
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio"
   },
-
   "dependencies": {
-    "dotenv": "^16.6.1",
     "@prisma/client": "^6.19.0",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.19.0",
-    "typescript": "^5.9.3",
-    "tsx": "^4.20.6"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
