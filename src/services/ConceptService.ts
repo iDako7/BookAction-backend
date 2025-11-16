@@ -46,15 +46,6 @@ export class ConceptService {
     return concept as ConceptRelationMap[T];
   }
 
-  private normalizeQuizOptions(options: Quiz["options"]): string[] {
-    if (!Array.isArray(options)) {
-      return [];
-    }
-
-    return options.map((option) =>
-      typeof option === "string" ? option : JSON.stringify(option)
-    );
-  }
   async getTutorialInCpt(conceptId: number): Promise<ConceptTutorialDTO> {
     const concept = await this.getConceptWithRelation(conceptId, "tutorial");
     const tutorial = concept.tutorial!;
@@ -83,14 +74,14 @@ export class ConceptService {
   async getQuizzesInCpt(conceptId: number): Promise<ConceptQuizzesDTO> {
     const concept = await this.getConceptWithRelation(conceptId, "quizzes");
 
-    const questions = [...concept.quizzes]
+    const questions = concept.quizzes
       .sort((a, b) => a.order_index - b.order_index)
       .map((quiz) => ({
         orderIndex: quiz.order_index,
         question: quiz.question,
         questionType: quiz.question_type,
         mediaUrl: quiz.media_url,
-        options: this.normalizeQuizOptions(quiz.options),
+        options: quiz.options as string[],
         correctAnswer: quiz.correct_answer,
         explanation: quiz.explanation,
       }));
