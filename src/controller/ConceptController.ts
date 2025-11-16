@@ -22,8 +22,8 @@ export class TutorialController {
 
       // send tutorial
       res.json(tutorial);
+    } catch (error: any) {
       console.log("Error getting concept tutorial", error);
-      console.log("Error getting theme", error);
       res.status(500).json({ error: error.message });
     }
   }
