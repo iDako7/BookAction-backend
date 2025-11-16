@@ -1,3 +1,4 @@
+import { ConceptQuizzesDTO } from "../dtos/ConceptQuizzesDTO";
 import type { ConceptTutorialDTO } from "../dtos/ConceptTutorialDTO";
 import { ConceptRepository } from "../repositories/ConceptRepository";
 
@@ -8,9 +9,10 @@ export class ConceptService {
     this.conceptRepo = conceptRepo;
   }
 
+  // get tutorial
   async getTutorialInCpt(conceptId: number): Promise<ConceptTutorialDTO> {
     // 1. get the data from repo
-    const concept = await this.conceptRepo.findConceptWithQuizzes(conceptId);
+    const concept = await this.conceptRepo.findEntityWithCpt(conceptId);
 
     // 2. validation
     if (!concept || !concept.quizzes) {
@@ -40,5 +42,10 @@ export class ConceptService {
     };
 
     return conceptTutorialDTO;
+  }
+
+  // get quizzes
+  async getQuizzesInCpt(conceptId: number): Primise<ConceptQuizzesDTO> {
+    // 1. get the
   }
 }

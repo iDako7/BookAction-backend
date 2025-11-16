@@ -7,7 +7,7 @@ export class ConceptRepository {
     this.prisma = prisma;
   }
 
-  async findConceptWithQuizzes(conceptId: number) {
+  async findEntityWithCpt(conceptId: number) {
     return this.prisma.concept.findFirst({
       where: { id: conceptId },
       include: { tutorial: true, quizzes: true },
