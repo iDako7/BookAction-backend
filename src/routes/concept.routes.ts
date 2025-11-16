@@ -2,17 +2,21 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { ConceptRepository } from "../repositories/ConceptRepository";
 import { ConceptService } from "../services/ConceptService";
-import { TutorialController } from "../controller/ConceptController";
+import { ConceptController } from "../controller/ConceptController";
 
 const router = Router();
 
 const prisma = new PrismaClient();
 const conceptRepo = new ConceptRepository(prisma);
 const conceptService = new ConceptService(conceptRepo);
-const tutorialController = new TutorialController(conceptService);
+const conceptController = new ConceptController(conceptService);
 
 router.get("/concepts/:conceptId/tutorial", async (req, res) => {
-  tutorialController.getConceptTutorial(req, res);
+  conceptController.getConceptTutorial(req, res);
+});
+
+router.get("/api/concepts/:conceptId/quiz", async (req, res) => {
+  conceptController.getConceptQuizzes(req, res);
 });
 
 export default router;

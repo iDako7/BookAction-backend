@@ -31,28 +31,6 @@ app.get("/api/users/:userId/learning_homepage", async (req, res) => {
     .catch(() => res.status(500).json({ err: "server error" }));
 });
 
-app.get("/api/concepts/:conceptId/quiz", async (req, res) => {
-  try {
-    const conceptId = Number.parseInt(req.params.conceptId, 10);
-    if (Number.isNaN(conceptId)) {
-      return res.status(400).json({ err: "invalid concept id" });
-    }
-
-    const quizzes = (await getResource("quiz", conceptId)) as Quiz[];
-    return res.json({
-      questions: quizzes.map((quiz) => ({
-        id: quiz.id,
-        question: quiz.question,
-        type: quiz.question_type,
-        options: quiz.options,
-        mediaUrl: quiz.media_url,
-      })),
-    });
-  } catch (err) {
-    res.status(500).json({ err: "server error" });
-  }
-});
-
 app.get("/api/concepts/:conceptId/summary", async (req, res) => {
   try {
     const conceptId = Number.parseInt(req.params.conceptId, 10);
