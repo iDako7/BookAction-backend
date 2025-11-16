@@ -5,19 +5,18 @@ Accept: application/json
 ###
 
 ### Get module theme
-GET http://localhost:3000/api/modules/5/theme
+# finished OOP refactor
+GET http://localhost:3000/api/modules/6/theme
 Accept: application/json
 
-###
-
-### Get concept intro
-GET http://localhost:3000/api/concepts/1
+### Get concept tutorial
+# finished OOP refactor
+GET http://localhost:3000/api/concepts/22/tutorial
 Accept: application/json
 
-###
 
 ### Get concept quizzes
-GET http://localhost:3000/api/concepts/1/quiz
+GET http://localhost:3000/api/concepts/21/quiz
 Accept: application/json
 
 ###

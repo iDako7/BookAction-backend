@@ -9,10 +9,7 @@ import type {
   Reflection,
 } from "@prisma/client";
 
-import { PrismaClient } from "@prisma/client";
-import { ModuleRepository } from "./repositories/ModuleRepository";
-import { ModuleService } from "./services/ModuleService";
-import { ModuleController } from "./controller/ModuleController";
+import moduleRoutes from "./routes/module.routes";
 
 // 1. Create app
 const app = express();
@@ -22,84 +19,14 @@ app.use(express.json());
 
 // ====== 3. Register routes =======
 
+// Use module routes
+app.use("/api", moduleRoutes);
+
 app.get("/api/users/:userId/learning_homepage", async (req, res) => {
   // use method chaining
   getLearnHomepage(parseInt(req.params.userId))
     .then((data) => res.json(data))
     .catch(() => res.status(500).json({ err: "server error" }));
-});
-
-const prsisma = new PrismaClient();
-const moduleRepo = new ModuleRepository(prsisma);
-const moduleService = new ModuleService(moduleRepo);
-const moduleController = new ModuleController(moduleService);
-
-app.get("/api/modules/:moduleId/theme", async (req, res) => {
-  moduleController.getTheme(req, res);
-});
-
-// old version of "/api/modules/:moduleId/theme"
-// app.get("/api/modules/:moduleId/theme", async (req, res) => {
-//   try {
-//     const moduleId = Number.parseInt(req.params.moduleId, 10);
-//     if (Number.isNaN(moduleId)) {
-//       return res.status(400).json({ err: "invalid module id" });
-//     }
-
-//     const theme = (await getResource("theme", moduleId)) as Theme | null;
-//     if (!theme) {
-//       return res.status(404).json({ err: "theme not found" });
-//     }
-
-//     return res.json({
-//       title: theme.title,
-//       context: theme.context,
-//       mediaUrl: theme.media_url,
-//       mediaType: theme.media_type,
-//       question: theme.question,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ err: "server error" });
-//   }
-// });
-
-// Get concept tutorial
-app.get("/api/concepts/:conceptId/tutorial", async (req, res) => {
-  try {
-    const conceptId = Number.parseInt(req.params.conceptId, 10);
-    if (Number.isNaN(conceptId)) {
-      return res.status(400).json({ err: "invalid concept id" });
-    }
-
-    const concept = (await getResource("concept", conceptId)) as
-      | (Concept & { tutorial: Tutorial | null })
-      | null;
-    if (!concept) {
-      return res.status(404).json({ err: "concept not found" });
-    }
-
-    const { tutorial, title, definition, why_it_works } = concept;
-
-    return res.json({
-      title,
-      definition,
-      whyItWorks: why_it_works,
-      tutorial: tutorial
-        ? {
-            goodExample: {
-              story: tutorial.good_story,
-              mediaUrl: tutorial.good_media_url,
-            },
-            badExample: {
-              story: tutorial.bad_story,
-              mediaUrl: tutorial.bad_media_url,
-            },
-          }
-        : null,
-    });
-  } catch (err) {
-    res.status(500).json({ err: "server error" });
-  }
 });
 
 app.get("/api/concepts/:conceptId/quiz", async (req, res) => {

@@ -1,14 +1,14 @@
 # BookAction Backend - My Implementation Guide
 
-
 ## 📅 Week 1: Build Your First Clean Endpoint
 
 ### Day 1-2: Your First Endpoint - Module Theme
 
-**Goal:** Transform one endpoint from messy to clean  
+**Goal:** Transform one endpoint from messy to clean
 **Endpoint:** `GET /api/modules/:moduleId/theme`
 
 #### Step 1: Create Folder Structure
+
 ```bash
 # Run these commands:
 mkdir -p src/repositories
@@ -21,28 +21,31 @@ mkdir -p src/routes
 #### Step 2: Build From Bottom Up
 
 ##### 2.1 Create Your First Repository
+
 Create `src/repositories/ModuleRepository.ts`:
+
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 export class ModuleRepository {
   private prisma: PrismaClient;
-  
+
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
-  
+
   // Get module with its theme
   async findModuleWithTheme(moduleId: number) {
     return this.prisma.module.findUnique({
       where: { id: moduleId },
-      include: { theme: true }
+      include: { theme: true },
     });
   }
 }
 ```
 
 **Test it immediately in app.ts:**
+
 ```typescript
 // Temporary test at bottom of app.ts
 const testRepo = new ModuleRepository(prisma);
@@ -51,86 +54,91 @@ testRepo.findModuleWithTheme(3).then(console.log);
 ```
 
 ##### 2.2 Create Your DTO (What Frontend Expects)
+
 Create `src/dtos/ThemeDTO.ts`:
+
 ```typescript
 export interface ThemeDTO {
   title: string;
   context: string;
-  mediaUrl: string;     // Note: different from database media_url
-  mediaType: string;    // Note: different from database media_type
+  mediaUrl: string; // Note: different from database media_url
+  mediaType: string; // Note: different from database media_type
   question: string;
 }
 ```
 
 ##### 2.3 Create Your Service (Business Logic)
+
 Create `src/services/ModuleService.ts`:
+
 ```typescript
-import { ModuleRepository } from '../repositories/ModuleRepository';
-import { ThemeDTO } from '../dtos/ThemeDTO';
+import { ModuleRepository } from "../repositories/ModuleRepository";
+import { ThemeDTO } from "../dtos/ThemeDTO";
 
 export class ModuleService {
   private moduleRepo: ModuleRepository;
-  
+
   constructor(moduleRepo: ModuleRepository) {
     this.moduleRepo = moduleRepo;
   }
-  
+
   async getModuleTheme(moduleId: number): Promise<ThemeDTO> {
     // 1. Get data from repository
     const module = await this.moduleRepo.findModuleWithTheme(moduleId);
-    
+
     // 2. Check if exists
     if (!module || !module.theme) {
-      throw new Error('Theme not found for module ' + moduleId);
+      throw new Error("Theme not found for module " + moduleId);
     }
-    
+
     // 3. Transform to DTO (change field names)
     const themeDTO: ThemeDTO = {
       title: module.theme.title,
       context: module.theme.context,
-      mediaUrl: module.theme.media_url,   // Transform name!
+      mediaUrl: module.theme.media_url, // Transform name!
       mediaType: module.theme.media_type, // Transform name!
-      question: module.theme.question
+      question: module.theme.question,
     };
-    
+
     return themeDTO;
   }
 }
 ```
 
 ##### 2.4 Create Your Controller (HTTP Handler)
+
 Create `src/controllers/ModuleController.ts`:
+
 ```typescript
-import { Request, Response } from 'express';
-import { ModuleService } from '../services/ModuleService';
+import { Request, Response } from "express";
+import { ModuleService } from "../services/ModuleService";
 
 export class ModuleController {
   private moduleService: ModuleService;
-  
+
   constructor(moduleService: ModuleService) {
     this.moduleService = moduleService;
   }
-  
+
   async getTheme(req: Request, res: Response): Promise<void> {
     try {
       // 1. Get moduleId from URL
       const moduleId = parseInt(req.params.moduleId);
-      
+
       // 2. Check if valid number
       if (isNaN(moduleId)) {
-        res.status(400).json({ error: 'Invalid module ID' });
+        res.status(400).json({ error: "Invalid module ID" });
         return;
       }
-      
+
       // 3. Call service
       const theme = await this.moduleService.getModuleTheme(moduleId);
-      
+
       // 4. Send response
       res.json(theme);
-      
     } catch (error: any) {
       // 5. Handle errors
-      console.error('Error getting theme:', error);
+      console.error("Error getting theme:", error);
       res.status(404).json({ error: error.message });
     }
   }
@@ -138,14 +146,16 @@ export class ModuleController {
 ```
 
 ##### 2.5 Wire Everything in app.ts
+
 Modify your `app.ts`:
+
 ```typescript
-import { PrismaClient } from '@prisma/client';
-import express from 'express';
+import { PrismaClient } from "@prisma/client";
+import express from "express";
 // Import your new classes
-import { ModuleRepository } from './repositories/ModuleRepository';
-import { ModuleService } from './services/ModuleService';
-import { ModuleController } from './controllers/ModuleController';
+import { ModuleRepository } from "./repositories/ModuleRepository";
+import { ModuleService } from "./services/ModuleService";
+import { ModuleController } from "./controllers/ModuleController";
 
 const app = express();
 app.use(express.json());
@@ -157,7 +167,7 @@ const moduleService = new ModuleService(moduleRepo);
 const moduleController = new ModuleController(moduleService);
 
 // Replace old endpoint with new one
-app.get('/api/modules/:moduleId/theme', (req, res) => {
+app.get("/api/modules/:moduleId/theme", (req, res) => {
   moduleController.getTheme(req, res);
 });
 
@@ -166,6 +176,7 @@ app.get('/api/modules/:moduleId/theme', (req, res) => {
 ```
 
 ##### 2.6 TEST IT!
+
 ```bash
 # Run your server
 npm run dev
@@ -187,35 +198,40 @@ GET http://localhost:3000/api/modules/3/theme
 
 ### Day 3: Add Your Second Endpoint
 
-**Goal:** Add concept endpoint, start seeing patterns  
+**Goal:** Add concept endpoint, start seeing patterns
 **Endpoint:** `GET /api/concepts/:conceptId`
 
 #### Step 1: Create ConceptRepository
+
 Create `src/repositories/ConceptRepository.ts`:
+
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 export class ConceptRepository {
   private prisma: PrismaClient;
-  
+
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
-  
+
   async findConceptWithTutorial(conceptId: number) {
     return this.prisma.concept.findUnique({
       where: { id: conceptId },
-      include: { tutorial: true }
+      include: { tutorial: true },
     });
   }
 }
 ```
 
 #### Step 2: Create ConceptService
+
 Similar pattern to ModuleService...
 
 #### Step 3: Notice the Pattern!
+
 Both repositories have:
+
 - Same constructor pattern
 - Similar error handling needs
 - Similar find methods
@@ -229,16 +245,17 @@ Both repositories have:
 After implementing 2-3 endpoints, you'll see patterns. NOW create base classes:
 
 Create `src/repositories/BaseRepository.ts`:
+
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 export abstract class BaseRepository {
   protected prisma: PrismaClient;
-  
+
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
-  
+
   // Common error handler
   protected handleError(error: any, resource: string): never {
     console.error(`Repository error for ${resource}:`, error);
@@ -248,20 +265,21 @@ export abstract class BaseRepository {
 ```
 
 Now refactor ModuleRepository:
+
 ```typescript
-import { BaseRepository } from './BaseRepository';
+import { BaseRepository } from "./BaseRepository";
 
 export class ModuleRepository extends BaseRepository {
   // No need for constructor now! Inherited from base
-  
+
   async findModuleWithTheme(moduleId: number) {
     try {
       return await this.prisma.module.findUnique({
         where: { id: moduleId },
-        include: { theme: true }
+        include: { theme: true },
       });
     } catch (error) {
-      this.handleError(error, 'module theme');
+      this.handleError(error, "module theme");
     }
   }
 }
@@ -272,6 +290,7 @@ export class ModuleRepository extends BaseRepository {
 ### Day 5-6: Complete All GET Endpoints
 
 #### Your TODO List:
+
 ```typescript
 // Simple endpoints to implement:
 [x] GET /api/modules/:id/theme         // DONE!
@@ -282,8 +301,9 @@ export class ModuleRepository extends BaseRepository {
 ```
 
 #### For Each Endpoint:
+
 1. Create/Update Repository method
-2. Create/Update Service method  
+2. Create/Update Service method
 3. Create/Update Controller method
 4. Wire in app.ts
 5. Test immediately
@@ -302,15 +322,15 @@ export class LearningController {
     private userProgressService: UserProgressService,
     private moduleService: ModuleService
   ) {}
-  
+
   async getLearningHomepage(req: Request, res: Response) {
     const userId = parseInt(req.params.userId);
-    
+
     // This needs data from multiple places:
     // 1. User's progress (from UserProgressService)
     // 2. Module information (from ModuleService)
     // 3. Calculations (business logic)
-    
+
     // Start simple - even if incomplete!
   }
 }
@@ -332,10 +352,10 @@ async submitQuizResponse(userId: number, quizId: number, answer: any) {
   // 2. Check if correct
   // 3. Update progress
   // 4. All in one transaction!
-  
+
   // Start without transaction first, get it working
   // Then add transaction:
-  
+
   return await this.prisma.$transaction(async (tx) => {
     // All database operations here
     // If any fail, all rollback!
@@ -348,6 +368,7 @@ async submitQuizResponse(userId: number, quizId: number, answer: any) {
 ## 🛠️ Common Problems & Solutions
 
 ### Problem: "Cannot find module"
+
 ```bash
 # Your import is probably wrong
 # Wrong:
@@ -357,20 +378,22 @@ import { ModuleService } from '../services/ModuleService';
 ```
 
 ### Problem: "Property doesn't exist"
+
 ```typescript
 // You forgot to include relations in Prisma
 // Add 'include' to your query:
 const module = await this.prisma.module.findUnique({
   where: { id: moduleId },
-  include: { theme: true }  // <-- Don't forget this!
+  include: { theme: true }, // <-- Don't forget this!
 });
 ```
 
 ### Problem: "Undefined" errors
+
 ```typescript
 // Always check if data exists before using it
 if (!module || !module.theme) {
-  throw new Error('Not found');
+  throw new Error("Not found");
 }
 // Only now safe to use module.theme.title
 ```
@@ -380,15 +403,17 @@ if (!module || !module.theme) {
 ## 📊 Progress Tracking
 
 ### Week 1 Checklist
+
 - [ ] Day 1: First endpoint working (module theme)
-- [ ] Day 2: Clean up and test thoroughly  
+- [ ] Day 2: Clean up and test thoroughly
 - [ ] Day 3: Second endpoint (concept)
 - [ ] Day 4: Extract first base class
 - [ ] Day 5: All quiz endpoints
-- [ ] Day 6: All summary endpoints  
+- [ ] Day 6: All summary endpoints
 - [ ] Day 7: Learning homepage
 
 ### Week 2 Checklist
+
 - [ ] Day 1: Quiz submission
 - [ ] Day 2: Test transactions
 - [ ] Day 3: Reflection submission
@@ -402,6 +427,7 @@ if (!module || !module.theme) {
 ## 🎓 Learning Tips
 
 ### 1. Test After Every Change
+
 ```bash
 # Don't write 100 lines then test
 # Write 10 lines, test
@@ -409,20 +435,23 @@ if (!module || !module.theme) {
 ```
 
 ### 2. Console.log Is Your Friend
+
 ```typescript
-console.log('Step 1: Got moduleId:', moduleId);
-console.log('Step 2: Found module:', module);
-console.log('Step 3: Created DTO:', themeDTO);
+console.log("Step 1: Got moduleId:", moduleId);
+console.log("Step 2: Found module:", module);
+console.log("Step 3: Created DTO:", themeDTO);
 ```
 
 ### 3. Keep Old Code While Building New
+
 ```typescript
 // Don't delete old endpoint until new one works
-app.get('/api/modules/:id/theme', newController.method); // New
+app.get("/api/modules/:id/theme", newController.method); // New
 // app.get('/api/modules/:id/theme', oldFunction);      // Old (commented)
 ```
 
 ### 4. Make Small Commits
+
 ```bash
 git add .
 git commit -m "Add ModuleRepository"
@@ -436,12 +465,14 @@ git commit -m "Add ModuleService"
 ## 🚀 When You're Stuck
 
 ### Step 1: Check the Basics
+
 - Is the server running?
 - Is the database connected?
 - Did you save the file?
 - Did you restart the server?
 
 ### Step 2: Read the Error
+
 ```
 TypeError: Cannot read property 'theme' of null
          # ^^^ This tells you 'theme' is the problem
@@ -449,6 +480,7 @@ TypeError: Cannot read property 'theme' of null
 ```
 
 ### Step 3: Trace the Data
+
 ```typescript
 // Add console.log at each step:
 async getModuleTheme(moduleId: number) {
@@ -460,6 +492,7 @@ async getModuleTheme(moduleId: number) {
 ```
 
 ### Step 4: Simplify
+
 ```typescript
 // Too complex? Make it simpler first:
 // Instead of:
@@ -467,9 +500,9 @@ const result = await this.complex.chain.of.methods();
 
 // Try:
 const step1 = await this.complex;
-console.log('step1:', step1);
+console.log("step1:", step1);
 const step2 = step1.chain;
-console.log('step2:', step2);
+console.log("step2:", step2);
 // Find where it breaks
 ```
 
@@ -478,30 +511,33 @@ console.log('step2:', step2);
 ## 📝 Quick Reference
 
 ### File Naming Convention
+
 ```
 repositories/ModuleRepository.ts    # Pascal case, ends with Repository
-services/ModuleService.ts          # Pascal case, ends with Service  
+services/ModuleService.ts          # Pascal case, ends with Service
 controllers/ModuleController.ts    # Pascal case, ends with Controller
 dtos/ThemeDTO.ts                   # Pascal case, ends with DTO
 ```
 
 ### Method Naming Convention
+
 ```typescript
 // Repository methods: findXXX, createXXX, updateXXX, deleteXXX
-findModuleWithTheme()
-findByUserId()
+findModuleWithTheme();
+findByUserId();
 
 // Service methods: getXXX, createXXX, updateXXX, deleteXXX, calculateXXX
-getModuleTheme()
-calculateProgress()
+getModuleTheme();
+calculateProgress();
 
 // Controller methods: match HTTP verbs
-getTheme()      // GET request
-createModule()  // POST request
-updateModule()  // PUT request
+getTheme(); // GET request
+createModule(); // POST request
+updateModule(); // PUT request
 ```
 
 ### Testing Each Layer
+
 ```bash
 # Test repository alone:
 node -e "
@@ -533,8 +569,9 @@ curl http://localhost:3000/api/modules/3/theme
 ## Next: After Week 2
 
 Once all endpoints are refactored and working:
+
 1. Add authentication (Phase 2)
-2. Add AI integration (Phase 3)  
+2. Add AI integration (Phase 3)
 3. Add tests (Phase 4)
 
 But that's for later. Focus on Week 1 first!

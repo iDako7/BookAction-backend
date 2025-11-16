@@ -13,11 +13,4 @@ export class ConceptRepository {
       include: { tutorial: true, quizzes: true },
     });
   }
-
-  async findConceptWithTutorial(conceptId: number) {
-    return this.prisma.concept.findFirst({
-      where: { id: conceptId },
-      include: { tutorial: true },
-    });
-  }
 }
