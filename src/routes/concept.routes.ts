@@ -11,7 +11,7 @@ const conceptRepo = new ConceptRepository(prisma);
 const conceptService = new ConceptService(conceptRepo);
 const tutorialController = new TutorialController(conceptService);
 
-router.get("/api/concepts/:conceptId/tutorial", async (req, res) => {
+router.get("/concepts/:conceptId/tutorial", async (req, res) => {
   tutorialController.getConceptTutorial(req, res);
 });
 

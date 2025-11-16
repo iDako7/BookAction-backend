@@ -1,6 +1,17 @@
 import { ConceptQuizzesDTO } from "../dtos/ConceptQuizzesDTO";
 import type { ConceptTutorialDTO } from "../dtos/ConceptTutorialDTO";
-import { ConceptRepository } from "../repositories/ConceptRepository";
+import {
+  ConceptRepository,
+  ConceptRelation,
+  ConceptWithTutorial,
+  ConceptWithQuizzes,
+} from "../repositories/ConceptRepository";
+import type { Quiz } from "../../generated/prisma";
+
+type ConceptRelationMap = {
+  tutorial: ConceptWithTutorial;
+  quizzes: ConceptWithQuizzes;
+};
 
 export class ConceptService {
   private conceptRepo: ConceptRepository;
@@ -9,22 +20,46 @@ export class ConceptService {
     this.conceptRepo = conceptRepo;
   }
 
-  // get tutorial
+  private async getConceptWithRelation<T extends ConceptRelation>(
+    conceptId: number,
+    relation: T
+  ): Promise<ConceptRelationMap[T]> {
+    // relation is tutorial
+    if (relation === "tutorial") {
+      const concept = await this.conceptRepo.findWithTutorial(conceptId);
+
+      if (!concept || !concept.tutorial) {
+        throw new Error(`Tutorial not found for concept ${conceptId}`);
+      }
+
+      return concept as ConceptRelationMap[T];
+    }
+
+    // relation is quizzes
+    // todo: in next concept endpoint improve it with switch
+    const concept = await this.conceptRepo.findWithQuizzes(conceptId);
+
+    if (!concept || !concept.quizzes || concept.quizzes.length === 0) {
+      throw new Error(`Quizzes not found for concept ${conceptId}`);
+    }
+
+    return concept as ConceptRelationMap[T];
+  }
+
+  private normalizeQuizOptions(options: Quiz["options"]): string[] {
+    if (!Array.isArray(options)) {
+      return [];
+    }
+
+    return options.map((option) =>
+      typeof option === "string" ? option : JSON.stringify(option)
+    );
+  }
   async getTutorialInCpt(conceptId: number): Promise<ConceptTutorialDTO> {
-    // 1. get the data from repo
-    const concept = await this.conceptRepo.findEntityWithCpt(conceptId);
+    const concept = await this.getConceptWithRelation(conceptId, "tutorial");
+    const tutorial = concept.tutorial!;
 
-    // 2. validation
-    if (!concept || !concept.quizzes) {
-      throw new Error("Concept or quizzes not found for concept " + conceptId);
-    }
-
-    const tutorial = concept.tutorial;
-    if (!tutorial) {
-      throw new Error("Tutorial not found for concept " + conceptId);
-    }
-
-    // 3. transform to DTO
+    // transform to DTO
     const conceptTutorialDTO: ConceptTutorialDTO = {
       title: concept.title,
       definition: concept.definition,
@@ -45,7 +80,21 @@ export class ConceptService {
   }
 
   // get quizzes
-  async getQuizzesInCpt(conceptId: number): Primise<ConceptQuizzesDTO> {
-    // 1. get the
+  async getQuizzesInCpt(conceptId: number): Promise<ConceptQuizzesDTO> {
+    const concept = await this.getConceptWithRelation(conceptId, "quizzes");
+
+    const questions = [...concept.quizzes]
+      .sort((a, b) => a.order_index - b.order_index)
+      .map((quiz) => ({
+        orderIndex: quiz.order_index,
+        question: quiz.question,
+        questionType: quiz.question_type,
+        mediaUrl: quiz.media_url,
+        options: this.normalizeQuizOptions(quiz.options),
+        correctAnswer: quiz.correct_answer,
+        explanation: quiz.explanation,
+      }));
+
+    return { questions };
   }
 }

@@ -10,6 +10,7 @@ import type {
 } from "@prisma/client";
 
 import moduleRoutes from "./routes/module.routes";
+import conceptRoutes from "./routes/concept.routes";
 
 // 1. Create app
 const app = express();
@@ -19,8 +20,9 @@ app.use(express.json());
 
 // ====== 3. Register routes =======
 
-// Use module routes
+// Use module & concept routes
 app.use("/api", moduleRoutes);
+app.use("/api", conceptRoutes);
 
 app.get("/api/users/:userId/learning_homepage", async (req, res) => {
   // use method chaining
