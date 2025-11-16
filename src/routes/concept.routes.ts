@@ -19,4 +19,8 @@ router.get("/api/concepts/:conceptId/quiz", async (req, res) => {
   conceptController.getConceptQuizzes(req, res);
 });
 
+router.get("/api/concepts/:conceptId/summary", async (req, res) => {
+  conceptController.getConceptSummary(req, res);
+});
+
 export default router;
