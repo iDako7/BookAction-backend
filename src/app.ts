@@ -63,7 +63,8 @@ app.get("/api/modules/:moduleId/theme", async (req, res) => {
 //   }
 // });
 
-app.get("/api/concepts/:conceptId", async (req, res) => {
+// Get concept tutorial
+app.get("/api/concepts/:conceptId/tutorial", async (req, res) => {
   try {
     const conceptId = Number.parseInt(req.params.conceptId, 10);
     if (Number.isNaN(conceptId)) {
