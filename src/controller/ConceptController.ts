@@ -64,4 +64,21 @@ export class ConceptController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getConceptSummary(req: Request, res: Response): Promise<void> {
+    try {
+      // get valid conceptId
+      const conceptId = this.parseConceptId(req, res);
+      if (!conceptId) {
+        return;
+      }
+
+      // return quizzes using service layer
+      const summary = await this.conceptService.getSummaryInCpt(conceptId);
+      res.json(summary);
+    } catch (error: any) {
+      console.log("Error getting concept summary", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
 }

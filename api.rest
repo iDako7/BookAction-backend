@@ -9,6 +9,8 @@ Accept: application/json
 GET http://localhost:3000/api/modules/6/theme
 Accept: application/json
 
+###
+
 ### Get concept tutorial
 # finished OOP refactor
 GET http://localhost:3000/api/concepts/22/tutorial
@@ -20,10 +22,9 @@ Accept: application/json
 GET http://localhost:3000/api/concepts/21/quiz
 Accept: application/json
 
-###
 
 ### Get concept summary
-GET http://localhost:3000/api/concepts/1/summary
+GET http://localhost:3000/api/concepts/21/summary
 Accept: application/json
 
 ###

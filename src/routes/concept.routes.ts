@@ -15,11 +15,11 @@ router.get("/concepts/:conceptId/tutorial", async (req, res) => {
   conceptController.getConceptTutorial(req, res);
 });
 
-router.get("/api/concepts/:conceptId/quiz", async (req, res) => {
+router.get("/concepts/:conceptId/quiz", async (req, res) => {
   conceptController.getConceptQuizzes(req, res);
 });
 
-router.get("/api/concepts/:conceptId/summary", async (req, res) => {
+router.get("/concepts/:conceptId/summary", async (req, res) => {
   conceptController.getConceptSummary(req, res);
 });
 

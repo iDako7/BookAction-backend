@@ -31,27 +31,6 @@ app.get("/api/users/:userId/learning_homepage", async (req, res) => {
     .catch(() => res.status(500).json({ err: "server error" }));
 });
 
-app.get("/api/concepts/:conceptId/summary", async (req, res) => {
-  try {
-    const conceptId = Number.parseInt(req.params.conceptId, 10);
-    if (Number.isNaN(conceptId)) {
-      return res.status(400).json({ err: "invalid concept id" });
-    }
-
-    const summary = (await getResource("summary", conceptId)) as Summary | null;
-    if (!summary) {
-      return res.status(404).json({ err: "summary not found" });
-    }
-
-    res.json({
-      summaryContent: summary.summary_content,
-      nextConceptIntro: summary.next_chapter_intro,
-    });
-  } catch (err) {
-    res.status(500).json({ err: "server error" });
-  }
-});
-
 app.get("/api/modules/:moduleId/reflection", async (req, res) => {
   try {
     const moduleId = Number.parseInt(req.params.moduleId, 10);

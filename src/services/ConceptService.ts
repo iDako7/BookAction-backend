@@ -1,17 +1,11 @@
 import { ConceptQuizzesDTO } from "../dtos/ConceptQuizzesDTO";
+import { ConceptSummaryDTO } from "../dtos/ConceptSummaryDTO";
 import type { ConceptTutorialDTO } from "../dtos/ConceptTutorialDTO";
 import {
   ConceptRepository,
-  ConceptRelation,
-  ConceptWithTutorial,
-  ConceptWithQuizzes,
+  ConceptSubTypes,
+  ConceptRelationMap,
 } from "../repositories/ConceptRepository";
-import type { Quiz } from "../../generated/prisma";
-
-type ConceptRelationMap = {
-  tutorial: ConceptWithTutorial;
-  quizzes: ConceptWithQuizzes;
-};
 
 export class ConceptService {
   private conceptRepo: ConceptRepository;
@@ -20,37 +14,50 @@ export class ConceptService {
     this.conceptRepo = conceptRepo;
   }
 
-  private async getConceptWithRelation<T extends ConceptRelation>(
+  private async getConceptWithRelation<T extends ConceptSubTypes>(
     conceptId: number,
     relation: T
   ): Promise<ConceptRelationMap[T]> {
-    // relation is tutorial
-    if (relation === "tutorial") {
-      const concept = await this.conceptRepo.findWithTutorial(conceptId);
+    // return concept based on sub-entity type
+    switch (relation) {
+      case "tutorial":
+        // find concept using method in repo layer
+        const tutorialCpt = await this.conceptRepo.findWithTutorial(conceptId);
 
-      if (!concept || !concept.tutorial) {
-        throw new Error(`Tutorial not found for concept ${conceptId}`);
-      }
+        // validation
+        if (!tutorialCpt || !tutorialCpt.tutorial) {
+          throw new Error(`Tutorial not found for concept ${conceptId}`);
+        }
 
-      return concept as ConceptRelationMap[T];
+        return tutorialCpt as ConceptRelationMap[T];
+
+      case "quizzes":
+        const quizzesCpt = await this.conceptRepo.findWithQuizzes(conceptId);
+        if (
+          !quizzesCpt ||
+          !quizzesCpt.quizzes ||
+          quizzesCpt.quizzes.length === 0
+        ) {
+          throw new Error(`Quizzes not found for concept ${conceptId}`);
+        }
+        return quizzesCpt as ConceptRelationMap[T];
+
+      case "summary":
+        const summaryCpt = await this.conceptRepo.findWithSummary(conceptId);
+        if (!summaryCpt || !summaryCpt.summary) {
+          throw new Error(`Summary not found for concept ${conceptId}`);
+        }
+        return summaryCpt as ConceptRelationMap[T];
+
+      default:
+        throw new Error("No matched type for concept sub entity");
     }
-
-    // relation is quizzes
-    // todo: in next concept endpoint improve it with switch
-    const concept = await this.conceptRepo.findWithQuizzes(conceptId);
-
-    if (!concept || !concept.quizzes || concept.quizzes.length === 0) {
-      throw new Error(`Quizzes not found for concept ${conceptId}`);
-    }
-
-    return concept as ConceptRelationMap[T];
   }
 
   async getTutorialInCpt(conceptId: number): Promise<ConceptTutorialDTO> {
     const concept = await this.getConceptWithRelation(conceptId, "tutorial");
     const tutorial = concept.tutorial!;
 
-    // transform to DTO
     const conceptTutorialDTO: ConceptTutorialDTO = {
       title: concept.title,
       definition: concept.definition,
@@ -87,5 +94,16 @@ export class ConceptService {
       }));
 
     return { questions };
+  }
+
+  async getSummaryInCpt(conceptId: number): Promise<ConceptSummaryDTO> {
+    const concept = await this.getConceptWithRelation(conceptId, "summary");
+
+    const summary = concept.summary!;
+    const conceptSummaryDTO: ConceptSummaryDTO = {
+      summaryContent: summary.summary_content,
+      nextConceptIntro: summary.next_chapter_intro,
+    };
+    return conceptSummaryDTO;
   }
 }
