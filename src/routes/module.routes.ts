@@ -12,7 +12,11 @@ const moduleService = new ModuleService(moduleRepo);
 const moduleController = new ModuleController(moduleService);
 
 router.get("/modules/:moduleId/theme", async (req, res) => {
-  moduleController.getTheme(req, res);
+  moduleController.getModuleTheme(req, res);
+});
+
+router.get("/modules/overview", async (req, res) => {
+  moduleController.getModulesOverview(req, res);
 });
 
 export default router;

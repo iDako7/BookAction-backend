@@ -5,6 +5,7 @@ interface QuizDTO {
   mediaUrl: string;
   options: string[];
   correctAnswer: string;
+  correctOptionIndex: number | null;
   explanation: string;
 }
 

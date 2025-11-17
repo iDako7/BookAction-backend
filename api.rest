@@ -1,5 +1,5 @@
 ### Get learning homepage
-GET http://localhost:3000/api/users/1/learning_homepage
+GET http://localhost:3000/api/modules/overview
 Accept: application/json
 
 ###
@@ -19,11 +19,12 @@ Accept: application/json
 
 ### Get concept quizzes
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/21/quiz
+GET http://localhost:3000/api/concepts/25/quiz
 Accept: application/json
 
 
 ### Get concept summary
+# finished OOP refactor
 GET http://localhost:3000/api/concepts/21/summary
 Accept: application/json
 

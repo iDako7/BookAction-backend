@@ -115,6 +115,7 @@ model Quiz {
   media_url String @db.Text
   options Json @db.JsonB
   correct_answer String
+  correct_option_index Int?
   explanation String @db.Text
   created_at  DateTime @default(now())
   

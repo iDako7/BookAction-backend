@@ -1,5 +1,9 @@
 import { ModuleRepository } from "../repositories/ModuleRepository";
-import type { ThemeDTO } from "../dtos/ThemeDTO";
+import type { ThemeDTO } from "../dtos/ModuleThemeDTO";
+import type {
+  ModulesOverviewDTO,
+  ModuleOverviewDTO,
+} from "../dtos/ModulesOverviewDTO";
 
 export class ModuleService {
   private moduleRepo: ModuleRepository;
@@ -27,5 +31,43 @@ export class ModuleService {
     };
 
     return themeDTO;
+  }
+
+  async getModulesOverview(): Promise<ModulesOverviewDTO> {
+    // get the necessary data through repo layer
+    const homePage = await this.moduleRepo.returnHomepage();
+
+    // validation
+    if (!homePage || !homePage.modules || homePage.modules.length === 0) {
+      throw new Error("Homepage not found");
+    }
+
+    // transform to DTO
+    const modules: ModuleOverviewDTO[] = homePage.modules.map((module) => {
+      const themeDTO: ThemeDTO | null = module.theme
+        ? {
+            title: module.theme.title,
+            context: module.theme.context,
+            mediaUrl: module.theme.mediaUrl,
+            mediaType: module.theme.mediaType,
+            question: module.theme.question,
+          }
+        : null;
+
+      // build moduleDTO
+      return {
+        id: module.id,
+        title: module.title,
+        theme: themeDTO,
+        progress: module.progress ?? 0,
+        concepts: module.concepts?.map((concept) => ({
+          id: concept.id,
+          title: concept.title,
+          completed: concept.completed,
+        })),
+      };
+    });
+
+    return { modules };
   }
 }

@@ -100,6 +100,12 @@ async function seedModule(userId: number) {
 
     //  3c. create quizzes
     for (const quizData of conceptData.quizzes || []) {
+      const derivedIndex =
+        typeof quizData.correct_option_index === "number"
+          ? quizData.correct_option_index
+          : quizData.options.indexOf(quizData.correct_answer);
+      const correctOptionIndex = derivedIndex >= 0 ? derivedIndex : null;
+
       await prisma.quiz.create({
         data: {
           concept_id: concept.id,
@@ -109,6 +115,7 @@ async function seedModule(userId: number) {
           media_url: quizData.media_url || null,
           options: quizData.options,
           correct_answer: quizData.correct_answer,
+          correct_option_index: correctOptionIndex,
           explanation: quizData.explanation,
         },
       });

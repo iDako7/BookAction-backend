@@ -90,6 +90,7 @@ export class ConceptService {
         mediaUrl: quiz.media_url,
         options: quiz.options as string[],
         correctAnswer: quiz.correct_answer,
+        correctOptionIndex: quiz.correct_option_index ?? null,
         explanation: quiz.explanation,
       }));
 

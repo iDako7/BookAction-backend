@@ -6,7 +6,7 @@
   },
   "theme": {
     "title": "Late-Night Texting",
-    "context": "At midnight, Sam's friend Jordan kept texting about a game. Exhausted but caring, Sam waited until morning to say, “I feel tired when I get texts after 11 PM.” Jordan understood and explained his anxiety. They agreed Jordan would text earlier, leaving both friends feeling heard and respected.",
+    "context": "At midnight, Sam's friend Jordan kept texting about a game. Exhausted but caring, Sam waited until morning to say, \u201cI feel tired when I get texts after 11 PM.\u201d Jordan understood and explained his anxiety. They agreed Jordan would text earlier, leaving both friends feeling heard and respected.",
     "media_url": "/media/panda.png",
     "media_type": "image",
     "question": "How would you handle a situation where a friend's communication habits clash with your needs?"
@@ -42,7 +42,8 @@
             "Why can't you just listen for once?"
           ],
           "correct_answer": "I feel frustrated when I'm interrupted because I lose my train of thought",
-          "explanation": "This option follows the 'I feel [emotion] when [situation] because [reason]' formula and focuses on your experience without attacking the other person"
+          "explanation": "This option follows the 'I feel [emotion] when [situation] because [reason]' formula and focuses on your experience without attacking the other person",
+          "correct_option_index": 1
         },
         {
           "order_index": 2,
@@ -56,7 +57,8 @@
             "Complaint, criticism, consequence"
           ],
           "correct_answer": "Feeling, situation, reason",
-          "explanation": "An effective 'I' statement includes: how you FEEL, the SITUATION that triggers it, and the REASON why it affects you"
+          "explanation": "An effective 'I' statement includes: how you FEEL, the SITUATION that triggers it, and the REASON why it affects you",
+          "correct_option_index": 1
         }
       ]
     },
@@ -90,7 +92,8 @@
             "Changing the subject to something similar that happened to you"
           ],
           "correct_answer": "Paraphrasing what they said to confirm understanding",
-          "explanation": "Paraphrasing shows you're truly listening and helps ensure you understood correctly"
+          "explanation": "Paraphrasing shows you're truly listening and helps ensure you understood correctly",
+          "correct_option_index": 2
         },
         {
           "order_index": 2,
@@ -104,7 +107,8 @@
             "So you felt left out when we made plans without you?"
           ],
           "correct_answer": "You're overreacting, it's not that bad",
-          "explanation": "Dismissing someone's feelings shows you're not listening with empathy and can damage trust in the relationship"
+          "explanation": "Dismissing someone's feelings shows you're not listening with empathy and can damage trust in the relationship",
+          "correct_option_index": 2
         }
       ]
     },
@@ -138,7 +142,8 @@
             "Maybe... I don't know... I guess if you really need it..."
           ],
           "correct_answer": "I'm not comfortable with that, but I can help explain the concepts to you",
-          "explanation": "This response clearly states your boundary while offering an alternative way to help"
+          "explanation": "This response clearly states your boundary while offering an alternative way to help",
+          "correct_option_index": 1
         },
         {
           "order_index": 2,
@@ -152,7 +157,8 @@
             "They express their own boundaries too"
           ],
           "correct_answer": "They keep pushing after you've said no",
-          "explanation": "When someone continues to pressure you after you've set a boundary, they're not respecting your limits"
+          "explanation": "When someone continues to pressure you after you've set a boundary, they're not respecting your limits",
+          "correct_option_index": 2
         }
       ]
     },
@@ -186,7 +192,8 @@
             "Pretend nothing is wrong"
           ],
           "correct_answer": "Take a deep breath and pause before responding",
-          "explanation": "Pausing helps you regulate emotions and prevents saying things you might regret"
+          "explanation": "Pausing helps you regulate emotions and prevents saying things you might regret",
+          "correct_option_index": 2
         },
         {
           "order_index": 2,
@@ -200,7 +207,8 @@
             "Keeping feelings bottled up"
           ],
           "correct_answer": "Naming and acknowledging your emotions",
-          "explanation": "Research shows that putting feelings into words activates the brain's emotional regulation systems"
+          "explanation": "Research shows that putting feelings into words activates the brain's emotional regulation systems",
+          "correct_option_index": 1
         }
       ]
     }

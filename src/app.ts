@@ -24,12 +24,12 @@ app.use(express.json());
 app.use("/api", moduleRoutes);
 app.use("/api", conceptRoutes);
 
-app.get("/api/users/:userId/learning_homepage", async (req, res) => {
-  // use method chaining
-  getLearnHomepage(parseInt(req.params.userId))
-    .then((data) => res.json(data))
-    .catch(() => res.status(500).json({ err: "server error" }));
-});
+// app.get("/api/users/:userId/learning_homepage", async (req, res) => {
+//   // use method chaining
+//   getLearnHomepage(parseInt(req.params.userId))
+//     .then((data) => res.json(data))
+//     .catch(() => res.status(500).json({ err: "server error" }));
+// });
 
 app.get("/api/modules/:moduleId/reflection", async (req, res) => {
   try {

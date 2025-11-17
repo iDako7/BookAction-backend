@@ -9,7 +9,7 @@ export class ModuleController {
     this.moduleService = moduleService;
   }
 
-  async getTheme(req: Request, res: Response): Promise<void> {
+  async getModuleTheme(req: Request, res: Response): Promise<void> {
     try {
       // get moduleId from URL and parse
       const moduleId = parseInt(req.params.moduleId || "");
@@ -25,6 +25,16 @@ export class ModuleController {
 
       // send response
       res.json(theme);
+    } catch (error: any) {
+      console.error("Error getting theme:", error);
+      res.status(404).json({ error: error.message });
+    }
+  }
+
+  async getModulesOverview(req: Request, res: Response): Promise<void> {
+    try {
+      const moduleOverview = await this.moduleService.getModulesOverview();
+      res.json(moduleOverview);
     } catch (error: any) {
       console.error("Error getting theme:", error);
       res.status(404).json({ error: error.message });
