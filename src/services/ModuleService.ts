@@ -5,14 +5,29 @@ import type {
   ModuleOverviewDTO,
 } from "../dtos/response/ModulesOverviewDTO";
 import type { ReflectionDTO } from "../dtos/response/ReflectionDTO";
+import type { ResponseType } from "../constants/responseTypes";
 
+/**
+ * Service layer for module-related business logic.
+ * Handles data transformation between repository and controller layers.
+ */
 export class ModuleService {
   private moduleRepo: ModuleRepository;
 
+  /**
+   * Creates a new ModuleService instance.
+   * @param moduleRepo - Repository for module data access
+   */
   constructor(moduleRepo: ModuleRepository) {
     this.moduleRepo = moduleRepo;
   }
 
+  /**
+   * Retrieves the theme for a specific module.
+   * @param moduleId - The ID of the module
+   * @returns Theme data including title, context, media, and question
+   * @throws Error if theme not found for the module
+   */
   async getModuleTheme(moduleId: number): Promise<ThemeDTO> {
     // 1. get the data from repo
     const module = await this.moduleRepo.findModuleWithTheme(moduleId);
@@ -34,6 +49,11 @@ export class ModuleService {
     return themeDTO;
   }
 
+  /**
+   * Retrieves overview of all modules with their progress and concepts.
+   * @returns Array of modules with themes, progress, and associated concepts
+   * @throws Error if homepage data not found
+   */
   async getModulesOverview(): Promise<ModulesOverviewDTO> {
     // get the necessary data through repo layer
     const homePage = await this.moduleRepo.returnModulesOverview();
@@ -72,6 +92,13 @@ export class ModuleService {
     return { modules };
   }
 
+  /**
+   * Retrieves the reflection prompt for a module.
+   * @param moduleId - The ID of the module
+   * @param userId - The ID of the user (defaults to 1)
+   * @returns Reflection prompt with optional media URL
+   * @throws Error if reflection not found for the module
+   */
   async getModuleReflection(
     moduleId: number,
     userId = 1
@@ -92,5 +119,28 @@ export class ModuleService {
     };
 
     return reflectionDTO;
+  }
+
+  /**
+   * Saves a user's response to a module reflection prompt.
+   * @param reflectionId - The ID of the reflection
+   * @param userId - The ID of the user
+   * @param answer - The user's reflection response text
+   * @param timeSpent - Optional time spent in seconds
+   */
+  async saveModuleReflection(
+    reflectionId: number,
+    userId: number,
+    answer: string,
+    timeSpent: number | undefined = undefined
+  ) {
+    const resData = {
+      reflectionId: reflectionId,
+      userId: userId,
+      responseType: "reflection" as ResponseType,
+      responseText: answer,
+      timeSpentSeconds: timeSpent,
+    };
+    await this.moduleRepo.saveModuleReflectionRes(resData);
   }
 }

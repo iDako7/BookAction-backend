@@ -57,4 +57,43 @@ export class ModuleController {
       res.status(404).json({ error: error.message });
     }
   }
+
+  async saveModuleReflection(req: Request, res: Response): Promise<void> {
+    try {
+      // get and validate moduleId
+      const moduleId = parseInt(req.params.moduleId || "");
+
+      if (isNaN(moduleId)) {
+        res.status(400).json({ error: "Invalid module ID" });
+        return;
+      }
+
+      // validate required field
+      const { reflectionId, userId, answer, timeSpent } = req.body;
+      if (!reflectionId || !userId || !answer) {
+        res.status(400).json({ error: "Missing required field(s)" });
+        return;
+      }
+
+      // save data using method in service layer
+      await this.moduleService.saveModuleReflection(
+        reflectionId,
+        userId,
+        answer,
+        timeSpent
+      );
+
+      // send success response
+      res.status(200).json({
+        message: "Reflection saved successfully",
+        reflectionId,
+        userId,
+        answer,
+        timeSpent,
+      });
+    } catch (error: any) {
+      console.error("Error getting reflection:", error);
+      res.status(404).json({ error: error.message });
+    }
+  }
 }

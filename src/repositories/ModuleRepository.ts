@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import type { ReflectionResDTO } from "../dtos/request/ReflectionDTO";
+import { RESPONSE_TYPES } from "../constants/responseTypes";
 
 export class ModuleRepository {
   private prisma: PrismaClient;
@@ -56,5 +58,18 @@ export class ModuleRepository {
         })),
       })),
     };
+  }
+
+  // asynchronous saveModuleReflection(moduleId:)
+  async saveModuleReflectionRes(resData: ReflectionResDTO) {
+    await this.prisma.user_response.create({
+      data: {
+        reflection_id: resData.reflectionId,
+        user_id: resData.userId,
+        response_type: RESPONSE_TYPES.REFLECTION,
+        text_answer: resData.responseText,
+        time_spent: resData.timeSpentSeconds ?? null,
+      },
+    });
   }
 }
