@@ -77,8 +77,7 @@ model Reflection {
 
   // actual data
   order_index Int
-  user_id Int 
-  time_spent Int  // Consider using Int for seconds/minutes instead of DateTime
+  user_id Int
   module_summary String @db.Text
   module_summary_media_url String @db.Text
   learning_advice String @db.Text  // Added missing type
@@ -88,7 +87,7 @@ model Reflection {
   user_responses User_response[]
 }
 
-// === 2. model related to concept directly === 
+// === 2. concept related to concept directly === 
 
 model Tutorial {
   id Int @id @default(autoincrement())
@@ -150,6 +149,7 @@ model User_concept_progress {
   @@unique([concept_id, user_id])
 }
 
+// ============ user data ==========
 // user response related to quiz, reflection
 model User_response {
   id Int @id @default(autoincrement())
@@ -163,10 +163,10 @@ model User_response {
 
   // actual data
   user_id Int
-  response_type String // e.g., "quiz" or "reflection"
-  answer Json @db.JsonB
   created_at  DateTime @default(now())
-  response_text String? @db.Text
+  response_type String // e.g., "quiz" or "reflection"
+  text_answer String? @db.Text
+  answer Json? @db.JsonB
   is_correct Boolean?
   time_spent Int?
 

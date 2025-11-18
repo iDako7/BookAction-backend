@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
-
-const prisma = new PrismaClient();
+import prisma from "../src/lib/prisma";
 
 async function main() {
   console.log("start seeding");
@@ -130,7 +128,6 @@ async function seedModule(userId: number) {
       module_id: module.id,
       order_index: 1,
       user_id: userId,
-      time_spent: 0,
       module_summary: data.reflection.module_summary,
       module_summary_media_url:
         data.reflection.module_summary_media_url || null,

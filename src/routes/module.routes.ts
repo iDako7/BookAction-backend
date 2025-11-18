@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
 import { ModuleRepository } from "../repositories/ModuleRepository";
 import { ModuleService } from "../services/ModuleService";
 import { ModuleController } from "../controller/ModuleController";
+import prisma from "../lib/prisma";
 
 const router = Router();
 
-const prisma = new PrismaClient();
 const moduleRepo = new ModuleRepository(prisma);
 const moduleService = new ModuleService(moduleRepo);
 const moduleController = new ModuleController(moduleService);
