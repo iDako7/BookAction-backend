@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
 import type {
-  Prisma,
   Theme,
   Concept,
   Tutorial,
@@ -8,7 +6,7 @@ import type {
   Summary,
   Reflection,
 } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "../lib/prisma";
 
 // return the data for Learning homepage
 async function getLearnHomepage(userId: number = 1) {

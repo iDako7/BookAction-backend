@@ -19,17 +19,16 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "6.20.0-integration-feat-prisma-7-config.4",
-    "@prisma/client": "6.20.0-integration-feat-prisma-7-config.4",
+    "@prisma/client": "6.19.0",
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "nodemon": "^3.1.10",
-    "prisma": "6.20.0-integration-feat-prisma-7-config.4",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
+    "prisma": "^6.19.0",
     "ts-node": "^10.9.2"
   }
 }

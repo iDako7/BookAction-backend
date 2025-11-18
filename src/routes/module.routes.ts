@@ -22,4 +22,8 @@ router.get("/modules/overview", async (req, res) => {
   moduleController.getModulesOverview(req, res);
 });
 
+router.post("/modules/:moduleId/reflection", async (req, res) => {
+  moduleController.saveModuleReflection(req, res);
+});
+
 export default router;

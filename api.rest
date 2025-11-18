@@ -7,7 +7,7 @@ Accept: application/json
 
 ### Get module theme
 # finished OOP refactor
-GET http://localhost:3000/api/modules/6/theme
+GET http://localhost:3000/api/modules/8/theme
 Accept: application/json
 
 ###
@@ -50,11 +50,13 @@ Accept: application/json
 ###
 
 ### Submit module reflection
-POST http://localhost:3000/api/modules/7/reflection/submit
+POST http://localhost:3000/api/modules/8/reflection
 Content-Type: application/json
 
 {
+  "reflectionId": 8,
   "userId": 1,
-  "response": "Learnt a lot from this module."
+  "answer": "Learnt a lot from this module.",
+  "timeSpent": 999
 }
 
