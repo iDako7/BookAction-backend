@@ -14,7 +14,16 @@ export class ModuleRepository {
     });
   }
 
-  async returnHomepage() {
+  async findModuleReflection(moduleId: number, userId = 1) {
+    return this.prisma.reflection.findFirst({
+      where: {
+        module_id: moduleId,
+        user_id: userId,
+      },
+    });
+  }
+
+  async returnModulesOverview() {
     // find modules
     const modules = await this.prisma.module.findMany({
       orderBy: { order_index: "asc" },

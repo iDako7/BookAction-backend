@@ -1,4 +1,5 @@
 ### Get learning homepage
+# finished OOP refactor
 GET http://localhost:3000/api/modules/overview
 Accept: application/json
 
@@ -42,13 +43,14 @@ Content-Type: application/json
 ###
 
 ### Get module reflection prompt
-GET http://localhost:3000/api/modules/1/reflection
+# finished OOP refactor
+GET http://localhost:3000/api/modules/7/reflection
 Accept: application/json
 
 ###
 
 ### Submit module reflection
-POST http://localhost:3000/api/modules/1/reflection/submit
+POST http://localhost:3000/api/modules/7/reflection/submit
 Content-Type: application/json
 
 {

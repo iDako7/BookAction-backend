@@ -15,6 +15,10 @@ router.get("/modules/:moduleId/theme", async (req, res) => {
   moduleController.getModuleTheme(req, res);
 });
 
+router.get("/modules/:moduleId/reflection", async (req, res) => {
+  moduleController.getModuleReflection(req, res);
+});
+
 router.get("/modules/overview", async (req, res) => {
   moduleController.getModulesOverview(req, res);
 });

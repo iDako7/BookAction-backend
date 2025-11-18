@@ -1,14 +1,4 @@
 import express from "express";
-import { getLearnHomepage, getResource } from "./services/LearnHomepage";
-import type {
-  Theme,
-  Concept,
-  Tutorial,
-  Quiz,
-  Summary,
-  Reflection,
-} from "@prisma/client";
-
 import moduleRoutes from "./routes/module.routes";
 import conceptRoutes from "./routes/concept.routes";
 
@@ -23,39 +13,6 @@ app.use(express.json());
 // Use module & concept routes
 app.use("/api", moduleRoutes);
 app.use("/api", conceptRoutes);
-
-// app.get("/api/users/:userId/learning_homepage", async (req, res) => {
-//   // use method chaining
-//   getLearnHomepage(parseInt(req.params.userId))
-//     .then((data) => res.json(data))
-//     .catch(() => res.status(500).json({ err: "server error" }));
-// });
-
-app.get("/api/modules/:moduleId/reflection", async (req, res) => {
-  try {
-    const moduleId = Number.parseInt(req.params.moduleId, 10);
-    if (Number.isNaN(moduleId)) {
-      return res.status(400).json({ err: "invalid module id" });
-    }
-
-    const reflection = (await getResource(
-      "reflection",
-      moduleId
-    )) as Reflection | null;
-
-    if (!reflection) {
-      return res.status(404).json({ err: "reflection not found" });
-    }
-
-    return res.json({
-      type: "text",
-      prompt: reflection.module_summary,
-      mediaUrl: reflection.module_summary_media_url,
-    });
-  } catch (err) {
-    res.status(500).json({ err: "server error" });
-  }
-});
 
 // POST endpoints - just return success
 app.post("/api/quiz/:quizId/submit", (req, res) => {

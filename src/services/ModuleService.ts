@@ -1,9 +1,10 @@
 import { ModuleRepository } from "../repositories/ModuleRepository";
-import type { ThemeDTO } from "../dtos/ModuleThemeDTO";
+import type { ThemeDTO } from "../dtos/response/ModuleThemeDTO";
 import type {
   ModulesOverviewDTO,
   ModuleOverviewDTO,
-} from "../dtos/ModulesOverviewDTO";
+} from "../dtos/response/ModulesOverviewDTO";
+import type { ReflectionDTO } from "../dtos/response/ReflectionDTO";
 
 export class ModuleService {
   private moduleRepo: ModuleRepository;
@@ -35,7 +36,7 @@ export class ModuleService {
 
   async getModulesOverview(): Promise<ModulesOverviewDTO> {
     // get the necessary data through repo layer
-    const homePage = await this.moduleRepo.returnHomepage();
+    const homePage = await this.moduleRepo.returnModulesOverview();
 
     // validation
     if (!homePage || !homePage.modules || homePage.modules.length === 0) {
@@ -69,5 +70,27 @@ export class ModuleService {
     });
 
     return { modules };
+  }
+
+  async getModuleReflection(
+    moduleId: number,
+    userId = 1
+  ): Promise<ReflectionDTO> {
+    const reflection = await this.moduleRepo.findModuleReflection(
+      moduleId,
+      userId
+    );
+
+    if (!reflection) {
+      throw new Error(`Reflection not found for module ${moduleId}`);
+    }
+
+    const reflectionDTO: ReflectionDTO = {
+      type: "text",
+      prompt: reflection.module_summary,
+      mediaUrl: reflection.module_summary_media_url,
+    };
+
+    return reflectionDTO;
   }
 }

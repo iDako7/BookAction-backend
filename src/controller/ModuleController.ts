@@ -40,4 +40,21 @@ export class ModuleController {
       res.status(404).json({ error: error.message });
     }
   }
+
+  async getModuleReflection(req: Request, res: Response): Promise<void> {
+    try {
+      const moduleId = parseInt(req.params.moduleId || "");
+
+      if (isNaN(moduleId)) {
+        res.status(400).json({ error: "Invalid module ID" });
+        return;
+      }
+
+      const reflection = await this.moduleService.getModuleReflection(moduleId);
+      res.json(reflection);
+    } catch (error: any) {
+      console.error("Error getting reflection:", error);
+      res.status(404).json({ error: error.message });
+    }
+  }
 }

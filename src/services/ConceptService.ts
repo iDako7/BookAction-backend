@@ -1,6 +1,6 @@
-import { ConceptQuizzesDTO } from "../dtos/ConceptQuizzesDTO";
-import { ConceptSummaryDTO } from "../dtos/ConceptSummaryDTO";
-import type { ConceptTutorialDTO } from "../dtos/ConceptTutorialDTO";
+import { ConceptQuizzesDTO } from "../dtos/response/ConceptQuizzesDTO";
+import { ConceptSummaryDTO } from "../dtos/response/ConceptSummaryDTO";
+import type { ConceptTutorialDTO } from "../dtos/response/ConceptTutorialDTO";
 import {
   ConceptRepository,
   ConceptSubTypes,
