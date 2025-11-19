@@ -80,7 +80,7 @@
       "quizzes": [
         {
           "order_index": 1,
-          "question": "Which of these behaviors shows active listening?",
+          "question": "Which of these behaviors don't show active listening?",
           "question_type": "multiple_choice",
           "media_url": "/media/panda.png",
           "options": [
@@ -90,7 +90,7 @@
             "Changing the subject to something similar that happened to you"
           ],
           "explanation": "Paraphrasing shows you're truly listening and helps ensure you understood correctly",
-          "correct_option_index": [2]
+          "correct_option_index": [0, 1, 3]
         },
         {
           "order_index": 2,
@@ -176,7 +176,7 @@
       "quizzes": [
         {
           "order_index": 1,
-          "question": "You feel yourself getting very angry during an argument. What's the best first step?",
+          "question": "You feel yourself getting very angry during an argument. What are not the best first step?",
           "question_type": "multiple_choice",
           "media_url": "/media/panda.png",
           "options": [
@@ -186,11 +186,11 @@
             "Pretend nothing is wrong"
           ],
           "explanation": "Pausing helps you regulate emotions and prevents saying things you might regret",
-          "correct_option_index": [2]
+          "correct_option_index": [0, 1, 3]
         },
         {
           "order_index": 2,
-          "question": "According to brain science, what helps calm the stress response in your brain?",
+          "question": "According to brain science, what don't helps calm the stress response in your brain?",
           "question_type": "multiple_choice",
           "media_url": "/media/panda.png",
           "options": [
@@ -200,7 +200,7 @@
             "Keeping feelings bottled up"
           ],
           "explanation": "Research shows that putting feelings into words activates the brain's emotional regulation systems",
-          "correct_option_index": [1]
+          "correct_option_index": [0, 2, 3]
         }
       ]
     }

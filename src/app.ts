@@ -14,15 +14,6 @@ app.use(express.json());
 app.use("/api", moduleRoutes);
 app.use("/api", conceptRoutes);
 
-// POST endpoints - just return success
-app.post("/api/quiz/:quizId/submit", (req, res) => {
-  res.json({
-    isCorrect: true,
-    explanation: "Great job!",
-    conceptProgress: { completed: true },
-  });
-});
-
 // 4. Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

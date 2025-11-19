@@ -7,37 +7,39 @@ Accept: application/json
 
 ### Get module theme
 # finished OOP refactor
-GET http://localhost:3000/api/modules/8/theme
+GET http://localhost:3000/api/modules/13/theme
 Accept: application/json
 
 ###
 
 ### Get concept tutorial
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/29/tutorial
+GET http://localhost:3000/api/concepts/46/tutorial
 Accept: application/json
 
 
 ### Get concept quizzes
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/29/quiz
+GET http://localhost:3000/api/concepts/46/quiz
 Accept: application/json
 
 
 ### Get concept summary
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/21/summary
+GET http://localhost:3000/api/concepts/46/summary
 Accept: application/json
 
 ###
 
 ### Submit quiz answer
-POST http://localhost:3000/api/quiz/1/submit
+POST http://localhost:3000/api/quiz/91/answer
 Content-Type: application/json
 
 {
-  "userId": 1,
-  "answer": "A"
+  "responseType": "single_choice",
+  "userId": 7,
+  "userAnswerIndices": [0],
+  "timeSpend": 19
 }
 
 ###

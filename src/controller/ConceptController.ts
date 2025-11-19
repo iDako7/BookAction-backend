@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ConceptService } from "../services/ConceptService";
+import { time } from "console";
 
 /**
  * Controller for handling concept-related tutorial and quiz requests
@@ -76,6 +77,40 @@ export class ConceptController {
       // return quizzes using service layer
       const summary = await this.conceptService.getSummaryInCpt(conceptId);
       res.json(summary);
+    } catch (error: any) {
+      console.log("Error getting concept summary", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async saveUserQuizAns(req: Request, res: Response): Promise<void> {
+    try {
+      // validate quizID and userID
+      const quizId = parseInt(req.params.quizId || "");
+
+      if (isNaN(quizId)) {
+        res.status(400).json({ error: "Invalid quiz ID" });
+        return undefined;
+      }
+
+      // parse and validate request body
+      const { responseType, userId, userAnswerIndices, timeSpent } = req.body;
+      if (!responseType || !userAnswerIndices || !userId) {
+        res.status(400).json({ error: "Missing required field(s)" });
+        return;
+      }
+
+
+      // save user data
+      const answerPayload = await this.conceptService.saveQuizAnswers(
+        responseType,
+        quizId,
+        userId,
+        userAnswerIndices,
+        timeSpent
+      );
+
+      res.status(200).json(answerPayload);
     } catch (error: any) {
       console.log("Error getting concept summary", error);
       res.status(500).json({ error: error.message });

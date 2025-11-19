@@ -4,7 +4,7 @@ import type { ResponseType } from "../../constants/responseTypes";
  * Basic JSON-compatible type that mirrors Prisma's JsonValue so we can shape
  * the payload that gets persisted in User_response.answer.
  */
-type JsonPrimitive = string | number | boolean | null;
+type JsonPrimitive = string | number | boolean;
 export type QuizAnswerValue =
   | JsonPrimitive
   | JsonPrimitive[]

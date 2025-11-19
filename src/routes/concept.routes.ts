@@ -22,4 +22,8 @@ router.get("/concepts/:conceptId/summary", async (req, res) => {
   conceptController.getConceptSummary(req, res);
 });
 
+router.post("/quiz/:quizId/answer", async (req, res) => {
+  conceptController.saveUserQuizAns(req, res);
+});
+
 export default router;

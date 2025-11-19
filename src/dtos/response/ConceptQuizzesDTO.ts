@@ -4,8 +4,7 @@ interface QuizDTO {
   questionType: string;
   mediaUrl: string;
   options: string[];
-  correctAnswer: string;
-  correctOptionIndex: number | null;
+  correctOptionIndex: number[];
   explanation: string;
 }
 

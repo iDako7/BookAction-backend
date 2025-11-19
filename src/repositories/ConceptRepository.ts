@@ -76,14 +76,6 @@ export class ConceptRepository {
   }
 
   /**
-   * Fetches a single quiz by its identifier.
-   * Used to evaluate answers and persist user responses.
-   */
-  async findQuizById(quizId: number) {
-    return this.prisma.quiz.findUnique({ where: { id: quizId } });
-  }
-
-  /**
    * Saves a quiz answer submission as a new record.
    * Each submission creates a unique record to maintain complete history.
    * @param data - The quiz answer data from the user
@@ -100,5 +92,26 @@ export class ConceptRepository {
         time_spent: data.timeSpentSeconds ?? null,
       },
     });
+  }
+
+  /**
+   * Finds the correct answer index(es) and question type for a quiz.
+   * @param quizId - The quiz ID to search for
+   * @returns Object with standardAnswer and realQuizType, or null if quiz not found
+   */
+  async findQuizAnswer(
+    quizId: number
+  ): Promise<{ standardAnswer: number[]; realQuizType: string } | null> {
+    const quiz = await this.prisma.quiz.findFirst({
+      where: { id: quizId },
+      select: { correct_option_index: true, question_type: true },
+    });
+
+    return quiz
+      ? {
+          standardAnswer: quiz.correct_option_index,
+          realQuizType: quiz.question_type,
+        }
+      : null;
   }
 }

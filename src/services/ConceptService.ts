@@ -1,3 +1,4 @@
+import { error } from "console";
 import { RESPONSE_TYPES } from "../constants/responseTypes";
 import type { ResponseType } from "../constants/responseTypes";
 import type { QuizAnswerValue } from "../dtos/request/AnswerToQuizDTO";
@@ -92,8 +93,7 @@ export class ConceptService {
         questionType: quiz.question_type,
         mediaUrl: quiz.media_url,
         options: quiz.options as string[],
-        correctAnswer: quiz.correct_answer,
-        correctOptionIndex: quiz.correct_option_index ?? null,
+        correctOptionIndex: quiz.correct_option_index,
         explanation: quiz.explanation,
       }));
 
@@ -115,47 +115,35 @@ export class ConceptService {
     quiz_type: ResponseType,
     quiz_id: number,
     user_id: number,
-    answer: QuizAnswerValue,
-    time_spent: number
-  ) {
-    const quiz = await this.conceptRepo.findQuizById(quiz_id);
-
-    if (!quiz) {
-      throw new Error(`Quiz ${quiz_id} not found`);
+    userAnswer: number[],
+    time_spent: number | null
+  ): Promise<QuizAnswerValue> {
+    // validate user's answer
+    if (userAnswer.length === 0) {
+      throw new Error("Answer must be a non-empty array of option indices");
     }
 
-    const optionTexts = quiz.options as string[];
-    // todo complex
-    const submittedOptionIndices = this.normalizeSelectedIndices(answer);
+    // get the standard answer
+    const quizData = await this.conceptRepo.findQuizAnswer(quiz_id);
 
-    if (submittedOptionIndices.length === 0) {
-      throw new Error("Answer must include at least one option index");
+    if (!quizData) {
+      throw new Error(`Answer of quiz ${quiz_id} not found`);
     }
 
-    // todo complex
-    const correctOptionIndices = this.getCorrectOptionIndices(quiz);
-    if (correctOptionIndices.length === 0) {
-      throw new Error(`Quiz ${quiz_id} is missing correct answer data`);
-    }
+    const { standardAnswer, realQuizType } = quizData;
 
-    const uniqueSubmitted = Array.from(new Set(submittedOptionIndices));
+    // calculate score
     const { score, isCorrect } = this.calculateScore(
-      uniqueSubmitted,
-      correctOptionIndices,
-      quiz_type
+      userAnswer,
+      standardAnswer,
+      realQuizType as ResponseType
     );
 
     // prepare answer JSON
-    const answerPayload = {
-      submittedOptionIndices: uniqueSubmitted,
-      correctOptionIndices,
-      submittedOptionTexts: uniqueSubmitted.map(
-        (index) => optionTexts[index] ?? null
-      ),
-      correctOptionTexts: correctOptionIndices.map(
-        (index) => optionTexts[index] ?? null
-      ),
-      score,
+    const answerPayload: QuizAnswerValue = {
+      userAnswerIndices: userAnswer,
+      correctOptionIndices: standardAnswer,
+      score: score,
     };
 
     await this.conceptRepo.saveQuizAnswersToDB({
@@ -164,79 +152,38 @@ export class ConceptService {
       responseType: quiz_type,
       answer: answerPayload,
       isCorrect,
-      timeSpentSeconds: time_spent,
+      timeSpentSeconds: time_spent ?? undefined,
     });
-  }
 
-  private normalizeSelectedIndices(answer: QuizAnswerValue): number[] {
-    if (Array.isArray(answer)) {
-      return answer.map((value) => Number(value)).filter((num) => !isNaN(num));
-    }
-
-    if (answer && typeof answer === "object") {
-      const indices = (answer as any).selectedOptionIndices;
-      if (Array.isArray(indices)) {
-        return indices
-          .map((value: unknown) => Number(value))
-          .filter((num) => !isNaN(num));
-      }
-
-      const single = Number((answer as any).selectedOptionIndex);
-      return !isNaN(single) ? [single] : [];
-    }
-
-    const fallback = Number(answer);
-    return !isNaN(fallback) ? [fallback] : [];
-  }
-
-  // ! this method is severely over-engineered, need to simplify
-  private getCorrectOptionIndices(quiz: {
-    correct_option_index: number | null;
-    correct_answer: string;
-  }): number[] {
-    if (typeof quiz.correct_option_index === "number") {
-      return [quiz.correct_option_index];
-    }
-
-    try {
-      const parsed = JSON.parse(quiz.correct_answer);
-      if (Array.isArray(parsed)) {
-        return parsed
-          .map((value) => Number(value))
-          .filter((num) => !isNaN(num));
-      }
-      const single = Number(parsed);
-      if (!isNaN(single)) {
-        return [single];
-      }
-    } catch {
-      // ignored, fallback below
-    }
-
-    const numeric = Number(quiz.correct_answer);
-    return !isNaN(numeric) ? [numeric] : [];
+    return answerPayload;
   }
 
   private calculateScore(
-    submitted: number[],
-    correct: number[],
+    userAnswer: number[],
+    standardAnswer: number[],
     quizType: ResponseType
   ): { score: number; isCorrect: boolean } {
-    const correctSet = new Set(correct);
-    const matches = submitted.filter((index) => correctSet.has(index)).length;
-    const hasIncorrectSelection = submitted.some(
-      (index) => !correctSet.has(index)
-    );
-
     if (quizType === RESPONSE_TYPES.SINGLE_QUIZ) {
-      const isCorrect =
-        correct.length === 1 && matches === 1 && !hasIncorrectSelection;
-      return { score: isCorrect ? 1 : 0, isCorrect };
-    }
+      const isCorrect = userAnswer[0] === standardAnswer[0];
+      const score = isCorrect ? 1 : 0;
+      return { score, isCorrect };
+    } else if (quizType === RESPONSE_TYPES.MULTIPLE_QUIZ) {
+      // Calculate intersection (correct answers)
+      const correctAnswers = userAnswer.filter((ans) =>
+        standardAnswer.includes(ans)
+      );
 
-    const totalCorrect = correct.length;
-    const score = totalCorrect === 0 ? 0 : matches / totalCorrect;
-    const isCorrect = !hasIncorrectSelection && matches === totalCorrect;
-    return { score, isCorrect };
+      // Score based on correct answers / total possible answers
+      const score = correctAnswers.length / standardAnswer.length;
+
+      // Consider correct only if all answers match
+      const isCorrect =
+        userAnswer.length === standardAnswer.length &&
+        standardAnswer.every((answer) => userAnswer.includes(answer));
+
+      return { score, isCorrect };
+    } else {
+      throw new Error(`Unsupported quiz type: ${quizType}`);
+    }
   }
 }
