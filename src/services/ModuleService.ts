@@ -51,37 +51,35 @@ export class ModuleService {
 
   /**
    * Retrieves overview of all modules with their progress and concepts.
+   * @param userId - The ID of the user (defaults to 1)
    * @returns Array of modules with themes, progress, and associated concepts
    * @throws Error if homepage data not found
    */
-  async getModulesOverview(): Promise<ModulesOverviewDTO> {
-    // get the necessary data through repo layer
-    const homePage = await this.moduleRepo.returnModulesOverview();
+  async getModulesOverview(userId: number = 1): Promise<ModulesOverviewDTO> {
+    // Pass userId to repo
+    const homePage = await this.moduleRepo.returnModulesOverview(userId);
 
-    // validation
     if (!homePage || !homePage.modules || homePage.modules.length === 0) {
       throw new Error("Homepage not found");
     }
 
-    // transform to DTO
+    // The transformation is now largely handled in the repo/Prisma query,
+    // but we map it to the strict DTO structure here.
     const modules: ModuleOverviewDTO[] = homePage.modules.map((module) => {
-      const themeDTO: ThemeDTO | null = module.theme
-        ? {
-            title: module.theme.title,
-            context: module.theme.context,
-            mediaUrl: module.theme.mediaUrl,
-            mediaType: module.theme.mediaType,
-            question: module.theme.question,
-          }
-        : null;
-
-      // build moduleDTO
       return {
         id: module.id,
         title: module.title,
-        theme: themeDTO,
+        theme: module.theme
+          ? {
+              title: module.theme.title,
+              context: module.theme.context,
+              mediaUrl: module.theme.mediaUrl,
+              mediaType: module.theme.mediaType,
+              question: module.theme.question,
+            }
+          : null,
         progress: module.progress ?? 0,
-        concepts: module.concepts?.map((concept) => ({
+        concepts: module.concepts.map((concept) => ({
           id: concept.id,
           title: concept.title,
           completed: concept.completed,
