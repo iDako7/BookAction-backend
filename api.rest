@@ -63,3 +63,15 @@ Content-Type: application/json
   "timeSpent": 999
 }
 
+###
+
+### Update concept progress (Mark Concept 46 as Complete)
+# Replace '46' with a real concept ID from your DB if different
+POST http://localhost:3000/api/concepts/46/progress
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "isCompleted": true,
+  "timeSpent": 120
+}
