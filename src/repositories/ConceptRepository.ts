@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client/";
+import { AnswerToQuizDTO } from "../dtos/request/AnswerToQuizDTO";
 
 /** Concept with tutorial relation included */
 export type ConceptWithTutorial = Prisma.ConceptGetPayload<{
@@ -71,6 +72,33 @@ export class ConceptRepository {
     return this.prisma.concept.findFirst({
       where: { id: conceptId },
       include: { summary: true },
+    });
+  }
+
+  /**
+   * Fetches a single quiz by its identifier.
+   * Used to evaluate answers and persist user responses.
+   */
+  async findQuizById(quizId: number) {
+    return this.prisma.quiz.findUnique({ where: { id: quizId } });
+  }
+
+  /**
+   * Saves a quiz answer submission as a new record.
+   * Each submission creates a unique record to maintain complete history.
+   * @param data - The quiz answer data from the user
+   * @returns The created user_response record
+   */
+  async saveQuizAnswersToDB(data: AnswerToQuizDTO) {
+    return this.prisma.user_response.create({
+      data: {
+        quiz_id: data.quizId,
+        user_id: data.userId,
+        response_type: data.responseType,
+        answer: data.answer as unknown as Prisma.InputJsonValue, // this allow us to transfer answer into prisma json. Setting type as unknown will allow us transfer datatype.
+        is_correct: data.isCorrect ?? null,
+        time_spent: data.timeSpentSeconds ?? null,
+      },
     });
   }
 }

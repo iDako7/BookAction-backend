@@ -2,7 +2,8 @@
  * Response types for user interactions
  */
 export const RESPONSE_TYPES = {
-  QUIZ: "quiz",
+  SINGLE_QUIZ: "single_choice",
+  MULTIPLE_QUIZ: "multiple_choice",
   REFLECTION: "reflection",
 } as const;
 

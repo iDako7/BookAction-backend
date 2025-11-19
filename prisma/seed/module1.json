@@ -33,7 +33,7 @@
         {
           "order_index": 1,
           "question": "Your friend keeps interrupting you during conversations. Which is the best 'I' statement to address this?",
-          "question_type": "multiple_choice",
+          "question_type": "single_choice",
           "media_url": "/media/panda.png",
           "options": [
             "You never let me finish talking!",
@@ -41,14 +41,13 @@
             "Stop being so rude all the time",
             "Why can't you just listen for once?"
           ],
-          "correct_answer": "I feel frustrated when I'm interrupted because I lose my train of thought",
           "explanation": "This option follows the 'I feel [emotion] when [situation] because [reason]' formula and focuses on your experience without attacking the other person",
-          "correct_option_index": 1
+          "correct_option_index": [1]
         },
         {
           "order_index": 2,
           "question": "What are the three key parts of an effective 'I' statement?",
-          "question_type": "multiple_choice",
+          "question_type": "single_choice",
           "media_url": "/media/panda.png",
           "options": [
             "Blame, accusation, demand",
@@ -56,9 +55,8 @@
             "Problem, person, punishment",
             "Complaint, criticism, consequence"
           ],
-          "correct_answer": "Feeling, situation, reason",
           "explanation": "An effective 'I' statement includes: how you FEEL, the SITUATION that triggers it, and the REASON why it affects you",
-          "correct_option_index": 1
+          "correct_option_index": [1]
         }
       ]
     },
@@ -91,14 +89,13 @@
             "Paraphrasing what they said to confirm understanding",
             "Changing the subject to something similar that happened to you"
           ],
-          "correct_answer": "Paraphrasing what they said to confirm understanding",
           "explanation": "Paraphrasing shows you're truly listening and helps ensure you understood correctly",
-          "correct_option_index": 2
+          "correct_option_index": [2]
         },
         {
           "order_index": 2,
           "question": "Your friend is explaining why they're upset. What's the WORST listening response?",
-          "question_type": "multiple_choice",
+          "question_type": "single_choice",
           "media_url": "/media/panda.png",
           "options": [
             "Can you help me understand what specifically bothered you?",
@@ -106,9 +103,8 @@
             "You're overreacting, it's not that bad",
             "So you felt left out when we made plans without you?"
           ],
-          "correct_answer": "You're overreacting, it's not that bad",
           "explanation": "Dismissing someone's feelings shows you're not listening with empathy and can damage trust in the relationship",
-          "correct_option_index": 2
+          "correct_option_index": [2]
         }
       ]
     },
@@ -133,7 +129,7 @@
         {
           "order_index": 1,
           "question": "A friend wants to copy your homework. Which response sets a clear boundary while being kind?",
-          "question_type": "multiple_choice",
+          "question_type": "single_choice",
           "media_url": "/media/panda.png",
           "options": [
             "Sure, whatever, just take it",
@@ -141,14 +137,13 @@
             "You're so lazy! Do your own work!",
             "Maybe... I don't know... I guess if you really need it..."
           ],
-          "correct_answer": "I'm not comfortable with that, but I can help explain the concepts to you",
           "explanation": "This response clearly states your boundary while offering an alternative way to help",
-          "correct_option_index": 1
+          "correct_option_index": [1]
         },
         {
           "order_index": 2,
           "question": "What's a sign that someone is NOT respecting your boundaries?",
-          "question_type": "multiple_choice",
+          "question_type": "single_choice",
           "media_url": "/media/panda.png",
           "options": [
             "They ask for clarification about your limits",
@@ -156,9 +151,8 @@
             "They keep pushing after you've said no",
             "They express their own boundaries too"
           ],
-          "correct_answer": "They keep pushing after you've said no",
           "explanation": "When someone continues to pressure you after you've set a boundary, they're not respecting your limits",
-          "correct_option_index": 2
+          "correct_option_index": [2]
         }
       ]
     },
@@ -191,9 +185,8 @@
             "Take a deep breath and pause before responding",
             "Pretend nothing is wrong"
           ],
-          "correct_answer": "Take a deep breath and pause before responding",
           "explanation": "Pausing helps you regulate emotions and prevents saying things you might regret",
-          "correct_option_index": 2
+          "correct_option_index": [2]
         },
         {
           "order_index": 2,
@@ -206,9 +199,8 @@
             "Blaming others for how you feel",
             "Keeping feelings bottled up"
           ],
-          "correct_answer": "Naming and acknowledging your emotions",
           "explanation": "Research shows that putting feelings into words activates the brain's emotional regulation systems",
-          "correct_option_index": 1
+          "correct_option_index": [1]
         }
       ]
     }

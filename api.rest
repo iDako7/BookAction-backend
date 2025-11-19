@@ -14,13 +14,13 @@ Accept: application/json
 
 ### Get concept tutorial
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/22/tutorial
+GET http://localhost:3000/api/concepts/29/tutorial
 Accept: application/json
 
 
 ### Get concept quizzes
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/25/quiz
+GET http://localhost:3000/api/concepts/29/quiz
 Accept: application/json
 
 
@@ -50,12 +50,13 @@ Accept: application/json
 ###
 
 ### Submit module reflection
+# finished OOP refactor
 POST http://localhost:3000/api/modules/8/reflection
 Content-Type: application/json
 
 {
   "reflectionId": 8,
-  "userId": 1,
+  "userId": 2,
   "answer": "Learnt a lot from this module.",
   "timeSpent": 999
 }

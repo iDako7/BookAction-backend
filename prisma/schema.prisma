@@ -113,8 +113,7 @@ model Quiz {
   question_type String
   media_url String @db.Text
   options Json @db.JsonB
-  correct_answer String
-  correct_option_index Int?
+  correct_option_index Int[]
   explanation String @db.Text
   created_at  DateTime @default(now())
   
@@ -165,12 +164,12 @@ model User_response {
   user_id Int
   created_at  DateTime @default(now())
   response_type String // e.g., "quiz" or "reflection"
-  text_answer String? @db.Text
-  answer Json? @db.JsonB
+  text_answer String? @db.Text // currently, store reflection response
+  answer Json? @db.JsonB // currently, store answer of quiz
   is_correct Boolean?
   time_spent Int?
 
-  // Ensure a user can only respond once per quiz or reflection
-  @@unique([quiz_id, user_id])
-  @@unique([reflection_id, user_id])
+  // Multiple submissions allowed - track complete history
+  @@index([quiz_id, user_id])
+  @@index([reflection_id, user_id])
 }
