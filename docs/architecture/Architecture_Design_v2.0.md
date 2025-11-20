@@ -16,8 +16,6 @@ The new architecture supports our roadmap for AI integration, real-time collabor
 
 ## 1. System Architecture Overview
 
-### 1.1 High-Level Architecture
-
 ```mermaid
 graph TB
     subgraph "HTTP Layer"
@@ -73,154 +71,6 @@ graph TB
     style US fill:#e1f5fe
     style AS fill:#fff3e0
 ```
-
-
-
-
-
-### 1.2 Request Flow Architecture
-
-```
-HTTP Request → Middleware Pipeline → Controller → Service Layer → Repository Layer → Database
-                    ↓                     ↓            ↓              ↓
-              (Validation)          (Orchestration) (Business)    (Data Access)
-                    ↓                     ↓            ↓              ↓
-HTTP Response ← DTO Mapper ← Domain Model ← Entity ← Database Record
-```
-
-
-
-### 1.3 Data Flow Through Layers
-
-```mermaid
-graph LR
-    subgraph "Entity (Database)"
-        E[Module<br/>- id: 1<br/>- title: 'Communication'<br/>- created_at: 2024-01-01<br/>- order_index: 3]
-    end
-    
-    subgraph "Repository Return"
-        R[Module object<br/>All database fields]
-    end
-    
-    subgraph "Service Processing"
-        S1[Business Logic]
-        S2[Transform to DTO]
-    end
-    
-    subgraph "DTO (API Response)"
-        D[ModuleDTO<br/>- id: 1<br/>- title: 'Communication'<br/>- progress: 75%]
-    end
-    
-    subgraph "Controller Response"
-        C[HTTP 200<br/>JSON body]
-    end
-    
-    E --> R
-    R --> S1
-    S1 --> S2
-    S2 --> D
-    D --> C
-    
-    style S1 fill:#fff3e0
-    style S2 fill:#fff3e0
-```
-
-
-
-### 1.4 Data Flow Through Layers
-        
-
-```mermaid
-graph TD
-    subgraph "ModuleService Domain"
-        MS[ModuleService]
-        MS1[getModuleTheme]
-        MS2[getModuleConcepts]
-        MS3[isModuleAccessible]
-        MS4[getConceptDetails]
-        
-        MS --> MS1
-        MS --> MS2
-        MS --> MS3
-        MS --> MS4
-    end
-    
-    subgraph "UserService Domain"
-        US[UserService]
-        US1[getLearningHomepage]
-        US2[submitReflection]
-        US3[calculateProgress]
-        US4[getNextLearningStep]
-        
-        US --> US1
-        US --> US2
-        US --> US3
-        US --> US4
-    end
-    
-    subgraph "Cross-Domain Interaction"
-        US1 -.->|calls| MS3
-        US4 -.->|may call| MS2
-    end
-    
-    subgraph "External Service"
-        US2 -->|uses| AI[AIService]
-    end
-    
-    style MS fill:#e8f5e9
-    style US fill:#e1f5fe
-    style AI fill:#fff3e0
-```
-
-
-
-### 1.5 Domain Service Interactions
-
-```mermaid
-graph TD
-    subgraph "app.ts - Wire Everything"
-        A[Create PrismaClient]
-        
-        B1[new ModuleRepository<br/>prisma]
-        B2[new ConceptRepository<br/>prisma]
-        B3[new UserResponseRepo<br/>prisma]
-        B4[new UserProgressRepo<br/>prisma]
-        
-        C1[new ModuleService<br/>moduleRepo, conceptRepo]
-        C2[new UserService<br/>responseRepo, progressRepo, aiService]
-        C3[new AIService]
-        
-        D1[new ModuleController<br/>moduleService]
-        D2[new ConceptController<br/>moduleService]
-        D3[new LearningController<br/>userService]
-        D4[new ResponseController<br/>userService]
-        
-        E[Register Routes<br/>app.get routes to controllers]
-    end
-    
-    A --> B1
-    A --> B2
-    A --> B3
-    A --> B4
-    
-    B1 --> C1
-    B2 --> C1
-    B3 --> C2
-    B4 --> C2
-    C3 --> C2
-    
-    C1 --> D1
-    C1 --> D2
-    C2 --> D3
-    C2 --> D4
-    
-    D1 --> E
-    D2 --> E
-    D3 --> E
-    D4 --> E
-```
-
-
 
 
 
@@ -303,15 +153,6 @@ LearningService (Orchestration)
 ├── getNextLearningStep()
 ├── calculateCompletionPercentage()
 └── generateLearningPath()
-```
-
-### 4.3 AI Integration Domain (Future)
-```
-AIService
-├── generateReflectionFeedback()
-├── assessQuizQuality()
-├── personalizeContent()
-└── predictLearningOutcomes()
 ```
 
 ---
