@@ -46,18 +46,18 @@ Content-Type: application/json
 
 ### Get module reflection prompt
 # finished OOP refactor
-GET http://localhost:3000/api/modules/7/reflection
+GET http://localhost:3000/api/modules/13/reflection
 Accept: application/json
 
 ###
 
 ### Submit module reflection
 # finished OOP refactor
-POST http://localhost:3000/api/modules/8/reflection
+POST http://localhost:3000/api/modules/13/reflection
 Content-Type: application/json
 
 {
-  "reflectionId": 8,
+  "reflectionId": 12,
   "userId": 2,
   "answer": "Learnt a lot from this module.",
   "timeSpent": 999
