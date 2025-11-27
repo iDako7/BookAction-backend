@@ -134,6 +134,13 @@ model Summary {
 }
 
 // ============ user data ==========
+// the enum of the role of user
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
 // user's info
 model User {
   // @id set the id as the default index, @default set the default value
@@ -142,7 +149,7 @@ model User {
   username String @unique
   password_hash String
 
-  role String @default("student") // student, teacher, admin
+  role UserRole @default(STUDENT) // student, teacher, admin
   is_active Boolean @default(true)
   last_login DateTime? 
   created_at DateTime @default(now())

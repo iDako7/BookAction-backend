@@ -1,5 +1,5 @@
 import { PrismaClient, User, Prisma } from "../../generated/prisma/client.js";
-import { RegisterDTO } from "../dtos/request/RegisterDTO.js";
+import { RegisterDTO } from "../dtos/request/AutheticationDTO.js";
 
 export class UserRepository {
   private prisma: PrismaClient;
