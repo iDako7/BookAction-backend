@@ -7,14 +7,14 @@ Accept: application/json
 
 ### Get module theme
 # finished OOP refactor
-GET http://localhost:3000/api/modules/13/theme
+GET http://localhost:3000/api/modules/1/theme
 Accept: application/json
 
 ###
 
 ### Get concept tutorial
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/46/tutorial
+GET http://localhost:3000/api/concepts/1/tutorial
 Accept: application/json
 
 
