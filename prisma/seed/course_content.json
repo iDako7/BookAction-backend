@@ -1,0 +1,428 @@
+[
+  {
+    "module": {
+      "title": "Healthy vs. Unhealthy Relationships",
+      "description": "Learn how to recognize healthy and unhealthy relationship patterns through stories, examples, and guidance on emotional and physical safety.",
+      "order_index": 2
+    },
+    "theme": {
+      "title": "A Tale of Two Relationships",
+      "context": "Aisha notices her two friends experiencing very different relationships. Emily and Kai communicate calmly, trust each other, and respect each other's independence. Zoe and Ryan, however, show patterns of control and fear—Zoe cancels plans, feels pressured to respond instantly, and becomes anxious when Ryan blames or intimidates her. These differences help Aisha understand what healthy and unhealthy relationships look like in real life.",
+      "media_url": "/media/module-1-theme.png",
+      "media_type": "image",
+      "question": "How do trust, independence, and communication influence the health of a relationship?"
+    },
+    "concepts": [
+      {
+        "order_index": 1,
+        "title": "Respect and Trust",
+        "definition": "Healthy relationships are built on mutual respect and trust, while unhealthy ones include jealousy, blame, and disrespectful behavior.",
+        "why_it_works": "Respect and trust create emotional safety, allowing both people to be honest without fear. Without trust, relationships become controlling, stressful, or isolating.",
+        "tutorial": {
+          "order_index": 1,
+          "good_story": "Emily and Kai disagree sometimes, but they talk calmly and listen to each other. When Emily wants time with friends, Kai encourages her to have fun. Their trust makes Emily feel confident and respected.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "Ryan often yells at Zoe and blames her for his outbursts, saying things like 'You made me do that.' He checks her phone constantly and becomes upset if she doesn’t reply fast. Zoe feels anxious and unsafe.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 1,
+          "summary_content": "Respect and trust help relationships grow stronger and more supportive. When both people listen, communicate honestly, and treat each other with kindness, the relationship feels balanced and safe.",
+          "next_chapter_intro": "Next, let’s explore how independence and boundaries help maintain healthy relationship dynamics."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "Which behavior shows respect and trust?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Checking a partner’s phone to see who they talk to",
+              "Encouraging a partner to spend time with their friends",
+              "Blaming a partner for your own anger",
+              "Raising your voice to 'win' an argument"
+            ],
+            "explanation": "Encouraging independence shows trust and respect for the other person’s choices.",
+            "correct_option_index": [1]
+          },
+          {
+            "order_index": 2,
+            "question": "Which of the following is a red flag?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Calmly talking about disagreements",
+              "Feeling safe to express your opinions",
+              "Being called names during arguments",
+              "Mutual honesty and communication"
+            ],
+            "explanation": "Name-calling is disrespectful and can be an early sign of unhealthy relationship dynamics.",
+            "correct_option_index": [2]
+          }
+        ]
+      },
+      {
+        "order_index": 2,
+        "title": "Independence and Boundaries",
+        "definition": "Healthy relationships allow both people to maintain independence, set boundaries, and make choices without fear of guilt or pressure.",
+        "why_it_works": "Independence keeps relationships balanced and prevents control. Boundaries protect personal comfort, privacy, and emotional well-being.",
+        "tutorial": {
+          "order_index": 2,
+          "good_story": "Emily and Kai each have their own hobbies and time apart. They respect each other’s need for space and independence, which helps their relationship stay balanced.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "Zoe feels she must reply instantly to Ryan or he becomes upset. She cancels plans with friends because he dislikes her seeing others. Zoe loses her sense of independence and feels pressured.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 2,
+          "summary_content": "Healthy relationships move at a comfortable pace, respecting each person’s boundaries and independence. When choices are respected, both people feel secure and valued.",
+          "next_chapter_intro": "Now let’s look at emotional and physical safety—an essential foundation of every healthy relationship."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "Which example shows respect for boundaries?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Pressuring someone to always reply right away",
+              "Expecting to know their passwords",
+              "Supporting their need for personal time",
+              "Getting angry when they spend time with friends"
+            ],
+            "explanation": "Respecting someone's personal time and space is a clear sign of healthy boundaries.",
+            "correct_option_index": [2]
+          },
+          {
+            "order_index": 2,
+            "question": "Which behavior suggests unhealthy control?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Discussing plans together",
+              "Guilt-tripping someone for wanting space",
+              "Respecting privacy",
+              "Encouraging hobbies"
+            ],
+            "explanation": "Guilt-tripping is a warning sign that someone is not respecting your boundaries.",
+            "correct_option_index": [1]
+          }
+        ]
+      },
+      {
+        "order_index": 3,
+        "title": "Emotional and Physical Safety",
+        "definition": "Feeling emotionally and physically safe means being able to express yourself without fear of harm, humiliation, or punishment.",
+        "why_it_works": "Safety allows relationships to grow through trust and honesty. When fear or intimidation is present, the relationship becomes harmful, even without physical violence.",
+        "tutorial": {
+          "order_index": 3,
+          "good_story": "Emily feels comfortable telling Kai when something bothers her. He listens, responds calmly, and respects her feelings, making her feel emotionally safe.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "Zoe feels scared when Ryan yells at her and worries about upsetting him. Even without physical harm, intimidation and fear make her feel unsafe.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 3,
+          "summary_content": "Healthy relationships create a sense of safety where you can be yourself without fear. Unhealthy dynamics—including intimidation, yelling, or pressure—undermine emotional and physical well-being.",
+          "next_chapter_intro": "Let’s explore how to recognize helpful and harmful patterns using green and red flags."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "Which situation shows emotional safety?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Being afraid to speak up during disagreements",
+              "Feeling comfortable sharing your feelings",
+              "Being pressured to do something you don't want to do",
+              "Being yelled at during arguments"
+            ],
+            "explanation": "Emotional safety means you feel comfortable expressing your thoughts and feelings.",
+            "correct_option_index": [1]
+          },
+          {
+            "order_index": 2,
+            "question": "Which behavior is abusive even without physical harm?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Calmly resolving disagreements",
+              "Yelling and blaming the other person",
+              "Listening to each other's needs",
+              "Respecting boundaries"
+            ],
+            "explanation": "Yelling, intimidation, and blaming are forms of emotional abuse.",
+            "correct_option_index": [1]
+          }
+        ]
+      },
+      {
+        "order_index": 4,
+        "title": "Green Flags and Red Flags",
+        "definition": "Green flags show healthy behaviors that support a balanced relationship, while red flags signal harmful patterns such as control, possessiveness, and disrespect.",
+        "why_it_works": "Recognizing patterns early helps you choose safer, healthier relationships and avoid harmful or abusive dynamics.",
+        "tutorial": {
+          "order_index": 4,
+          "good_story": "Emily and Kai show green flags: they communicate clearly, respect boundaries, celebrate each other’s achievements, and maintain equality.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "Ryan shows red flags such as isolating Zoe, blaming her for his anger, showing possessiveness, and deflecting responsibility for hurtful actions.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 4,
+          "summary_content": "Green flags include kindness, honesty, equality, and respect. Red flags include intensity, possessiveness, isolation, belittling, and unpredictable anger. Understanding these signs helps you build healthier relationships.",
+          "next_chapter_intro": "Next, let’s look at how to stay safe and get help when facing unhealthy or abusive situations."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "Which of these is a green flag?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Encouraging personal growth and independence",
+              "Demanding passwords for 'trust'",
+              "Guilt-tripping someone for saying no",
+              "Explosive anger during small disagreements"
+            ],
+            "explanation": "Supporting independence and growth is a clear sign of healthy relationship behavior.",
+            "correct_option_index": [0]
+          },
+          {
+            "order_index": 2,
+            "question": "Which is a red flag?",
+            "question_type": "multiple_choice",
+            "media_url": "/media/quiz-multiple-choice.png",
+            "options": [
+              "Isolation from friends",
+              "Extreme jealousy",
+              "Healthy conflict with calm communication",
+              "Deflecting responsibility for harmful behavior"
+            ],
+            "explanation": "Isolation, jealousy, and deflecting responsibility are harmful patterns that signal an unhealthy relationship.",
+            "correct_option_index": [0, 1, 3]
+          }
+        ]
+      }
+    ],
+    "reflection": {
+      "module_summary": "Healthy relationships are built on trust, respect, boundaries, equality, and emotional safety. Understanding the difference between green and red flags helps you navigate relationships with more confidence and clarity. By paying attention to how you feel and how others treat you, you can choose connections that support your well-being and avoid those that cause harm.",
+      "module_summary_media_url": "/media/module-1-reflection.png",
+      "learning_advice": "As you continue learning, keep observing how relationships in your daily life reflect the patterns you've explored here. This awareness will help you build safer and more supportive connections."
+    }
+  },
+  {
+    "module": {
+      "title": "Communication and Boundaries",
+      "description": "Learn how to communicate feelings, set boundaries, and practice healthy relationship skills through interactive stories and activities",
+      "order_index": 1
+    },
+    "theme": {
+      "title": "Late-Night Texting",
+      "context": "At midnight, Sam's friend Jordan kept texting about a game. Exhausted but caring, Sam waited until morning to say, \u201cI feel tired when I get texts after 11 PM.\u201d Jordan understood and explained his anxiety. They agreed Jordan would text earlier, leaving both friends feeling heard and respected.",
+      "media_url": "/media/module-2-theme.png",
+      "media_type": "image",
+      "question": "How would you handle a situation where a friend's communication habits clash with your needs?"
+    },
+    "concepts": [
+      {
+        "order_index": 1,
+        "title": "Using 'I' Statements to Express Feelings",
+        "definition": "I statements are a communication tool that helps you express your feelings without blaming others by focusing on your own emotions and experiences",
+        "why_it_works": "Using 'I feel' instead of 'You did' prevents the other person from immediately getting defensive and provides clarity about what is bothering you and why",
+        "tutorial": {
+          "order_index": 1,
+          "good_story": "Maya felt upset when her sister borrowed her headphones without asking. Instead of yelling, she took a breath and said: 'I feel frustrated when my things are taken without permission because I was looking for them this morning. Can you please ask me next time?' Her sister apologized and promised to ask first.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "Tom was angry about his friend canceling plans. He texted: 'You ALWAYS bail on me! You're such a flake and you obviously don't care about our friendship!' His friend felt attacked and they ended up in a huge argument that could have been avoided.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 1,
+          "summary_content": "I statements help you express feelings without creating conflict. Remember the formula: 'I feel [emotion] when [situation] because [reason].' This approach takes responsibility for your emotions while clearly communicating your needs.",
+          "next_chapter_intro": "Now that you can express your feelings clearly, let's explore how to truly listen when others share theirs."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "Your friend keeps interrupting you during conversations. Which is the best 'I' statement to address this?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "You never let me finish talking!",
+              "I feel frustrated when I'm interrupted because I lose my train of thought",
+              "Stop being so rude all the time",
+              "Why can't you just listen for once?"
+            ],
+            "explanation": "This option follows the 'I feel [emotion] when [situation] because [reason]' formula and focuses on your experience without attacking the other person",
+            "correct_option_index": [1]
+          },
+          {
+            "order_index": 2,
+            "question": "What are the three key parts of an effective 'I' statement?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Blame, accusation, demand",
+              "Feeling, situation, reason",
+              "Problem, person, punishment",
+              "Complaint, criticism, consequence"
+            ],
+            "explanation": "An effective 'I' statement includes: how you FEEL, the SITUATION that triggers it, and the REASON why it affects you",
+            "correct_option_index": [1]
+          }
+        ]
+      },
+      {
+        "order_index": 2,
+        "title": "The Art of Active Listening",
+        "definition": "Active listening means giving your full attention and understanding the other person's point of view through focused attention and empathetic response",
+        "why_it_works": "Listening with empathy builds trust and helps prevent miscommunication, making it easier to solve problems together",
+        "tutorial": {
+          "order_index": 2,
+          "good_story": "When Alex shared concerns about an upcoming test, their friend Jamie put down their phone, made eye contact, and said: 'So you're worried because you missed last week's classes? That makes sense. What topics are you most concerned about?' Alex felt truly heard and supported.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "While Emma was explaining why she was upset about being left out of weekend plans, her friend Kate kept scrolling Instagram, occasionally saying 'uh-huh' without looking up. Emma felt ignored and stopped sharing her feelings.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 2,
+          "summary_content": "Active listening means giving full attention, not interrupting, and showing you understand through body language and paraphrasing. It's about listening to understand, not just to respond.",
+          "next_chapter_intro": "Good communication also means knowing your limits. Let's learn about setting healthy boundaries."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "Which of these behaviors don't show active listening?",
+            "question_type": "multiple_choice",
+            "media_url": "/media/quiz-multiple-choice.png",
+            "options": [
+              "Planning your response while they talk",
+              "Checking your phone occasionally",
+              "Paraphrasing what they said to confirm understanding",
+              "Changing the subject to something similar that happened to you"
+            ],
+            "explanation": "Paraphrasing shows you're truly listening and helps ensure you understood correctly",
+            "correct_option_index": [0, 1, 3]
+          },
+          {
+            "order_index": 2,
+            "question": "Your friend is explaining why they're upset. What's the WORST listening response?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Can you help me understand what specifically bothered you?",
+              "That sounds really frustrating for you",
+              "You're overreacting, it's not that bad",
+              "So you felt left out when we made plans without you?"
+            ],
+            "explanation": "Dismissing someone's feelings shows you're not listening with empathy and can damage trust in the relationship",
+            "correct_option_index": [2]
+          }
+        ]
+      },
+      {
+        "order_index": 3,
+        "title": "Setting Boundaries and Saying 'No' Kindly",
+        "definition": "Boundaries are personal limits that define what is okay or not okay for you in relationships, and can be physical or emotional",
+        "why_it_works": "Clear boundaries protect your comfort and safety while respecting others, and true friends will understand and respect your honesty",
+        "tutorial": {
+          "order_index": 3,
+          "good_story": "When friends pressured Lee to skip class, Lee calmly said: 'No thanks, I need to keep my attendance up for the team. You all have fun though!' The friends shrugged and respected the decision without pushing further.",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "Casey felt uncomfortable sharing their phone password but when their partner insisted, Casey gave in saying 'I guess... if you really want it...' and felt resentful and violated afterward, wishing they had stood firm.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 3,
+          "summary_content": "You are the boss of your own body and choices. Boundaries can be physical or emotional, and saying 'no' kindly but firmly is your right. True friends will respect your boundaries.",
+          "next_chapter_intro": "Sometimes emotions make communication difficult. Let's explore how to recognize and manage feelings."
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "A friend wants to copy your homework. Which response sets a clear boundary while being kind?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "Sure, whatever, just take it",
+              "I'm not comfortable with that, but I can help explain the concepts to you",
+              "You're so lazy! Do your own work!",
+              "Maybe... I don't know... I guess if you really need it..."
+            ],
+            "explanation": "This response clearly states your boundary while offering an alternative way to help",
+            "correct_option_index": [1]
+          },
+          {
+            "order_index": 2,
+            "question": "What's a sign that someone is NOT respecting your boundaries?",
+            "question_type": "single_choice",
+            "media_url": "/media/quiz-single-choice.png",
+            "options": [
+              "They ask for clarification about your limits",
+              "They accept your 'no' without argument",
+              "They keep pushing after you've said no",
+              "They express their own boundaries too"
+            ],
+            "explanation": "When someone continues to pressure you after you've set a boundary, they're not respecting your limits",
+            "correct_option_index": [2]
+          }
+        ]
+      },
+      {
+        "order_index": 4,
+        "title": "Recognizing Feelings and Managing Emotions",
+        "definition": "Emotional regulation involves recognizing what you're feeling and finding healthy ways to cope with intense emotions",
+        "why_it_works": "Naming emotions helps regulate them by calming the part of the brain that causes stress, and pausing before reacting prevents conflicts from escalating",
+        "tutorial": {
+          "order_index": 4,
+          "good_story": "During a heated discussion about group project roles, Sam felt anger rising. They said: 'I need a 5-minute break to collect my thoughts,' went for a quick walk, then returned calmer and suggested: 'Let's list everyone's strengths and divide tasks based on that.'",
+          "good_media_url": "/media/concept-inrto-good.png",
+          "bad_story": "When criticized about their presentation, Jordan immediately snapped: 'Whatever! You think you're so perfect?' and stormed out, later regretting not taking time to process the feedback constructively.",
+          "bad_media_url": "/media/concept-inrto-bad.png"
+        },
+        "summary": {
+          "order_index": 4,
+          "summary_content": "Recognizing and naming emotions helps regulate them. When feelings are intense, pause before reacting, use healthy outlets like journaling or walking, and express feelings calmly using the skills you've learned.",
+          "next_chapter_intro": "You've completed the Communication and Boundaries module! Ready to apply these skills in your daily relationships?"
+        },
+        "quizzes": [
+          {
+            "order_index": 1,
+            "question": "You feel yourself getting very angry during an argument. What are not the best first step?",
+            "question_type": "multiple_choice",
+            "media_url": "/media/quiz-multiple-choice.png",
+            "options": [
+              "Say everything you're thinking immediately",
+              "Storm out without explanation",
+              "Take a deep breath and pause before responding",
+              "Pretend nothing is wrong"
+            ],
+            "explanation": "Pausing helps you regulate emotions and prevents saying things you might regret",
+            "correct_option_index": [0, 1, 3]
+          },
+          {
+            "order_index": 2,
+            "question": "According to brain science, what don't helps calm the stress response in your brain?",
+            "question_type": "multiple_choice",
+            "media_url": "/media/quiz-multiple-choice.png",
+            "options": [
+              "Ignoring your feelings",
+              "Naming and acknowledging your emotions",
+              "Blaming others for how you feel",
+              "Keeping feelings bottled up"
+            ],
+            "explanation": "Research shows that putting feelings into words activates the brain's emotional regulation systems",
+            "correct_option_index": [0, 2, 3]
+          }
+        ]
+      }
+    ],
+    "reflection": {
+      "module_summary": "Think of a recent disagreement or tense situation you had with someone. How did you communicate your feelings? If you reacted on impulse or kept feelings inside, how might you handle it differently now using an 'I' statement or a pause to calm down?",
+      "module_summary_media_url": "/media/module-2-reflection.png",
+      "learning_advice": "Practice using 'I' statements in low-stakes situations first. It gets easier with practice!"
+    }
+  }
+]

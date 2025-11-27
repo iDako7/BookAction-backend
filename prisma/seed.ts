@@ -1,7 +1,10 @@
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
+import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
 import { PrismaClient } from "../generated/prisma/client.js";
+import type { Prisma } from "../generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
@@ -9,29 +12,73 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+type QuizSeed = {
+  order_index: number;
+  question: string;
+  question_type: string;
+  media_url?: string;
+  options: Prisma.InputJsonValue;
+  correct_option_index: number[];
+  explanation: string;
+};
+
+type ConceptSeed = {
+  order_index: number;
+  title: string;
+  definition: string;
+  why_it_works: string;
+  tutorial: {
+    order_index: number;
+    good_story: string;
+    good_media_url?: string;
+    bad_story: string;
+    bad_media_url?: string;
+  };
+  summary: {
+    order_index: number;
+    summary_content: string;
+    next_chapter_intro: string;
+  };
+  quizzes?: QuizSeed[];
+};
+
+type CourseContent = {
+  module: {
+    title: string;
+    description: string;
+    order_index: number;
+  };
+  theme: {
+    title: string;
+    context: string;
+    media_url?: string;
+    media_type: string;
+    question: string;
+  };
+  concepts: ConceptSeed[];
+  reflection: {
+    module_summary: string;
+    module_summary_media_url?: string;
+    learning_advice: string;
+  };
+};
+
 async function main() {
   console.log("start seeding");
 
-  // Clear existing data (optional for development)
   await clearDatabase();
 
-  // create test user
-  const userId = await (async () => {
-    // Since User table isn't in your schema,
-    // just return a test ID for now
-    return 1;
-  })();
+  const user = await seedUserWithToken();
 
-  // seed module 1
-  await seedModule(userId);
+  await seedCourseContent(user.id);
 
   console.log("seed completed!");
 }
 
 async function clearDatabase() {
-  // Delete in reverse order of dependencies
   await prisma.user_response.deleteMany();
   await prisma.user_concept_progress.deleteMany();
+  await prisma.refreshToken.deleteMany();
   await prisma.quiz.deleteMany();
   await prisma.summary.deleteMany();
   await prisma.tutorial.deleteMany();
@@ -39,20 +86,95 @@ async function clearDatabase() {
   await prisma.concept.deleteMany();
   await prisma.theme.deleteMany();
   await prisma.module.deleteMany();
+  await prisma.user.deleteMany();
+
+  await resetSequences();
+
   console.log("🗑️ Database cleared");
 }
 
-async function seedModule(userId: number) {
-  // Load JSON data
-  const dataPath = path.join(process.cwd(), "prisma", "seed", "module1.json");
-  const data = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+async function resetSequences() {
+  const sequences = [
+    "User_id_seq",
+    "RefreshToken_id_seq",
+    "Module_id_seq",
+    "Theme_id_seq",
+    "Concept_id_seq",
+    "Tutorial_id_seq",
+    "Summary_id_seq",
+    "Quiz_id_seq",
+    "Reflection_id_seq",
+    "User_concept_progress_id_seq",
+    "User_response_id_seq",
+  ];
+
+  for (const sequence of sequences) {
+    try {
+      await prisma.$executeRawUnsafe(
+        `ALTER SEQUENCE "${sequence}" RESTART WITH 1`,
+      );
+    } catch (error) {
+      console.warn(`⚠️ Could not reset sequence ${sequence}:`, error);
+    }
+  }
+}
+
+async function seedUserWithToken() {
+  const password_hash = await bcrypt.hash("password123", 10);
+
+  const user = await prisma.user.create({
+    data: {
+      email: "student@example.com",
+      username: "demo_student",
+      password_hash,
+      role: "student",
+      last_login: new Date(),
+    },
+  });
+
+  const refreshToken = await prisma.refreshToken.create({
+    data: {
+      token: randomUUID(),
+      user_id: user.id,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  console.log(`👤 Created user: ${user.email}`);
+  console.log(`🔑 Created refresh token: ${refreshToken.token}`);
+
+  return user;
+}
+
+function loadCourseContent(): CourseContent[] {
+  const dataPath = path.join(process.cwd(), "prisma", "seed", "course_content.json");
+  const raw = fs.readFileSync(dataPath, "utf-8");
+  const parsed = JSON.parse(raw);
+
+  if (!Array.isArray(parsed)) {
+    throw new Error("course_content.json must be an array of modules");
+  }
+
+  return parsed as CourseContent[];
+}
+
+async function seedCourseContent(userId: number) {
+  const modules = loadCourseContent();
+
+  for (const moduleData of modules) {
+    await seedModule(moduleData, userId);
+  }
+}
+
+async function seedModule(data: CourseContent, userId: number) {
+  const { module: moduleInfo, theme, concepts, reflection } = data;
 
   // 1. Create Module
   const module = await prisma.module.create({
     data: {
-      title: data.module.title,
-      description: data.module.description,
-      order_index: data.module.order_index,
+      title: moduleInfo.title,
+      description: moduleInfo.description,
+      order_index: moduleInfo.order_index,
     },
   });
   console.log(`📦 Created module: ${module.title}`);
@@ -61,16 +183,16 @@ async function seedModule(userId: number) {
   await prisma.theme.create({
     data: {
       module_id: module.id,
-      title: data.theme.title,
-      context: data.theme.context,
-      media_url: data.theme.media_url || null,
-      media_type: data.theme.media_type,
-      question: data.theme.question,
+      title: theme.title,
+      context: theme.context,
+      media_url: theme.media_url || null,
+      media_type: theme.media_type,
+      question: theme.question,
     },
   });
 
   // 3. Create Concepts with related data
-  for (const conceptData of data.concepts) {
+  for (const conceptData of concepts) {
     const concept = await prisma.concept.create({
       data: {
         module_id: module.id,
@@ -85,7 +207,7 @@ async function seedModule(userId: number) {
     await prisma.tutorial.create({
       data: {
         concept_id: concept.id,
-        order_index: 1,
+        order_index: conceptData.tutorial.order_index,
         good_story: conceptData.tutorial.good_story,
         good_media_url: conceptData.tutorial.good_media_url || null,
         bad_story: conceptData.tutorial.bad_story,
@@ -97,7 +219,7 @@ async function seedModule(userId: number) {
     await prisma.summary.create({
       data: {
         concept_id: concept.id,
-        order_index: 1,
+        order_index: conceptData.summary.order_index,
         summary_content: conceptData.summary.summary_content,
         next_chapter_intro: conceptData.summary.next_chapter_intro,
       },
@@ -128,10 +250,9 @@ async function seedModule(userId: number) {
       module_id: module.id,
       order_index: 1,
       user_id: userId,
-      module_summary: data.reflection.module_summary,
-      module_summary_media_url:
-        data.reflection.module_summary_media_url || null,
-      learning_advice: data.reflection.learning_advice,
+      module_summary: reflection.module_summary,
+      module_summary_media_url: reflection.module_summary_media_url || null,
+      learning_advice: reflection.learning_advice,
     },
   });
   console.log(`🤔 Created reflection`);

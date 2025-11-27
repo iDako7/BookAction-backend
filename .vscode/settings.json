@@ -33,5 +33,6 @@
   // Enable git decorations
   "git.decorations.enabled": true,
   // Show diff decorations in the editor
-  "scm.diffDecorations": "all"
+  "scm.diffDecorations": "all",
+  "cSpell.words": ["autoincrement"]
 }

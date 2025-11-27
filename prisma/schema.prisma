@@ -50,7 +50,7 @@ model Concept {
   id          Int     @id @default(autoincrement())
 
   // relationship with Module
-  module      Module @relation(fields:[module_id], references: [id])
+  module      Module @relation(fields:[module_id], references: [id], onDelete: Restrict)
   module_id   Int
 
   // relationship with sub-module
@@ -63,24 +63,27 @@ model Concept {
   // actual data
   order_index Int
   title String
-  definition String @db.Text //? do we need it
-  why_it_works String @db.Text //? need it?
+  definition String @db.Text
+  why_it_works String @db.Text
   created_at  DateTime @default(now())
+
+  @@index([module_id])
 }
 
 model Reflection {
   id Int @id @default(autoincrement())
 
   // relationship with Module
+  user User @relation(fields: [user_id], references: [id])
   module     Module   @relation(fields:[module_id], references: [id])
   module_id  Int      
 
   // actual data
   order_index Int
-  user_id Int
+  user_id     Int
   module_summary String @db.Text
   module_summary_media_url String @db.Text
-  learning_advice String @db.Text  // Added missing type
+  learning_advice String @db.Text
   created_at  DateTime @default(now())
   
   // Add relation to User_response
@@ -93,14 +96,12 @@ model Tutorial {
   id Int @id @default(autoincrement())
   concept Concept @relation(fields:[concept_id], references: [id])
   concept_id Int @unique
-  // Remove duplicate concept_id line
   order_index Int
   good_story String @db.Text
   good_media_url String @db.Text
   bad_story String @db.Text
   bad_media_url String @db.Text
   created_at  DateTime @default(now())
-  // Remove the duplicate "module Concepts" relation line
 }
 
 model Quiz {
@@ -132,28 +133,69 @@ model Summary {
   created_at  DateTime @default(now())
 }
 
-model User_concept_progress {
+// ============ user data ==========
+// user's info
+model User {
+  // @id set the id as the default index, @default set the default value
   id Int @id @default(autoincrement())
+  email String @unique
+  username String
+  password_hash String
+
+  role String @default("student") // student, teacher, admin
+  is_active Boolean @default(true)
+  last_login DateTime? 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt // Automatically updates timestamp on any record change
+
+  // relations: each user has multiple tokens, concept progress records, responses, and module reflections
+  concept_progress User_concept_progress[]
+  response User_response[]
+  refresh_tokens RefreshToken[]
+  module_reflections Reflection[]
+
+  // @@index set the additional index for faster lookups, otherwise we need to scan the whole DB to look for it
+  @@index([email])
+  @@index([username])
+}
+
+// For refresh tokens
+model RefreshToken {
+  id Int @id @default(autoincrement())
+  token String @unique
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int 
+  expires_at DateTime
+  created_at DateTime @default(now())
+
+  @@index([token])
+  @@index([user_id])
+}
+
+// user's progress in concept
+model User_concept_progress {
+  id Int @id @default(autoincrement()) 
   // relationship with concept
-  concept Concept @relation(fields:[concept_id], references: [id])
+  concept Concept @relation(fields:[concept_id], references: [id], onDelete: Cascade)
   concept_id Int
   
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int 
-  order_index Int
   completed Boolean
   time_spent Int
   completed_at DateTime?
   created_at  DateTime @default(now())
   
   @@unique([concept_id, user_id])
+  @@index([user_id])
 }
 
-// ============ user data ==========
 // user response related to quiz, reflection
 model User_response {
   id Int @id @default(autoincrement())
 
   // relationship with other model - make these optional
+  user User @relation(fields: [user_id], references: [id])
   quiz Quiz? @relation(fields:[quiz_id], references: [id])
   quiz_id Int?
 
