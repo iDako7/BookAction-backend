@@ -1,4 +1,4 @@
-import type { ResponseType } from "../../constants/responseTypes";
+import type { ResponseType } from "../../constants/responseTypes.js";
 
 export interface ReflectionResDTO {
   responseType: ResponseType;

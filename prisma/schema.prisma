@@ -139,7 +139,7 @@ model User {
   // @id set the id as the default index, @default set the default value
   id Int @id @default(autoincrement())
   email String @unique
-  username String
+  username String @unique
   password_hash String
 
   role String @default("student") // student, teacher, admin

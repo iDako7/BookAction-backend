@@ -46,7 +46,7 @@ Content-Type: application/json
 
 ### Get module reflection prompt
 # finished OOP refactor
-GET http://localhost:3000/api/modules/13/reflection
+GET http://localhost:3000/api/modules/1/reflection
 Accept: application/json
 
 ###

@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client/";
-import { AnswerToQuizDTO } from "../dtos/request/AnswerToQuizDTO";
+import { AnswerToQuizDTO } from "../dtos/request/AnswerToQuizDTO.js";
 
 /** Concept with tutorial relation included */
 export type ConceptWithTutorial = Prisma.ConceptGetPayload<{

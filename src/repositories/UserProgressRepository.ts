@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import type { UpdateProgressDTO } from "../dtos/request/UpdateProgressDTO";
+import type { UpdateProgressDTO } from "../dtos/request/UpdateProgressDTO.js";
 
 export class UserProgressRepository {
   private prisma: PrismaClient;
