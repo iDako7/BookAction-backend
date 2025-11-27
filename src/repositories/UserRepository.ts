@@ -1,5 +1,5 @@
 import { PrismaClient, User, Prisma } from "../../generated/prisma/client.js";
-import { UserInfoDTO } from "../dtos/request/UserInfoDTO.js";
+import { RegisterDTO } from "../dtos/request/RegisterDTO.js";
 
 export class UserRepository {
   private prisma: PrismaClient;
@@ -30,14 +30,14 @@ export class UserRepository {
   }
 
   // create new user
-  async create(userinfo: UserInfoDTO): Promise<User> {
+  async create(userinfo: RegisterDTO): Promise<User> {
     // validation of user_info shall be already finished in service layer, since this layer only focus on DB related logic
 
     return await this.prisma.user.create({
       data: {
         email: userinfo.email,
         username: userinfo.username,
-        password_hash: userinfo.passwordHash,
+        password_hash: userinfo.password,
       },
     });
   }
