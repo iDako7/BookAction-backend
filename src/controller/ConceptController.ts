@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { ConceptService } from "../services/ConceptService";
-import { UserProgressService } from "../services/UserProgressService";
+import { ConceptService } from "../services/ConceptService.js";
+import { UserProgressService } from "../services/UserProgressService.js";
 
 export class ConceptController {
   private conceptService: ConceptService;

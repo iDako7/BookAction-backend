@@ -1,4 +1,4 @@
-import type { ResponseType } from "../../constants/responseTypes";
+import type { ResponseType } from "../../constants/responseTypes.js";
 
 /**
  * Basic JSON-compatible type that mirrors Prisma's JsonValue so we can shape

@@ -1,9 +1,3 @@
-export enum UserRole {
-  STUDENT = "STUDENT",
-  TEACHER = "TEACHER",
-  ADMIN = "ADMIN",
-}
-
 export interface RegisterDTO {
   email: string;
   username: string;
