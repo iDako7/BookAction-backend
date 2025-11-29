@@ -1,15 +1,14 @@
-import { error } from "console";
-import { RESPONSE_TYPES } from "../constants/responseTypes";
-import type { ResponseType } from "../constants/responseTypes";
-import type { QuizAnswerValue } from "../dtos/request/AnswerToQuizDTO";
-import { ConceptQuizzesDTO } from "../dtos/response/ConceptQuizzesDTO";
-import { ConceptSummaryDTO } from "../dtos/response/ConceptSummaryDTO";
-import type { ConceptTutorialDTO } from "../dtos/response/ConceptTutorialDTO";
+import { RESPONSE_TYPES } from "../constants/responseTypes.js";
+import type { ResponseType } from "../constants/responseTypes.js";
+import type { QuizAnswerValue } from "../dtos/request/AnswerToQuizDTO.js";
+import { ConceptQuizzesDTO } from "../dtos/response/ConceptQuizzesDTO.js";
+import { ConceptSummaryDTO } from "../dtos/response/ConceptSummaryDTO.js";
+import type { ConceptTutorialDTO } from "../dtos/response/ConceptTutorialDTO.js";
 import {
   ConceptRepository,
   ConceptSubTypes,
   ConceptRelationMap,
-} from "../repositories/ConceptRepository";
+} from "../repositories/ConceptRepository.js";
 
 export class ConceptService {
   private conceptRepo: ConceptRepository;

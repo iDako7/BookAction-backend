@@ -2,9 +2,6 @@ import { RefreshTokenRepository } from "./src/repositories/RefreshTokenRepositor
 import { UserRepository } from "./src/repositories/UserRepository.js";
 import { AuthService } from "./src/services/AuthService.js";
 import { prisma } from "./src/lib/prisma.js";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 async function testAuth() {
   const userRepo = new UserRepository(prisma);
