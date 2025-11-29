@@ -9,6 +9,7 @@ import {
   AuthTokens,
   JWTpayload,
 } from "../dtos/request/AutheticationDTO.js";
+import { error } from "console";
 
 export class AuthService {
   private userRepo: UserRepository;
@@ -55,7 +56,10 @@ export class AuthService {
     };
 
     // generate access token(short-lived)
-    // what does each parameter do? 1. encrypted data, 2. secret key 3. optional, how long the token will expire
+    // what does each parameter do in jwt.sign()?
+    // 1. payload - data to encode (NOT encrypted, just encoded)
+    // 2. secret - used to create signature
+    // 3. options - expiration time and other settings
     const accessToken = jwt.sign(payload, this.accessSecret, {
       expiresIn: this.accessExpiry,
     });
@@ -104,5 +108,92 @@ export class AuthService {
     const token = await this.generateTokens(user);
 
     return { user, token };
+  }
+
+  // login
+  async login(
+    loginInfo: LoginDTO
+  ): Promise<{ user: User; tokens: AuthTokens }> {
+    let user = null;
+    // find user by email or user_name
+    if (loginInfo.emailOrUsername.includes("@")) {
+      user = await this.userRepo.findByEmail(loginInfo.emailOrUsername);
+    } else {
+      user = await this.userRepo.findByUsername(loginInfo.emailOrUsername);
+    }
+    if (!user) {
+      throw new Error("invalid user name or email");
+    }
+    if (!user.is_active) {
+      throw new Error("user is deactivated");
+    }
+
+    // verify password
+    const isPasswordValid = await bcrypt.compare(
+      loginInfo.password,
+      user.password_hash
+    );
+    if (!isPasswordValid) {
+      throw new Error("current password isn't valid");
+    }
+
+    // update last login
+    await this.userRepo.updateLogin(user.id);
+
+    // generate tokens
+    const tokens = await this.generateTokens(user);
+
+    return { user, tokens };
+  }
+
+  // refresh access_token(short-lived)
+  async refreshAccessToken(refreshToken: string): Promise<string> {
+    //valid refresh_token(long-lived)
+    const tokenRecord = await this.refreshTokenRepo.findUserByToken(
+      refreshToken
+    );
+
+    if (!tokenRecord) {
+      throw new Error("Invalid refresh token");
+    }
+
+    // generate new token
+    const user = await this.userRepo.findByUserid(tokenRecord.id);
+
+    if (!user) {
+      throw new Error("User entity not found");
+    }
+
+    // generate new access_token
+    const payload: JWTpayload = {
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    };
+
+    return jwt.sign(payload, this.accessSecret, {
+      expiresIn: this.accessExpiry,
+    });
+  }
+
+  // logout
+  async logout(refreshToken: string): Promise<void> {
+    // valid refresh token
+    const tokenRecord = await this.refreshTokenRepo.findUserByToken(
+      refreshToken
+    );
+
+    if (!tokenRecord) {
+      throw new Error("invalid token");
+    }
+
+    // delete refresh token in DB
+    await this.refreshTokenRepo.deleteToken(refreshToken);
+  }
+
+  // verify access token
+  async verifyAccessToken(token: string): Promise<JWTpayload> {
+    return jwt.verify(token, this.accessSecret) as JWTpayload;
   }
 }
