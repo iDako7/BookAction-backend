@@ -1,6 +1,6 @@
 import express from "express";
-import moduleRoutes from "./routes/module.routes";
-import conceptRoutes from "./routes/concept.routes";
+import moduleRoutes from "./routes/module.routes.js";
+import conceptRoutes from "./routes/concept.routes.js";
 
 // 1. Create app
 const app = express();

@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { UserRepository } from "../repositories/UserRepository.js";
 import { RefreshTokenRepository } from "../repositories/RefreshTokenRepository.js";
 import { User } from "../../generated/prisma/client.js";
@@ -9,7 +10,6 @@ import {
   AuthTokens,
   JWTpayload,
 } from "../dtos/request/AutheticationDTO.js";
-import { error } from "console";
 
 export class AuthService {
   private userRepo: UserRepository;
@@ -65,9 +65,20 @@ export class AuthService {
     });
 
     // generate refresh token(long-lived)
-    const refreshToken = jwt.sign({ userId: user.id }, this.refreshSecret, {
-      expiresIn: this.refreshExpiry,
-    });
+    // Add unique jti (JWT ID) to ensure each token is unique, even for the same user
+    // This allows multiple concurrent sessions and prevents unique constraint violations
+    const refreshToken = jwt.sign(
+      {
+        userId: user.id,
+        // unique identifier for this token
+        // this will allow user to login in different devices
+        jti: crypto.randomUUID(),
+      },
+      this.refreshSecret,
+      {
+        expiresIn: this.refreshExpiry,
+      }
+    );
 
     // calculate expiry date for refresh token
     const expiresAt = new Date();
@@ -75,7 +86,7 @@ export class AuthService {
       expiresAt.getTime() + parseInt(this.refreshExpiry as string)
     );
 
-    // save the refresh token to DB
+    // save the refresh_token to DB
     await this.refreshTokenRepo.create(user.id, refreshToken, expiresAt);
 
     return { accessToken, refreshToken };

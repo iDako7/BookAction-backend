@@ -56,4 +56,14 @@ export class RefreshTokenRepository {
       },
     });
   }
+
+  // delete all tokens for a specific user
+  // Useful for forcing logout on all devices or limiting concurrent sessions
+  async deleteUserTokens(userId: number): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: {
+        user_id: userId,
+      },
+    });
+  }
 }
