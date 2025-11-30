@@ -95,7 +95,7 @@ export class AuthService {
   // register new user
   async register(
     userInfo: RegisterDTO
-  ): Promise<{ user: User; token: AuthTokens }> {
+  ): Promise<{ user: User; tokens: AuthTokens }> {
     // check if email already exist
     if (await this.userRepo.findByEmail(userInfo.email)) {
       throw new Error("Email already registered");
@@ -116,9 +116,9 @@ export class AuthService {
     });
 
     // generate tokens
-    const token = await this.generateTokens(user);
+    const tokens = await this.generateTokens(user);
 
-    return { user, token };
+    return { user, tokens };
   }
 
   // login
@@ -206,5 +206,10 @@ export class AuthService {
   // verify access token
   async verifyAccessToken(token: string): Promise<JWTpayload> {
     return jwt.verify(token, this.accessSecret) as JWTpayload;
+  }
+
+  // get user by id
+  async getUserById(userId: number): Promise<User | null> {
+    return this.userRepo.findByUserid(userId);
   }
 }
