@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "@prisma/client/";
+import { PrismaClient, Prisma } from "../../generated/prisma/client.js";
 import { AnswerToQuizDTO } from "../dtos/request/AnswerToQuizDTO.js";
 
 /** Concept with tutorial relation included */

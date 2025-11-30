@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { ConceptRepository } from "../repositories/ConceptRepository";
-import { UserProgressRepository } from "../repositories/UserProgressRepository"; // Import
-import { ConceptService } from "../services/ConceptService";
-import { UserProgressService } from "../services/UserProgressService"; // Import
-import { ConceptController } from "../controller/ConceptController";
-import prisma from "../lib/prisma";
+import { ConceptRepository } from "../repositories/ConceptRepository.js";
+import { UserProgressRepository } from "../repositories/UserProgressRepository.js"; // Import
+import { ConceptService } from "../services/ConceptService.js";
+import { UserProgressService } from "../services/UserProgressService.js"; // Import
+import { ConceptController } from "../controller/ConceptController.js";
+import prisma from "../lib/prisma.js";
 
 const router = Router();
 

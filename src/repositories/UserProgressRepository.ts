@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma/client.js";
 import type { UpdateProgressDTO } from "../dtos/request/UpdateProgressDTO.js";
 
 export class UserProgressRepository {
@@ -28,7 +28,7 @@ export class UserProgressRepository {
       create: {
         concept_id: conceptId,
         user_id: data.userId,
-        order_index: 0, // Or fetch if needed only on creation
+        // order_index: 0, // Removed as it does not exist in schema
         completed: data.isCompleted,
         time_spent: data.timeSpent ?? 0,
         completed_at: data.isCompleted ? new Date() : null,
