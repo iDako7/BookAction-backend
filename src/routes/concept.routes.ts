@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { ConceptController } from "../controller/ConceptController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 export function createConceptRoutes(conceptController: ConceptController) {
   const router = Router();
+
+  // Protect all routes
+  router.use(authMiddleware);
 
   router.get("/:conceptId/tutorial", async (req, res) => {
     conceptController.getConceptTutorial(req, res);

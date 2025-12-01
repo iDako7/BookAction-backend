@@ -66,7 +66,7 @@ app.use(express.json());
 // ====== 3. Register routes =======
 
 // Use routes
-app.use("/api", createModuleRoutes(moduleController));
+app.use("/api/modules", createModuleRoutes(moduleController));
 app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
 

@@ -1,0 +1,105 @@
+@baseUrl = http://localhost:3000/api
+@token = {{login.response.body.token}}
+
+### Register (Create a new user to test)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "testuser_new@example.com",
+  "username": "testuser_new",
+  "password": "Password123"
+}
+
+### Login (Get Token)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "testuser_new",
+  "password": "Password123"
+}
+
+### Refresh Token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{login.response.body.refreshToken}}"
+}
+
+### Get Current User (Me)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+### -----------------------
+### Module Routes
+### -----------------------
+
+### Get Modules Overview
+GET {{baseUrl}}/modules/overview
+Authorization: Bearer {{token}}
+
+### Get Module Theme
+GET {{baseUrl}}/modules/1/theme
+Authorization: Bearer {{token}}
+
+### Get Module Reflection Prompt
+GET {{baseUrl}}/modules/1/reflection
+Authorization: Bearer {{token}}
+
+### Submit Module Reflection
+POST {{baseUrl}}/modules/1/reflection
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reflectionId": 1,
+  "userId": {{login.response.body.user.userId}},
+  "answer": "Learnt a lot from this module via API test.",
+  "timeSpent": 60
+}
+
+### -----------------------
+### Concept Routes
+### -----------------------
+
+### Get Concept Tutorial
+GET {{baseUrl}}/concepts/1/tutorial
+Authorization: Bearer {{token}}
+
+### Get Concept Quizzes
+GET {{baseUrl}}/concepts/1/quiz
+Authorization: Bearer {{token}}
+
+### Get Concept Summary
+GET {{baseUrl}}/concepts/1/summary
+Authorization: Bearer {{token}}
+
+### Submit Quiz Answer
+POST {{baseUrl}}/concepts/quiz/1/answer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "responseType": "single_choice",
+  "userId": {{login.response.body.user.userId}},
+  "userAnswerIndices": [0],
+  "timeSpent": 15
+}
+
+### Update Concept Progress
+POST {{baseUrl}}/concepts/1/progress
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userId": {{login.response.body.user.userId}},
+  "isCompleted": true,
+  "timeSpent": 120
+}

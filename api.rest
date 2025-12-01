@@ -1,116 +1,99 @@
-### Get learning homepage
-# finished OOP refactor
-GET http://localhost:3000/api/modules/overview
-Accept: application/json
+### -----------------------
+### Authentication
+### -----------------------
 
-###
-
-### Get module theme
-# finished OOP refactor
-GET http://localhost:3000/api/modules/1/theme
-Accept: application/json
-
-###
-
-### Get concept tutorial
-# finished OOP refactor
-GET http://localhost:3000/api/concepts/1/tutorial
-Accept: application/json
-
-
-### Get concept quizzes
-# finished OOP refactor
-GET http://localhost:3000/api/concepts/1/quiz
-Accept: application/json
-
-
-### Get concept summary
-# finished OOP refactor
-GET http://localhost:3000/api/concepts/1/summary
-Accept: application/json
-
-###
-
-### Submit quiz answer
-POST http://localhost:3000/api/concepts/quiz/1/answer
-Content-Type: application/json
-
-{
-  "responseType": "single_choice",
-  "userId": 9,
-  "userAnswerIndices": [0],
-  "timeSpent": 19
-}
-
-###
-
-### Get module reflection prompt
-# finished OOP refactor
-GET http://localhost:3000/api/modules/1/reflection
-Accept: application/json
-
-###
-
-### Submit module reflection
-# finished OOP refactor
-POST http://localhost:3000/api/modules/13/reflection
-Content-Type: application/json
-
-{
-  "reflectionId": 1,
-  "userId": 9,
-  "answer": "Learnt a lot from this module.",
-  "timeSpent": 999
-}
-
-###
-
-### Update concept progress (Mark Concept 46 as Complete)
-POST http://localhost:3000/api/concepts/1/progress
-Content-Type: application/json
-
-{
-  "userId": 9,
-  "isCompleted": true,
-  "timeSpent": 120
-}
-
-###
-
-### register a new user
+### Register a new user
 POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "john@example.com",
-  "username": "johndoe",
+  "email": "manual_user@example.com",
+  "username": "manual_user",
   "password": "Password123"
 }
 
-### login with email
+### Login
+# 1. Run this request
+# 2. Copy the "token" from the response body
+# 3. Paste it into the "Authorization" header of the requests below
 POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "emailOrUsername": "john@example.com",
+  "emailOrUsername": "manual_user",
   "password": "Password123"
 }
 
-### login with username
-POST http://localhost:3000/api/auth/login
+### -----------------------
+### Module Routes
+### -----------------------
+
+### Get learning homepage
+# Requires Authentication
+GET http://localhost:3000/api/modules/overview
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Accept: application/json
+
+### Get module theme
+GET http://localhost:3000/api/modules/1/theme
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Accept: application/json
+
+### Get module reflection prompt
+GET http://localhost:3000/api/modules/1/reflection
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Accept: application/json
+
+### Submit module reflection
+POST http://localhost:3000/api/modules/1/reflection
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
 Content-Type: application/json
 
 {
-  "emailOrUsername": "johndoe",
-  "password": "Password123"
+  "reflectionId": 1,
+  "userId": 1, 
+  "answer": "Learnt a lot from this module.",
+  "timeSpent": 999
 }
 
-### Get current user
-GET http://localhost:3000/api/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiam9obmRvZSIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzY0NTUzNTcyLCJleHAiOjE3NjQ1NTQ0NzJ9.pM3--n55kJx6SThl2n8aUR1C-6dSrlX-xrJGsil1k7Q
+### -----------------------
+### Concept Routes
+### -----------------------
 
-### Logout
-POST http://localhost:3000/api/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiam9obmRvZSIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzY0NTUzNTcyLCJleHAiOjE3NjQ1NTQ0NzJ9.pM3--n55kJx6SThl2n8aUR1C-6dSrlX-xrJGsil1k7Q
+### Get concept tutorial
+GET http://localhost:3000/api/concepts/1/tutorial
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Accept: application/json
 
+### Get concept quizzes
+GET http://localhost:3000/api/concepts/1/quiz
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Accept: application/json
 
+### Get concept summary
+GET http://localhost:3000/api/concepts/1/summary
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Accept: application/json
+
+### Submit quiz answer
+POST http://localhost:3000/api/concepts/quiz/1/answer
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Content-Type: application/json
+
+{
+  "responseType": "single_choice",
+  "userId": 1,
+  "userAnswerIndices": [0],
+  "timeSpent": 19
+}
+
+### Update concept progress
+POST http://localhost:3000/api/concepts/1/progress
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "isCompleted": true,
+  "timeSpent": 120
+}
