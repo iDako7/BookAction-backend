@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma/client.js";
 import type { ReflectionResDTO } from "../dtos/request/ReflectionDTO.js";
 import { RESPONSE_TYPES } from "../constants/responseTypes.js";
 

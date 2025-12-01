@@ -20,26 +20,26 @@ Accept: application/json
 
 ### Get concept quizzes
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/46/quiz
+GET http://localhost:3000/api/concepts/1/quiz
 Accept: application/json
 
 
 ### Get concept summary
 # finished OOP refactor
-GET http://localhost:3000/api/concepts/46/summary
+GET http://localhost:3000/api/concepts/1/summary
 Accept: application/json
 
 ###
 
 ### Submit quiz answer
-POST http://localhost:3000/api/quiz/91/answer
+POST http://localhost:3000/api/concepts/quiz/1/answer
 Content-Type: application/json
 
 {
   "responseType": "single_choice",
-  "userId": 7,
+  "userId": 9,
   "userAnswerIndices": [0],
-  "timeSpend": 19
+  "timeSpent": 19
 }
 
 ###
@@ -57,8 +57,8 @@ POST http://localhost:3000/api/modules/13/reflection
 Content-Type: application/json
 
 {
-  "reflectionId": 12,
-  "userId": 2,
+  "reflectionId": 1,
+  "userId": 9,
   "answer": "Learnt a lot from this module.",
   "timeSpent": 999
 }
@@ -66,11 +66,11 @@ Content-Type: application/json
 ###
 
 ### Update concept progress (Mark Concept 46 as Complete)
-POST http://localhost:3000/api/concepts/46/progress
+POST http://localhost:3000/api/concepts/1/progress
 Content-Type: application/json
 
 {
-  "userId": 1,
+  "userId": 9,
   "isCompleted": true,
   "timeSpent": 120
 }
@@ -107,8 +107,10 @@ Content-Type: application/json
 
 ### Get current user
 GET http://localhost:3000/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiam9obmRvZSIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzY0NTUzNTcyLCJleHAiOjE3NjQ1NTQ0NzJ9.pM3--n55kJx6SThl2n8aUR1C-6dSrlX-xrJGsil1k7Q
 
 ### Logout
 POST http://localhost:3000/api/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiam9obmRvZSIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzY0NTUzNTcyLCJleHAiOjE3NjQ1NTQ0NzJ9.pM3--n55kJx6SThl2n8aUR1C-6dSrlX-xrJGsil1k7Q
 
 
