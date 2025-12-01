@@ -14,7 +14,7 @@ export interface AuthTokens {
   refreshToken: string;
 }
 
-export interface JWTpayload {
+export interface JWTPayload {
   userId: number;
   email: string;
   username: string;

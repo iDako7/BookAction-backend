@@ -66,7 +66,6 @@ Content-Type: application/json
 ###
 
 ### Update concept progress (Mark Concept 46 as Complete)
-# Replace '46' with a real concept ID from your DB if different
 POST http://localhost:3000/api/concepts/46/progress
 Content-Type: application/json
 
@@ -75,3 +74,41 @@ Content-Type: application/json
   "isCompleted": true,
   "timeSpent": 120
 }
+
+###
+
+### register a new user
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "username": "johndoe",
+  "password": "Password123"
+}
+
+### login with email
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "john@example.com",
+  "password": "Password123"
+}
+
+### login with username
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "johndoe",
+  "password": "Password123"
+}
+
+### Get current user
+GET http://localhost:3000/api/auth/me
+
+### Logout
+POST http://localhost:3000/api/auth/logout
+
+

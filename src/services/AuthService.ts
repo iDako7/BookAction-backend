@@ -8,7 +8,7 @@ import {
   RegisterDTO,
   LoginDTO,
   AuthTokens,
-  JWTpayload,
+  JWTPayload,
 } from "../dtos/request/AutheticationDTO.js";
 
 export class AuthService {
@@ -48,7 +48,7 @@ export class AuthService {
   }
   // helper function: generate token using user information
   private async generateTokens(user: User): Promise<AuthTokens> {
-    const payload: JWTpayload = {
+    const payload: JWTPayload = {
       userId: user.id,
       email: user.email,
       username: user.username,
@@ -176,7 +176,7 @@ export class AuthService {
     }
 
     // generate new access_token
-    const payload: JWTpayload = {
+    const payload: JWTPayload = {
       userId: user.id,
       email: user.email,
       username: user.username,
@@ -204,8 +204,8 @@ export class AuthService {
   }
 
   // verify access token
-  async verifyAccessToken(token: string): Promise<JWTpayload> {
-    return jwt.verify(token, this.accessSecret) as JWTpayload;
+  async verifyAccessToken(token: string): Promise<JWTPayload> {
+    return jwt.verify(token, this.accessSecret) as JWTPayload;
   }
 
   // get user by id

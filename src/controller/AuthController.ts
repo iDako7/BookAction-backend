@@ -108,7 +108,7 @@ export class AuthController {
       });
 
       // send response
-      res.status(201).json({
+      res.json({
         success: true,
         message: "registration successful",
         data: {
@@ -199,7 +199,7 @@ export class AuthController {
       // Even if error, to prevent further error, clear cookie and return success
       res.clearCookie("refreshToken");
       res.json({
-        success: true,
+        success: false,
         message: "Frontend Logout successful with backend error",
       });
     }

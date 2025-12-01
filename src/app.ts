@@ -1,5 +1,5 @@
 // Load environment variables first
-import "dotenv/config";
+import "dotenv/config"; //? do we need it and why?
 import { prisma } from "./lib/prisma.js";
 import express from "express";
 
