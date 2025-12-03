@@ -10,6 +10,7 @@ import {
   AuthTokens,
   JWTPayload,
 } from "../dtos/request/AutheticationDTO.js";
+import ms from "ms";
 
 export class AuthService {
   private userRepo: UserRepository;
@@ -82,9 +83,11 @@ export class AuthService {
 
     // calculate expiry date for refresh token
     const expiresAt = new Date();
-    expiresAt.setTime(
-      expiresAt.getTime() + parseInt(this.refreshExpiry as string)
-    );
+    const refreshExpiryMs =
+      typeof this.refreshExpiry === "number"
+        ? this.refreshExpiry * 1000 // jwt number expiry is seconds
+        : ms(this.refreshExpiry) ?? ms("7d");
+    expiresAt.setTime(expiresAt.getTime() + refreshExpiryMs);
 
     // save the refresh_token to DB
     await this.refreshTokenRepo.create(user.id, refreshToken, expiresAt);
@@ -169,7 +172,7 @@ export class AuthService {
     }
 
     // generate new token
-    const user = await this.userRepo.findByUserid(tokenRecord.id);
+    const user = await this.userRepo.findByUserid(tokenRecord.user_id);
 
     if (!user) {
       throw new Error("User entity not found");
