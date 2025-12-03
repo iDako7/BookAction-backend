@@ -16,7 +16,7 @@ type QuizSeed = {
   order_index: number;
   question: string;
   question_type: string;
-  media_url?: string;
+  media_url: string;
   options: Prisma.InputJsonValue;
   correct_option_index: number[];
   explanation: string;
@@ -30,9 +30,9 @@ type ConceptSeed = {
   tutorial: {
     order_index: number;
     good_story: string;
-    good_media_url?: string;
+    good_media_url: string;
     bad_story: string;
-    bad_media_url?: string;
+    bad_media_url: string;
   };
   summary: {
     order_index: number;
@@ -51,14 +51,14 @@ type CourseContent = {
   theme: {
     title: string;
     context: string;
-    media_url?: string;
+    media_url: string;
     media_type: string;
     question: string;
   };
   concepts: ConceptSeed[];
   reflection: {
     module_summary: string;
-    module_summary_media_url?: string;
+    module_summary_media_url: string;
     learning_advice: string;
   };
 };
@@ -76,6 +76,28 @@ async function main() {
 }
 
 async function clearDatabase() {
+  try {
+    await prisma.$executeRawUnsafe(`
+      TRUNCATE TABLE
+        "User_response",
+        "User_concept_progress",
+        "RefreshToken",
+        "Quiz",
+        "Summary",
+        "Tutorial",
+        "Reflection",
+        "Concept",
+        "Theme",
+        "Module",
+        "User"
+      RESTART IDENTITY CASCADE
+    `);
+    console.log("🗑️ Database truncated and sequences reset");
+    return;
+  } catch (error) {
+    console.warn("⚠️ Truncate failed, falling back to deleteMany/reset:", error);
+  }
+
   await prisma.user_response.deleteMany();
   await prisma.user_concept_progress.deleteMany();
   await prisma.refreshToken.deleteMany();
@@ -111,7 +133,7 @@ async function resetSequences() {
   for (const sequence of sequences) {
     try {
       await prisma.$executeRawUnsafe(
-        `ALTER SEQUENCE "${sequence}" RESTART WITH 1`,
+        `ALTER SEQUENCE "${sequence}" RESTART WITH 1`
       );
     } catch (error) {
       console.warn(`⚠️ Could not reset sequence ${sequence}:`, error);
@@ -127,7 +149,7 @@ async function seedUserWithToken() {
       email: "student@example.com",
       username: "demo_student",
       password_hash,
-      role: "student",
+      role: "STUDENT",
       last_login: new Date(),
     },
   });
@@ -147,7 +169,12 @@ async function seedUserWithToken() {
 }
 
 function loadCourseContent(): CourseContent[] {
-  const dataPath = path.join(process.cwd(), "prisma", "seed", "course_content.json");
+  const dataPath = path.join(
+    process.cwd(),
+    "prisma",
+    "seed",
+    "course_content.json"
+  );
   const raw = fs.readFileSync(dataPath, "utf-8");
   const parsed = JSON.parse(raw);
 
@@ -185,7 +212,7 @@ async function seedModule(data: CourseContent, userId: number) {
       module_id: module.id,
       title: theme.title,
       context: theme.context,
-      media_url: theme.media_url || null,
+      media_url: theme.media_url,
       media_type: theme.media_type,
       question: theme.question,
     },
@@ -209,9 +236,9 @@ async function seedModule(data: CourseContent, userId: number) {
         concept_id: concept.id,
         order_index: conceptData.tutorial.order_index,
         good_story: conceptData.tutorial.good_story,
-        good_media_url: conceptData.tutorial.good_media_url || null,
+        good_media_url: conceptData.tutorial.good_media_url,
         bad_story: conceptData.tutorial.bad_story,
-        bad_media_url: conceptData.tutorial.bad_media_url || null,
+        bad_media_url: conceptData.tutorial.bad_media_url,
       },
     });
 
@@ -233,7 +260,7 @@ async function seedModule(data: CourseContent, userId: number) {
           order_index: quizData.order_index,
           question: quizData.question,
           question_type: quizData.question_type,
-          media_url: quizData.media_url || null,
+          media_url: quizData.media_url,
           options: quizData.options,
           correct_option_index: quizData.correct_option_index,
           explanation: quizData.explanation,
@@ -251,7 +278,7 @@ async function seedModule(data: CourseContent, userId: number) {
       order_index: 1,
       user_id: userId,
       module_summary: reflection.module_summary,
-      module_summary_media_url: reflection.module_summary_media_url || null,
+      module_summary_media_url: reflection.module_summary_media_url,
       learning_advice: reflection.learning_advice,
     },
   });
@@ -271,13 +298,3 @@ async function runSeed() {
 }
 
 runSeed();
-
-// runSeed could write in method chaining on Promise
-// main()
-//   .catch((error) => {
-//     console.error("❌ Seed failed:", error);
-//     process.exit(1);
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });
