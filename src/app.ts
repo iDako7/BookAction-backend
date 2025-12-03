@@ -2,6 +2,7 @@
 import "dotenv/config"; //? do we need it and why?
 import { prisma } from "./lib/prisma.js";
 import express from "express";
+import cookieParser from "cookie-parser";
 
 // import repository
 import { UserRepository } from "./repositories/UserRepository.js";
@@ -61,7 +62,7 @@ const app = express();
 
 // 2. Add middleware
 app.use(express.json());
-// todo add cookie middle ware
+app.use(cookieParser());
 
 // ====== 3. Register routes =======
 
@@ -70,8 +71,4 @@ app.use("/api/modules", createModuleRoutes(moduleController));
 app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
 
-// 4. Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+export { app, prisma };
