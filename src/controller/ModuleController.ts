@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ModuleService } from "../services/ModuleService";
+import { ModuleService } from "../services/ModuleService.js";
 
 export class ModuleController {
   // dependency injection, not the same as private xxx = new ModuleService()
@@ -33,7 +33,16 @@ export class ModuleController {
 
   async getModulesOverview(req: Request, res: Response): Promise<void> {
     try {
-      const moduleOverview = await this.moduleService.getModulesOverview();
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: "User information not found in token" });
+        return;
+      }
+
+      const moduleOverview = await this.moduleService.getModulesOverview(
+        Number(userId)
+      );
       res.json(moduleOverview);
     } catch (error: any) {
       console.error("Error getting theme:", error);

@@ -87,7 +87,7 @@ export class AuthService {
     const refreshExpiryMs =
       typeof this.refreshExpiry === "number"
         ? this.refreshExpiry * 1000 // jwt number expiry is seconds
-        : ms(this.refreshExpiry) ?? ms("7d");
+        : ms(this.refreshExpiry || "7d") ?? ms("7d");
     expiresAt.setTime(expiresAt.getTime() + refreshExpiryMs);
 
     // save the refresh_token to DB
