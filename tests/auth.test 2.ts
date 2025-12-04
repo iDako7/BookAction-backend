@@ -82,7 +82,7 @@ describe("Auth Endpoints", () => {
         password: "wrongpassword",
       });
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
     });
 
@@ -92,7 +92,7 @@ describe("Auth Endpoints", () => {
         password: "anypassword",
       });
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
     });
   });

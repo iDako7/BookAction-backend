@@ -3,6 +3,9 @@ import "dotenv/config"; //? do we need it and why?
 import { prisma } from "./lib/prisma.js";
 import express from "express";
 import cookieParser from "cookie-parser";
+import path from "path";
+
+import cors from "cors";
 
 // import repository
 import { UserRepository } from "./repositories/UserRepository.js";
@@ -16,16 +19,19 @@ import { AuthService } from "./services/AuthService.js";
 import { ConceptService } from "./services/ConceptService.js";
 import { UserProgressService } from "./services/UserProgressService.js";
 import { ModuleService } from "./services/ModuleService.js";
+import { SeedService } from "./services/SeedService.js";
 
 // import controller
 import { AuthController } from "./controller/AuthController.js";
 import { ConceptController } from "./controller/ConceptController.js";
 import { ModuleController } from "./controller/ModuleController.js";
+import { SeedController } from "./controller/SeedController.js";
 
 // import routes
 import { createAuthRoutes } from "./routes/auth.routes.js";
 import { createConceptRoutes } from "./routes/concept.routes.js";
 import { createModuleRoutes } from "./routes/module.routes.js";
+import { createSeedRoutes } from "./routes/seed.routes.js";
 
 // 1.1 initialize data base
 // why we don't call PrismaClient like repo layer did
@@ -47,6 +53,7 @@ const authService = new AuthService(userRepo, refreshToken);
 const conceptService = new ConceptService(conceptRepo);
 const userProgressService = new UserProgressService(userProgressRepo);
 const moduleService = new ModuleService(moduleRepo);
+const seedService = new SeedService(prismaClient);
 
 // 1.4 initialize controller
 const authController = new AuthController(authService);
@@ -55,14 +62,24 @@ const conceptController = new ConceptController(
   userProgressService
 );
 const moduleController = new ModuleController(moduleService);
+const seedController = new SeedController(seedService);
 
 // ===== typical REST API start part
 // 1. Create app
 const app = express();
 
 // 2. Add middleware
+app.use(
+  cors({
+    origin: ["http://localhost:3002", "http://localhost:3000"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
+app.use("/media", express.static(path.join(process.cwd(), "public", "media")));
 
 // ====== 3. Register routes =======
 
@@ -70,5 +87,6 @@ app.use(cookieParser());
 app.use("/api/modules", createModuleRoutes(moduleController));
 app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
+app.use("/api/admin", createSeedRoutes(seedController));
 
 export { app, prisma };

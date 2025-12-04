@@ -64,26 +64,13 @@ export function authMiddleware(
   } catch (error: any) {
     console.error("Auth middleware error:", error.message);
 
-    if (error.name === "TokenExpiredError") {
-      res.status(401).json({
-        success: false,
-        message: "Token expired",
-      });
-      return;
-    }
-
-    if (error.name === "JsonWebTokenError") {
-      res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-      return;
-    }
-
-    res.status(500).json({
+    // For any token verification error (expired, invalid, malformed, syntax error),
+    // we should return 401 so the frontend can attempt to refresh.
+    res.status(401).json({
       success: false,
-      message: "Authentication failed",
+      message: "Invalid or expired token",
     });
+    return;
   }
 }
 

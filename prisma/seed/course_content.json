@@ -8,7 +8,7 @@
     "theme": {
       "title": "A Tale of Two Relationships",
       "context": "Aisha notices her two friends experiencing very different relationships. Emily and Kai talk things out calmly, trust each other, and support each other's independence. Zoe and Ryan, however, show control and fear—Zoe cancels plans, feels pressured to respond instantly, and becomes anxious when Ryan blames or intimidates her. These differences help Aisha see what healthy and unhealthy relationships look like in real life.",
-      "media_url": "/media/module-1-theme.png",
+      "media_url": "/media/default.png",
       "media_type": "image",
       "question": "How do trust, independence, and safety change the way a relationship feels?"
     },
@@ -21,9 +21,9 @@
         "tutorial": {
           "order_index": 1,
           "good_story": "Emily and Kai sometimes disagree, but they talk calmly and listen. When Emily wants time with friends or alone, Kai encourages her and trusts her choices. Their trust and respect help both of them feel confident and free.",
-          "good_media_url": "/media/concept-inrto-good.png",
+          "good_media_url": "/media/default.png",
           "bad_story": "Ryan checks Zoe’s phone, expects instant replies, and gets upset when she spends time with friends. He blames her for his anger and says things like \"You made me do that.\" Zoe feels anxious, watched, and less independent over time.",
-          "bad_media_url": "/media/concept-inrto-bad.png"
+          "bad_media_url": "/media/default.png"
         },
         "summary": {
           "order_index": 1,
@@ -35,7 +35,7 @@
             "order_index": 1,
             "question": "Which behavior best shows trust and respect?",
             "question_type": "single_choice",
-            "media_url": "/media/quiz-single-choice.png",
+            "media_url": "/media/default.png",
             "options": [
               "Checking a partner’s phone to see who they talk to",
               "Encouraging a partner to spend time with their friends",
@@ -49,7 +49,7 @@
             "order_index": 2,
             "question": "Which example shows respect for someone’s boundaries?",
             "question_type": "single_choice",
-            "media_url": "/media/quiz-single-choice.png",
+            "media_url": "/media/default.png",
             "options": [
               "Pressuring someone to always reply right away",
               "Expecting to know their passwords",
@@ -69,9 +69,9 @@
         "tutorial": {
           "order_index": 2,
           "good_story": "Emily feels safe telling Kai when something bothers her. He listens, stays calm, and works with her to solve problems. They respect each other’s feelings, cheer for each other’s wins, and share decisions fairly. Their relationship shows many green flags.",
-          "good_media_url": "/media/concept-inrto-good.png",
+          "good_media_url": "/media/default.png",
           "bad_story": "Zoe feels scared when Ryan yells, blames her, and isolates her from friends. He acts possessive, refuses to take responsibility for hurtful actions, and Zoe feels she has to keep him calm. Even without physical harm, these red flags make the relationship unsafe.",
-          "bad_media_url": "/media/concept-inrto-bad.png"
+          "bad_media_url": "/media/default.png"
         },
         "summary": {
           "order_index": 2,
@@ -83,7 +83,7 @@
             "order_index": 1,
             "question": "Which situation shows emotional safety?",
             "question_type": "single_choice",
-            "media_url": "/media/quiz-single-choice.png",
+            "media_url": "/media/default.png",
             "options": [
               "Being afraid to speak up during disagreements",
               "Feeling comfortable sharing your feelings",
@@ -97,7 +97,7 @@
             "order_index": 2,
             "question": "Which of these are red flags in a relationship?",
             "question_type": "multiple_choice",
-            "media_url": "/media/quiz-multiple-choice.png",
+            "media_url": "/media/default.png",
             "options": [
               "Isolation from friends",
               "Extreme jealousy",
@@ -112,7 +112,7 @@
     ],
     "reflection": {
       "module_summary": "Healthy relationships are built on trust, respect, independence, and emotional and physical safety. Green flags show supportive patterns; red flags warn of control, fear, or disrespect. By noticing how you feel and how others treat you, you can move toward relationships that support your well-being and away from those that cause harm.",
-      "module_summary_media_url": "/media/module-1-reflection.png",
+      "module_summary_media_url": "/media/default.png",
       "learning_advice": "As you continue learning, notice which relationships in your life feel safe, respectful, and balanced, and which ones bring fear, guilt, or pressure. This awareness is a powerful first step toward healthier connections."
     }
   },
@@ -125,7 +125,7 @@
     "theme": {
       "title": "Late-Night Texting",
       "context": "At midnight, Sam’s friend Jordan kept texting about a game. Exhausted but caring, Sam waited until morning and said, \"I feel really tired when I get texts after 11 PM because it keeps me awake.\" Jordan shared that late-night texting helped with his anxiety. Together they agreed Jordan would text earlier or save longer messages for the next day. Both friends felt heard and respected.",
-      "media_url": "/media/module-2-theme.png",
+      "media_url": "/media/m_1_1.png",
       "media_type": "image",
       "question": "How could you use your words to respect both your needs and your friend’s feelings in a situation like this?"
     },
@@ -138,9 +138,9 @@
         "tutorial": {
           "order_index": 1,
           "good_story": "Maya felt upset when her sister took her headphones without asking. She paused, took a breath, and said: \"I feel frustrated when my things are taken without permission because I needed them this morning. Can you please ask next time?\" Her sister apologized and agreed to check first.",
-          "good_media_url": "/media/concept-inrto-good.png",
+          "good_media_url": "/media/m_1_2.png",
           "bad_story": "When Jordan’s presentation was criticized, he immediately snapped, \"You’re so unfair! You think you’re perfect!\" and stormed out. Later, he wished he had named his feelings and explained why the feedback hurt instead of attacking the other person.",
-          "bad_media_url": "/media/concept-inrto-bad.png"
+          "bad_media_url": "/media/m_1_3.png"
         },
         "summary": {
           "order_index": 1,
@@ -152,7 +152,7 @@
             "order_index": 1,
             "question": "Your friend keeps interrupting you. Which is the best \"I\" statement?",
             "question_type": "single_choice",
-            "media_url": "/media/quiz-single-choice.png",
+            "media_url": "/media/m_1_4.png",
             "options": [
               "You never let me finish talking!",
               "I feel frustrated when I'm interrupted because I lose my train of thought.",
@@ -164,23 +164,9 @@
           },
           {
             "order_index": 2,
-            "question": "Which three parts make up an effective \"I\" statement?",
-            "question_type": "single_choice",
-            "media_url": "/media/quiz-single-choice.png",
-            "options": [
-              "Blame, accusation, demand",
-              "Feeling, situation, reason",
-              "Problem, person, punishment",
-              "Complaint, criticism, consequence"
-            ],
-            "explanation": "An effective \"I\" statement includes how you FEEL, the SITUATION that triggers it, and the REASON why it affects you.",
-            "correct_option_index": [1]
-          },
-          {
-            "order_index": 3,
             "question": "Which actions do NOT help calm strong emotions before you speak?",
             "question_type": "multiple_choice",
-            "media_url": "/media/quiz-multiple-choice.png",
+            "media_url": "/media/m_1_5.png",
             "options": [
               "Ignoring your feelings",
               "Naming and acknowledging your emotions",
@@ -200,9 +186,9 @@
         "tutorial": {
           "order_index": 2,
           "good_story": "When Alex shared worries about an upcoming test, Jamie put down their phone, made eye contact, and said, \"So you’re nervous because you missed last week’s classes? That makes sense—want to review together?\" Later, when friends pressured Lee to skip class, Lee said, \"No thanks, I need to keep my attendance up. You all have fun though!\" Their friends accepted the boundary, and both Alex and Lee felt respected.",
-          "good_media_url": "/media/concept-inrto-good.png",
+          "good_media_url": "/media/m_1_5.png",
           "bad_story": "Emma tried to explain why she felt left out, but Kate kept scrolling social media and changed the subject to her own weekend. In another situation, Casey felt unsafe sharing their phone password, but gave in after their partner insisted. Emma felt ignored, and Casey felt their boundary had been crossed.",
-          "bad_media_url": "/media/concept-inrto-bad.png"
+          "bad_media_url": "/media/m_1_6.png"
         },
         "summary": {
           "order_index": 2,
@@ -214,7 +200,7 @@
             "order_index": 1,
             "question": "Which of these behaviors do NOT show active listening?",
             "question_type": "multiple_choice",
-            "media_url": "/media/quiz-multiple-choice.png",
+            "media_url": "/media/m_1_7.png",
             "options": [
               "Planning your response while they talk",
               "Checking your phone occasionally",
@@ -223,27 +209,13 @@
             ],
             "explanation": "Paraphrasing shows real listening. Planning your reply, checking your phone, or switching the topic back to yourself all pull attention away from the speaker.",
             "correct_option_index": [0, 1, 3]
-          },
-          {
-            "order_index": 2,
-            "question": "What is a clear sign that someone is NOT respecting your boundary?",
-            "question_type": "single_choice",
-            "media_url": "/media/quiz-single-choice.png",
-            "options": [
-              "They ask for clarification about your limits.",
-              "They accept your \"no\" without argument.",
-              "They keep pushing after you've said no.",
-              "They share their own boundaries too."
-            ],
-            "explanation": "Continuing to push, guilt-trip, or pressure you after you’ve clearly said no shows they are not respecting your limits.",
-            "correct_option_index": [2]
           }
         ]
       }
     ],
     "reflection": {
       "module_summary": "Think of a recent disagreement or tense moment you had with someone. How did you express your feelings, and how did you listen to theirs? If you reacted on impulse or stayed silent, how might you use an \"I\" statement, a short pause to calm down, or a clear boundary next time?",
-      "module_summary_media_url": "/media/module-2-reflection.png",
+      "module_summary_media_url": "/media/m_1_9.png",
       "learning_advice": "Practice these skills in low-stress situations first—for example, when choosing a movie or planning a hangout. The more you use clear \"I\" statements, active listening, and kind boundaries, the more natural they will feel in harder moments."
     }
   }

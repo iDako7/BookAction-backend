@@ -1,11 +1,11 @@
-import { ModuleRepository } from "../repositories/ModuleRepository";
-import type { ThemeDTO } from "../dtos/response/ModuleThemeDTO";
+import { ModuleRepository } from "../repositories/ModuleRepository.js";
+import type { ThemeDTO } from "../dtos/response/ModuleThemeDTO.js";
 import type {
   ModulesOverviewDTO,
   ModuleOverviewDTO,
-} from "../dtos/response/ModulesOverviewDTO";
-import type { ReflectionDTO } from "../dtos/response/ReflectionDTO";
-import type { ResponseType } from "../constants/responseTypes";
+} from "../dtos/response/ModulesOverviewDTO.js";
+import type { ReflectionDTO } from "../dtos/response/ReflectionDTO.js";
+import type { ResponseType } from "../constants/responseTypes.js";
 
 /**
  * Service layer for module-related business logic.
@@ -51,11 +51,11 @@ export class ModuleService {
 
   /**
    * Retrieves overview of all modules with their progress and concepts.
-   * @param userId - The ID of the user (defaults to 1)
+   * @param userId - The ID of the authenticated user
    * @returns Array of modules with themes, progress, and associated concepts
    * @throws Error if homepage data not found
    */
-  async getModulesOverview(userId: number = 1): Promise<ModulesOverviewDTO> {
+  async getModulesOverview(userId: number): Promise<ModulesOverviewDTO> {
     // Pass userId to repo
     const homePage = await this.moduleRepo.returnModulesOverview(userId);
 

@@ -1,4 +1,5 @@
 interface QuizDTO {
+  id: number;
   orderIndex: number;
   question: string;
   questionType: string;
