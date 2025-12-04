@@ -87,6 +87,7 @@ export class ConceptService {
     const questions = concept.quizzes
       .sort((a, b) => a.order_index - b.order_index)
       .map((quiz) => ({
+        id: quiz.id,
         orderIndex: quiz.order_index,
         question: quiz.question,
         questionType: quiz.question_type,

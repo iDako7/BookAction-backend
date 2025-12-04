@@ -11,6 +11,7 @@ import {
   JWTPayload,
 } from "../dtos/request/AutheticationDTO.js";
 import ms from "ms";
+import { AuthError } from "../utils/errors.js";
 
 export class AuthService {
   private userRepo: UserRepository;
@@ -136,10 +137,10 @@ export class AuthService {
       user = await this.userRepo.findByUsername(loginInfo.emailOrUsername);
     }
     if (!user) {
-      throw new Error("invalid user name or email");
+      throw new AuthError("Invalid email or username", 401);
     }
     if (!user.is_active) {
-      throw new Error("user is deactivated");
+      throw new AuthError("User is deactivated", 403);
     }
 
     // verify password
@@ -148,7 +149,7 @@ export class AuthService {
       user.password_hash
     );
     if (!isPasswordValid) {
-      throw new Error("current password isn't valid");
+      throw new AuthError("Invalid password", 401);
     }
 
     // update last login
