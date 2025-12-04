@@ -11,13 +11,16 @@ async function testAuth() {
   try {
     // test registration
     console.log("Testing registration...");
-    const { user, token } = await authService.register({
-      email: "test1@example.com",
-      username: "testuser",
+    const { user, tokens } = await authService.register({
+      email: "test3@example.com",
+      username: "testuser3",
       password: "Test123!@#",
     });
     console.log("✅ User registered:", user.email);
-    console.log("✅ Access token:", token.accessToken.substring(0, 20) + "...");
+    console.log(
+      "✅ Access token:",
+      tokens.accessToken.substring(0, 20) + "..."
+    );
 
     // Test login
     console.log("\\nTesting login...");

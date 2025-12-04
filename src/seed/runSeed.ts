@@ -1,16 +1,13 @@
-import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
-import { PrismaClient } from "../generated/prisma/client.js";
-import type { Prisma } from "../generated/prisma/client.js";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
-
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+import type {
+  Prisma,
+  PrismaClient,
+  RefreshToken,
+  User,
+} from "../../generated/prisma/client.js";
 
 type QuizSeed = {
   order_index: number;
@@ -63,19 +60,30 @@ type CourseContent = {
   };
 };
 
-async function main() {
-  console.log("start seeding");
+export type SeedRunResult = {
+  user: User;
+  refreshToken: RefreshToken;
+  modulesSeeded: number;
+  conceptsSeeded: number;
+  quizzesSeeded: number;
+};
 
-  await clearDatabase();
+export async function runSeed(prisma: PrismaClient): Promise<SeedRunResult> {
+  await clearDatabase(prisma);
 
-  const user = await seedUserWithToken();
+  const { user, refreshToken } = await seedUserWithToken(prisma);
+  const seedStats = await seedCourseContent(prisma, user.id);
 
-  await seedCourseContent(user.id);
-
-  console.log("seed completed!");
+  return {
+    user,
+    refreshToken,
+    modulesSeeded: seedStats.modulesSeeded,
+    conceptsSeeded: seedStats.conceptsSeeded,
+    quizzesSeeded: seedStats.quizzesSeeded,
+  };
 }
 
-async function clearDatabase() {
+async function clearDatabase(prisma: PrismaClient): Promise<void> {
   try {
     await prisma.$executeRawUnsafe(`
       TRUNCATE TABLE
@@ -92,13 +100,9 @@ async function clearDatabase() {
         "User"
       RESTART IDENTITY CASCADE
     `);
-    console.log("🗑️ Database truncated and sequences reset");
     return;
   } catch (error) {
-    console.warn(
-      "⚠️ Truncate failed, falling back to deleteMany/reset:",
-      error
-    );
+    console.warn("⚠️ Truncate failed, falling back to deleteMany/reset:", error);
   }
 
   await prisma.user_response.deleteMany();
@@ -113,12 +117,10 @@ async function clearDatabase() {
   await prisma.module.deleteMany();
   await prisma.user.deleteMany();
 
-  await resetSequences();
-
-  console.log("🗑️ Database cleared");
+  await resetSequences(prisma);
 }
 
-async function resetSequences() {
+async function resetSequences(prisma: PrismaClient): Promise<void> {
   const sequences = [
     "User_id_seq",
     "RefreshToken_id_seq",
@@ -144,7 +146,10 @@ async function resetSequences() {
   }
 }
 
-async function seedUserWithToken() {
+async function seedUserWithToken(prisma: PrismaClient): Promise<{
+  user: User;
+  refreshToken: RefreshToken;
+}> {
   const password_hash = await bcrypt.hash("password123", 10);
 
   const user = await prisma.user.create({
@@ -165,10 +170,7 @@ async function seedUserWithToken() {
     },
   });
 
-  console.log(`👤 Created user: ${user.email}`);
-  console.log(`🔑 Created refresh token: ${refreshToken.token}`);
-
-  return user;
+  return { user, refreshToken };
 }
 
 function loadCourseContent(): CourseContent[] {
@@ -188,18 +190,38 @@ function loadCourseContent(): CourseContent[] {
   return parsed as CourseContent[];
 }
 
-async function seedCourseContent(userId: number) {
+async function seedCourseContent(
+  prisma: PrismaClient,
+  userId: number
+): Promise<{
+  modulesSeeded: number;
+  conceptsSeeded: number;
+  quizzesSeeded: number;
+}> {
   const modules = loadCourseContent();
+  let conceptsSeeded = 0;
+  let quizzesSeeded = 0;
 
   for (const moduleData of modules) {
-    await seedModule(moduleData, userId);
+    const result = await seedModule(prisma, moduleData, userId);
+    conceptsSeeded += result.conceptsCreated;
+    quizzesSeeded += result.quizzesCreated;
   }
+
+  return {
+    modulesSeeded: modules.length,
+    conceptsSeeded,
+    quizzesSeeded,
+  };
 }
 
-async function seedModule(data: CourseContent, userId: number) {
+async function seedModule(
+  prisma: PrismaClient,
+  data: CourseContent,
+  userId: number
+): Promise<{ conceptsCreated: number; quizzesCreated: number }> {
   const { module: moduleInfo, theme, concepts, reflection } = data;
 
-  // 1. Create Module
   const module = await prisma.module.create({
     data: {
       title: moduleInfo.title,
@@ -207,9 +229,7 @@ async function seedModule(data: CourseContent, userId: number) {
       order_index: moduleInfo.order_index,
     },
   });
-  console.log(`📦 Created module: ${module.title}`);
 
-  // 2. Create Theme
   await prisma.theme.create({
     data: {
       module_id: module.id,
@@ -221,7 +241,8 @@ async function seedModule(data: CourseContent, userId: number) {
     },
   });
 
-  // 3. Create Concepts with related data
+  let quizzesCreated = 0;
+
   for (const conceptData of concepts) {
     const concept = await prisma.concept.create({
       data: {
@@ -233,7 +254,6 @@ async function seedModule(data: CourseContent, userId: number) {
       },
     });
 
-    // 3a. create tutorial
     await prisma.tutorial.create({
       data: {
         concept_id: concept.id,
@@ -245,7 +265,6 @@ async function seedModule(data: CourseContent, userId: number) {
       },
     });
 
-    // 3b. Create Summary
     await prisma.summary.create({
       data: {
         concept_id: concept.id,
@@ -255,7 +274,6 @@ async function seedModule(data: CourseContent, userId: number) {
       },
     });
 
-    //  3c. create quizzes
     for (const quizData of conceptData.quizzes || []) {
       await prisma.quiz.create({
         data: {
@@ -269,12 +287,10 @@ async function seedModule(data: CourseContent, userId: number) {
           explanation: quizData.explanation,
         },
       });
+      quizzesCreated += 1;
     }
-
-    console.log(`💡 Created concept: ${concept.title}`);
   }
 
-  // 4. Create Reflection
   await prisma.reflection.create({
     data: {
       module_id: module.id,
@@ -285,19 +301,6 @@ async function seedModule(data: CourseContent, userId: number) {
       learning_advice: reflection.learning_advice,
     },
   });
-  console.log(`🤔 Created reflection`);
-}
 
-// Option 1: Using async/await with try-catch-finally
-async function runSeed() {
-  try {
-    await main();
-  } catch (error) {
-    console.error("❌ Seed failed:", error);
-    process.exit(1);
-  } finally {
-    await prisma.$disconnect();
-  }
+  return { conceptsCreated: concepts.length, quizzesCreated };
 }
-
-runSeed();

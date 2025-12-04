@@ -16,16 +16,19 @@ import { AuthService } from "./services/AuthService.js";
 import { ConceptService } from "./services/ConceptService.js";
 import { UserProgressService } from "./services/UserProgressService.js";
 import { ModuleService } from "./services/ModuleService.js";
+import { SeedService } from "./services/SeedService.js";
 
 // import controller
 import { AuthController } from "./controller/AuthController.js";
 import { ConceptController } from "./controller/ConceptController.js";
 import { ModuleController } from "./controller/ModuleController.js";
+import { SeedController } from "./controller/SeedController.js";
 
 // import routes
 import { createAuthRoutes } from "./routes/auth.routes.js";
 import { createConceptRoutes } from "./routes/concept.routes.js";
 import { createModuleRoutes } from "./routes/module.routes.js";
+import { createSeedRoutes } from "./routes/seed.routes.js";
 
 // 1.1 initialize data base
 // why we don't call PrismaClient like repo layer did
@@ -47,6 +50,7 @@ const authService = new AuthService(userRepo, refreshToken);
 const conceptService = new ConceptService(conceptRepo);
 const userProgressService = new UserProgressService(userProgressRepo);
 const moduleService = new ModuleService(moduleRepo);
+const seedService = new SeedService(prismaClient);
 
 // 1.4 initialize controller
 const authController = new AuthController(authService);
@@ -55,6 +59,7 @@ const conceptController = new ConceptController(
   userProgressService
 );
 const moduleController = new ModuleController(moduleService);
+const seedController = new SeedController(seedService);
 
 // ===== typical REST API start part
 // 1. Create app
@@ -70,5 +75,6 @@ app.use(cookieParser());
 app.use("/api/modules", createModuleRoutes(moduleController));
 app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
+app.use("/api/admin", createSeedRoutes(seedController));
 
 export { app, prisma };

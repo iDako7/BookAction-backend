@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000/api
-@token = {{login.response.body.token}}
+@token = {{login.response.body.data.accessToken}}
 
 ### Register (Create a new user to test)
 POST {{baseUrl}}/auth/register
@@ -60,7 +60,7 @@ Content-Type: application/json
 
 {
   "reflectionId": 1,
-  "userId": {{login.response.body.user.userId}},
+  "userId": {{login.response.body.data.user.id}},
   "answer": "Learnt a lot from this module via API test.",
   "timeSpent": 60
 }
@@ -88,7 +88,7 @@ Content-Type: application/json
 
 {
   "responseType": "single_choice",
-  "userId": {{login.response.body.user.userId}},
+  "userId": {{login.response.body.data.user.id}},
   "userAnswerIndices": [0],
   "timeSpent": 15
 }
@@ -99,7 +99,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "userId": {{login.response.body.user.userId}},
+  "userId": {{login.response.body.data.user.id}},
   "isCompleted": true,
   "timeSpent": 120
 }
