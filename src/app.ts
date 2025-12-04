@@ -4,6 +4,8 @@ import { prisma } from "./lib/prisma.js";
 import express from "express";
 import cookieParser from "cookie-parser";
 
+import cors from "cors";
+
 // import repository
 import { UserRepository } from "./repositories/UserRepository.js";
 import { RefreshTokenRepository } from "./repositories/RefreshTokenRepository.js";
@@ -66,6 +68,14 @@ const seedController = new SeedController(seedService);
 const app = express();
 
 // 2. Add middleware
+app.use(
+  cors({
+    origin: ["http://localhost:3002", "http://localhost:3000"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
