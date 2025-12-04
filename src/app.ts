@@ -3,6 +3,7 @@ import "dotenv/config"; //? do we need it and why?
 import { prisma } from "./lib/prisma.js";
 import express from "express";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 import cors from "cors";
 
@@ -78,6 +79,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use("/media", express.static(path.join(process.cwd(), "public", "media")));
 
 // ====== 3. Register routes =======
 

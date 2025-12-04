@@ -66,11 +66,14 @@ type CourseContent = {
 async function main() {
   console.log("start seeding");
 
+  const port = process.env.PORT ?? "3000";
+  const mediaBaseUrl = process.env.MEDIA_BASE_URL || `http://localhost:${port}`;
+
   await clearDatabase();
 
   const user = await seedUserWithToken();
 
-  await seedCourseContent(user.id);
+  await seedCourseContent(user.id, mediaBaseUrl);
 
   console.log("seed completed!");
 }
@@ -188,15 +191,33 @@ function loadCourseContent(): CourseContent[] {
   return parsed as CourseContent[];
 }
 
-async function seedCourseContent(userId: number) {
-  const modules = loadCourseContent();
+async function seedCourseContent(userId: number, mediaBaseUrl: string) {
+  const modules = loadCourseContent().sort(
+    (a, b) => a.module.order_index - b.module.order_index
+  );
 
   for (const moduleData of modules) {
-    await seedModule(moduleData, userId);
+    await seedModule(moduleData, userId, mediaBaseUrl);
   }
 }
 
-async function seedModule(data: CourseContent, userId: number) {
+function resolveMediaUrl(mediaUrl: string, mediaBaseUrl: string) {
+  if (!mediaUrl) return mediaUrl;
+  if (/^(https?:)?\/\//.test(mediaUrl) || mediaUrl.startsWith("data:")) {
+    return mediaUrl;
+  }
+  // treat leading slash or relative path the same by ensuring single slash
+  const normalized = mediaUrl.startsWith("/")
+    ? mediaUrl
+    : `/${mediaUrl.replace(/^\.?\//, "")}`;
+  return `${mediaBaseUrl}${normalized}`;
+}
+
+async function seedModule(
+  data: CourseContent,
+  userId: number,
+  mediaBaseUrl: string
+) {
   const { module: moduleInfo, theme, concepts, reflection } = data;
 
   // 1. Create Module
@@ -215,14 +236,18 @@ async function seedModule(data: CourseContent, userId: number) {
       module_id: module.id,
       title: theme.title,
       context: theme.context,
-      media_url: theme.media_url,
+      media_url: resolveMediaUrl(theme.media_url, mediaBaseUrl),
       media_type: theme.media_type,
       question: theme.question,
     },
   });
 
   // 3. Create Concepts with related data
-  for (const conceptData of concepts) {
+  const sortedConcepts = [...concepts].sort(
+    (a, b) => a.order_index - b.order_index
+  );
+
+  for (const conceptData of sortedConcepts) {
     const concept = await prisma.concept.create({
       data: {
         module_id: module.id,
@@ -239,9 +264,15 @@ async function seedModule(data: CourseContent, userId: number) {
         concept_id: concept.id,
         order_index: conceptData.tutorial.order_index,
         good_story: conceptData.tutorial.good_story,
-        good_media_url: conceptData.tutorial.good_media_url,
+        good_media_url: resolveMediaUrl(
+          conceptData.tutorial.good_media_url,
+          mediaBaseUrl
+        ),
         bad_story: conceptData.tutorial.bad_story,
-        bad_media_url: conceptData.tutorial.bad_media_url,
+        bad_media_url: resolveMediaUrl(
+          conceptData.tutorial.bad_media_url,
+          mediaBaseUrl
+        ),
       },
     });
 
@@ -256,14 +287,18 @@ async function seedModule(data: CourseContent, userId: number) {
     });
 
     //  3c. create quizzes
-    for (const quizData of conceptData.quizzes || []) {
+    const sortedQuizzes = [...(conceptData.quizzes || [])].sort(
+      (a, b) => a.order_index - b.order_index
+    );
+
+    for (const quizData of sortedQuizzes) {
       await prisma.quiz.create({
         data: {
           concept_id: concept.id,
           order_index: quizData.order_index,
           question: quizData.question,
           question_type: quizData.question_type,
-          media_url: quizData.media_url,
+          media_url: resolveMediaUrl(quizData.media_url, mediaBaseUrl),
           options: quizData.options,
           correct_option_index: quizData.correct_option_index,
           explanation: quizData.explanation,
@@ -281,7 +316,10 @@ async function seedModule(data: CourseContent, userId: number) {
       order_index: 1,
       user_id: userId,
       module_summary: reflection.module_summary,
-      module_summary_media_url: reflection.module_summary_media_url,
+      module_summary_media_url: resolveMediaUrl(
+        reflection.module_summary_media_url,
+        mediaBaseUrl
+      ),
       learning_advice: reflection.learning_advice,
     },
   });
