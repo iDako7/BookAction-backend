@@ -111,6 +111,7 @@ export class ModuleService {
     }
 
     const reflectionDTO: ReflectionDTO = {
+      id: reflection.id,
       type: "text",
       prompt: reflection.module_summary,
       mediaUrl: reflection.module_summary_media_url,
