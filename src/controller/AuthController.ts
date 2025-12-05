@@ -11,6 +11,7 @@ import {
   LoginInput,
 } from "../validation/authValidation.js";
 import { AuthError } from "../utils/errors.js";
+import { ZodError } from "zod";
 
 export class AuthController {
   private authService: AuthService;
@@ -64,13 +65,14 @@ export class AuthController {
     } catch (error: any) {
       console.error("registration error:", error);
 
-      if (error.name === "ZodError") {
+      if (error instanceof ZodError) {
         res.status(400).json({
           success: false,
           message: "validation failed",
-          // property of Zod errors that contains the array of detailed validation issues
-          // like "invalid email", "password too short"
-          errors: error.errors,
+          errors: error.issues.map((e) => ({
+            path: e.path,
+            message: e.message,
+          })),
         });
         return;
       }
@@ -120,13 +122,14 @@ export class AuthController {
     } catch (error: any) {
       console.error("login error:", error);
 
-      if (error.name === "ZodError") {
+      if (error instanceof ZodError) {
         res.status(400).json({
           success: false,
           message: "validation failed",
-          // property of Zod errors that contains the array of detailed validation issues
-          // like "invalid email", "password too short"
-          errors: error.errors,
+          errors: error.issues.map((e) => ({
+            path: e.path,
+            message: e.message,
+          })),
         });
         return;
       }
