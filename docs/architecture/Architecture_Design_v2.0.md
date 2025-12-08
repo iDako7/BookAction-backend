@@ -1,16 +1,13 @@
 # BookAction Backend Architecture Design v2.0
 **Document Type:** Technical Architecture Specification  
-**Version:** 2.0  
-**Date:** November 2025  
+**Version:** 2.0 (updated)  
+**Date:** March 2025  
 **Author:** Dako  
 
 ---
 
 ## Executive Summary
-
-BookAction's backend is being refactored from a functional MVP to a production-grade, object-oriented architecture. This redesign introduces industry-standard patterns including Domain-Driven Design (DDD), Repository Pattern, and Dependency Injection, positioning the system for scalability and maintainability.
-
-The new architecture supports our roadmap for AI integration, real-time collaboration, and multi-tenant deployment while maintaining backward compatibility with existing frontend clients.
+The backend is a TypeScript/Express 5 service backed by PostgreSQL (via Prisma) that serves learning content (modules, concepts, tutorials, quizzes, reflections) and user progression. The current implementation favors a straightforward service/repository layering with explicit wiring in `src/app.ts` over a DI container. Authentication has been upgraded to JWT-based access + refresh tokens, with secure cookie handling and Prisma-backed token persistence.
 
 ---
 
@@ -18,341 +15,183 @@ The new architecture supports our roadmap for AI integration, real-time collabor
 
 ```mermaid
 graph TB
+    Client[Client/Frontend]
     subgraph "HTTP Layer"
-        Client[Client/Frontend]
+        Routes
+        MW[Middleware\n(cors, json, cookies, auth)]
     end
-    
     subgraph "Controller Layer"
-        MC[ModuleController]
-        CC[ConceptController]
-        LC[LearningController]
-        RC[ResponseController]
+        AuthC[AuthController]
+        ModuleC[ModuleController]
+        ConceptC[ConceptController]
+        SeedC[SeedController]
     end
-    
-    subgraph "Service Layer - Business Logic"
-        MS[ModuleService]
-        US[UserService]
-        AS[AIService]
+    subgraph "Service Layer"
+        AuthS[AuthService]
+        ModuleS[ModuleService]
+        ConceptS[ConceptService]
+        ProgressS[UserProgressService]
+        SeedS[SeedService]
     end
-    
-    subgraph "Repository Layer - Data Access"
-        MR[ModuleRepository]
-        CR[ConceptRepository]
-        UR[UserResponseRepository]
-        UP[UserProgressRepository]
+    subgraph "Repository Layer"
+        UserR[UserRepository]
+        RefreshR[RefreshTokenRepository]
+        ModuleR[ModuleRepository]
+        ConceptR[ConceptRepository]
+        ProgressR[UserProgressRepository]
     end
-    
     subgraph "Database"
+        Prisma[(Prisma Client w/ PG adapter)]
         DB[(PostgreSQL)]
     end
-    
-    Client --> MC
-    Client --> CC
-    Client --> LC
-    Client --> RC
-    
-    MC --> MS
-    CC --> MS
-    LC --> US
-    RC --> US
-    
-    MS --> MR
-    MS --> CR
-    US --> UR
-    US --> UP
-    US --> AS
-    
-    MR --> DB
-    CR --> DB
-    UR --> DB
-    UP --> DB
-    
-    style MS fill:#e1f5fe
-    style US fill:#e1f5fe
-    style AS fill:#fff3e0
+
+    Client --> Routes --> MW --> AuthC & ModuleC & ConceptC & SeedC
+    AuthC --> AuthS
+    ModuleC --> ModuleS
+    ConceptC --> ConceptS & ProgressS
+    SeedC --> SeedS
+
+    AuthS --> UserR & RefreshR
+    ModuleS --> ModuleR
+    ConceptS --> ConceptR
+    ProgressS --> ProgressR
+    SeedS --> Prisma
+
+    UserR & RefreshR & ModuleR & ConceptR & ProgressR --> Prisma --> DB
 ```
-
-
 
 ---
 
 ## 2. Core Design Patterns & Principles
 
-### 2.1 Architectural Patterns
-
-| Pattern | Purpose | Implementation |
-|---------|---------|----------------|
-| **Domain-Driven Design** | Organize code around business domains | ModuleService, UserService, LearningService |
-| **Repository Pattern** | Abstract data access layer | Prisma wrapped in repository classes |
-| **Dependency Injection** | Decouple dependencies, improve testability | Container-based DI with singleton services |
-| **DTO Pattern** | Separate internal models from API contracts | Request/Response DTOs with mappers |
-| **Service Layer** | Centralize business logic | Thin controllers, fat services |
-| **Unit of Work** | Ensure data consistency | Transaction management in services |
-
-### 2.2 SOLID Principles Application
-
-- **Single Responsibility**: Each class has one reason to change
-- **Open/Closed**: Services extensible via inheritance
-- **Liskov Substitution**: Repository interfaces allow implementation swapping
-- **Interface Segregation**: Focused interfaces per domain
-- **Dependency Inversion**: High-level modules depend on abstractions
+| Pattern/Principle | Purpose | Implementation |
+| --- | --- | --- |
+| Service + Repository | Separate business logic from data access | `services/*` orchestrate; `repositories/*` wrap Prisma |
+| DTO Mapping | Keep HTTP contracts stable | DTOs in `dtos/request` and `dtos/response` |
+| Input Validation | Fail fast on bad input | Zod schemas in `validation/authValidation.ts` |
+| AuthN/AuthZ | Secure protected routes | JWT access tokens (Authorization header) + refresh tokens (httpOnly cookie) with DB persistence |
+| Error Handling | Consistent auth errors | `AuthError` plus per-endpoint error responses |
+| Layered Middleware | Cross-cutting concerns | `cors`, `express.json`, `cookie-parser`, `authMiddleware` on protected routers |
 
 ---
 
-## 3. Layer Architecture
+## 3. Layer Architecture (Current)
 
-### 3.1 Controller Layer
-**Responsibility:** HTTP handling, request/response management  
-**Key Classes:** ModuleController, ConceptController, LearningController, ResponseController  
-**Design Principle:** Controllers remain thin, delegating all business logic to services  
+### 3.1 Routing & Middleware
+- `src/app.ts` wires Express, CORS, JSON parsing, cookie parsing, static media, and registers routes.
+- `src/routes/*` define domain routers; auth middleware applied at router level for protected resources.
+- `src/middleware/authMiddleware.ts` verifies access tokens from `Authorization: Bearer <token>` and attaches `req.user`; also exposes `roleRequire` helper for role checks (not yet applied).
 
-### 3.2 Service Layer
-**Responsibility:** Business logic, orchestration, transaction management  
-**Key Classes:** ModuleService, UserProgressService, LearningService, AIService  
-**Design Principle:** Domain-focused services that encapsulate business rules  
+### 3.2 Controllers
+- `controller/AuthController.ts` – register, login, refresh, logout, current user.
+- `controller/ModuleController.ts` – module theme, reflections (get/save), modules overview.
+- `controller/ConceptController.ts` – tutorial, quizzes, summary, quiz submission, progress update.
+- `controller/SeedController.ts` – protected seed endpoint guarded by env token.
 
-### 3.3 Repository Layer
-**Responsibility:** Data access abstraction  
-**Key Classes:** ModuleRepository, UserProgressRepository, ConceptRepository  
-**Design Principle:** Isolate Prisma ORM, return domain entities  
+Controllers remain thin: parse/validate, delegate to services, shape responses.
 
-### 3.4 Data Transfer Objects (DTOs)
-**Responsibility:** API contract definition  
-**Types:** Request DTOs (input validation), Response DTOs (output shaping)  
-**Design Principle:** Never expose database entities directly  
+### 3.3 Services
+- `AuthService` – password hashing, token issuance/verification, refresh rotation, logout, user lookup.
+- `ModuleService` – theme retrieval, modules overview with user progress, reflections CRUD.
+- `ConceptService` – tutorials, quizzes, summaries, quiz scoring/persistence.
+- `UserProgressService` – upsert concept completion/time tracking.
+- `SeedService` – runs Prisma seed script when enabled.
 
----
+### 3.4 Repositories (Prisma-backed)
+- `UserRepository`, `RefreshTokenRepository`, `ModuleRepository`, `ConceptRepository`, `UserProgressRepository`.
+- Use `lib/prisma.ts` which configures Prisma with `@prisma/adapter-pg` and `pg` pool, with dev-mode global reuse.
 
-## 4. Domain Model Architecture
-
-### 4.1 Module Domain
-```
-ModuleService
-├── getModule()
-├── getModuleTheme()
-├── getModuleReflection()
-└── getModuleComplete()
-
-ConceptService
-├── getConcept()
-├── getConceptsByModule()
-├── getConceptWithQuizzes()
-└── getConceptSummary()
-```
-
-### 4.2 User Learning Domain
-```
-UserProgressService
-├── submitQuizResponse()
-├── submitReflection()
-├── updateConceptProgress()
-└── getModuleProgress()
-
-LearningService (Orchestration)
-├── getLearningHomepage()
-├── getNextLearningStep()
-├── calculateCompletionPercentage()
-└── generateLearningPath()
-```
+### 3.5 Data Contracts
+- Request DTOs: `dtos/request/*` (e.g., `AutheticationDTO.ts`, `AnswerToQuizDTO.ts`, `UpdateProgressDTO.ts`, `ReflectionDTO.ts`).
+- Response DTOs: `dtos/response/*` (e.g., `UserInfoDTO.ts`, `ModulesOverviewDTO.ts`, `ConceptTutorialDTO.ts`, `ConceptQuizzesDTO.ts`, `ConceptSummaryDTO.ts`, `ModuleThemeDTO.ts`).
 
 ---
 
-## 5. Complete Project Structure
+## 4. Authentication Architecture
 
-### 5.1 📁File System
+**Token model**
+- Access token: JWT signed with `JWT_ACCESS_SECRET`, expiry from `JWT_ACCESS_EXPIRY` (default `15min`). Sent by clients in `Authorization: Bearer <accessToken>`.
+-,Access payload: `{ userId, email, username, role }` (type `JWTPayload`).
+- Refresh token: JWT signed with `JWT_REFRESH_SECRET`, expiry from `JWT_REFRESH_EXPIRY` (default `7d`). Stored server-side in `refresh_token` table and set as httpOnly cookie `refreshToken` (secure in production, `sameSite=strict`).
 
+**Flows & endpoints (`routes/auth.routes.ts`)**
+- `POST /api/auth/register` – validate (zod), hash password with bcrypt (`BCRYPT_SALT_ROUNDS`), create user, issue tokens, set refresh cookie, return access token + user DTO.
+- `POST /api/auth/login` – validate, email/username lookup, password compare, last login update, issue tokens, set refresh cookie.
+- `POST /api/auth/refresh` – accepts refresh token (cookie or body), validates against DB, returns new access token.
+- `POST /api/auth/logout` – requires auth middleware; deletes refresh token from DB and clears cookie.
+- `GET /api/auth/me` – requires auth middleware; returns current user DTO.
+
+**Middleware**
+- `authMiddleware` validates access token, attaches `req.user`, returns 401 on missing/invalid/expired token.
+- `roleRequire` is available for role-based authorization (not yet wired to routes).
+
+**Data persistence**
+- `RefreshTokenRepository` creates, finds (with expiry check), deletes tokens, and can clean up expired/all-user tokens.
+- `UserRepository` handles lookups and login timestamp updates.
+
+**Security notes**
+- Secrets must be present: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`; service throws on missing configuration.
+- Cookies are httpOnly and secure in production; CORS allows origins `http://localhost:3002` and `http://localhost:3000` with credentials.
+- Tokens are rotated per login; `jti` is added to refresh tokens to allow multiple sessions per user.
+
+---
+
+## 5. Domain Model & Data Layer (Prisma `schema.prisma`)
+- **Learning content**
+  - `Module` (1) → `Theme` (1), `Concept` (many), `Reflection` (many per user)
+  - `Concept` → `Tutorial` (1), `Summary` (1), `Quiz` (many), `User_concept_progress` (many per user)
+  - `Quiz` stores `options` (JSON), `correct_option_index` (int array), `question_type` (single/multi-choice)
+  - `Reflection` stores prompt/media and links to `User_response`
+- **User activity**
+  - `User_concept_progress` – completion/time per concept per user (composite unique)
+  - `User_response` – quiz answers or reflection text; keeps full submission history
+- **Identity**
+  - `User` with enum `UserRole` (STUDENT/TEACHER/ADMIN), active flag, timestamps
+  - `RefreshToken` with expiry and unique token per record
+
+---
+
+## 6. Project Structure (key files)
 ```
-BookAction_BackEnd/
-├── .env                           # Environment variables
-├── .env.example                   # Example environment variables
-├── .gitignore                     # Git ignore rules
-├── package.json                   # Dependencies and scripts
-├── tsconfig.json                  # TypeScript configuration
-├── README.md                      # Project documentation
-├── api.rest                       # HTTP request testing file
-│
-├── docs/                          # Documentation
-│
-├── prisma/
-│   ├── schema.prisma              # Database schema
-│   ├── seed.ts                    # Database seeding script
-│   └── migrations/                # Database migrations (auto-generated)
-│       └── [timestamp]_init/
-│           └── migration.sql
-│
-└── src/
-    ├── app.ts                     # Express app setup and middleware
-    ├── server.ts                  # Server startup (calls app.ts)
-    ├── app.backup.ts              # Backup of original app.ts (temporary)
-    │
-    ├── config/                    # Configuration files
-    │   ├── database.ts            # Database configuration
-    │   ├── env.ts                 # Environment variable validation
-    │   └── constants.ts           # App constants
-    │
-    ├── types/                     # TypeScript type definitions
-    │   ├── express.d.ts           # Extend Express Request type
-    │   └── index.ts               # Shared type definitions
-    │
-    ├── container/                 # Dependency Injection
-    │   ├── Container.ts           # Main DI container
-    │   └── index.ts              # Container initialization
-    │
-    ├── repositories/              # Data Access Layer
-    │   ├── base/
-    │   │   └── BaseRepository.ts # Abstract base repository
-    │   ├── prismaClient.ts       # Singleton Prisma instance
-    │   ├── ModuleRepository.ts   # Module data access
-    │   ├── ConceptRepository.ts  # Concept data access
-    │   ├── QuizRepository.ts     # Quiz data access
-    │   ├── UserRepository.ts     # User data access (Phase 2)
-    │   ├── UserProgressRepository.ts  # Progress tracking
-    │   └── UserResponseRepository.ts  # User responses
-    │
-    ├── services/                  # Business Logic Layer
-    │   ├── base/
-    │   │   └── BaseService.ts    # Abstract base service
-    │   ├── domain/                # Domain services
-    │   │   ├── ModuleService.ts  # Module business logic
-    │   │   ├── ConceptService.ts # Concept business logic
-    │   │   ├── UserProgressService.ts  # Progress tracking logic
-    │   │   ├── LearningService.ts      # Learning orchestration
-    │   │   └── AuthService.ts    # Authentication (Phase 2)
-    │   ├── external/              # External service integrations
-    │   │   └── AIService.ts      # AI integration (Phase 3)
-    │   └── utils/
-    │       └── TransactionManager.ts   # Transaction utilities
-    │
-    ├── controllers/               # HTTP Request Handlers
-    │   ├── base/
-    │   │   └── BaseController.ts # Abstract base controller
-    │   ├── ModuleController.ts   # /api/modules/* endpoints
-    │   ├── ConceptController.ts  # /api/concepts/* endpoints
-    │   ├── LearningController.ts # /api/users/*/learning endpoints
-    │   ├── ResponseController.ts # /api/*/submit endpoints
-    │   └── AuthController.ts     # /api/auth/* endpoints (Phase 2)
-    │
-    ├── dtos/                      # Data Transfer Objects
-    │   ├── request/               # Input validation schemas
-    │   │   ├── SubmitQuizDTO.ts
-    │   │   ├── SubmitReflectionDTO.ts
-    │   │   ├── LoginDTO.ts       # (Phase 2)
-    │   │   └── RegisterDTO.ts    # (Phase 2)
-    │   └── response/              # Output contracts
-    │       ├── ModuleDTO.ts
-    │       ├── ThemeDTO.ts
-    │       ├── ConceptDTO.ts
-    │       ├── QuizDTO.ts
-    │       ├── QuizResultDTO.ts
-    │       ├── LearningHomepageDTO.ts
-    │       ├── ProgressDTO.ts
-    │       └── AuthResponseDTO.ts # (Phase 2)
-    │
-    ├── mappers/                   # Entity to DTO conversion
-    │   ├── base/
-    │   │   └── BaseMapper.ts     # Abstract base mapper
-    │   ├── ModuleMapper.ts       # Module entity → DTO
-    │   ├── ThemeMapper.ts        # Theme entity → DTO
-    │   ├── ConceptMapper.ts      # Concept entity → DTO
-    │   ├── QuizMapper.ts         # Quiz entity → DTO
-    │   └── ProgressMapper.ts     # Progress calculations → DTO
-    │
-    ├── middleware/                # Express Middleware
-    │   ├── auth.middleware.ts    # JWT verification (Phase 2)
-    │   ├── error.middleware.ts   # Global error handler
-    │   ├── validation.middleware.ts  # Request validation
-    │   ├── rateLimiter.middleware.ts # Rate limiting (Phase 4)
-    │   ├── requestLogger.middleware.ts # Request logging
-    │   └── tempAuth.middleware.ts    # Temporary auth (Phase 1)
-    │
-    ├── routes/                    # Route Definitions
-    │   ├── index.ts              # Main router aggregator
-    │   ├── module.routes.ts      # Module endpoints
-    │   ├── concept.routes.ts     # Concept endpoints
-    │   ├── learning.routes.ts    # Learning endpoints
-    │   ├── response.routes.ts    # Response submission endpoints
-    │   └── auth.routes.ts        # Auth endpoints (Phase 2)
-    │
-    ├── errors/                    # Error Classes
-    │   ├── AppError.ts           # Base error class
-    │   ├── NotFoundError.ts      # 404 errors
-    │   ├── ValidationError.ts    # 400 validation errors
-    │   ├── UnauthorizedError.ts  # 401 errors
-    │   └── index.ts              # Error exports
-    │
-    ├── utils/                     # Utility Functions
-    │   ├── logger.ts             # Winston/Pino logger setup
-    │   ├── pagination.ts         # Pagination helpers
-    │   ├── validators.ts         # Zod schemas
-    │   └── helpers.ts            # General helpers
-    │
-    └── old_services/              # Temporary - old code reference
-        └── LearnHomepage.ts       # Original service (delete after refactor)
-
-tests/                             # Test files (Phase 4)
-├── unit/
-│   ├── services/
-│   │   ├── ModuleService.test.ts
-│   │   └── UserProgressService.test.ts
-│   └── repositories/
-│       └── ModuleRepository.test.ts
-├── integration/
-│   ├── module.test.ts
-│   └── learning.test.ts
-└── fixtures/
-    └── testData.ts
-```
-
-
-
-### 5.2 Data Flow Through Layers
-
-```
-1. HTTP Request arrives
-   ↓
-2. Express Route matches URL
-   ↓
-3. Middleware validates/authenticates
-   ↓
-4. Controller receives request
-   ↓
-5. Controller calls Service method
-   ↓
-6. Service executes business logic
-   ↓
-7. Service calls Repository for data
-   ↓
-8. Repository queries database (Prisma)
-   ↓
-9. Entity returned to Service
-   ↓
-10. Service transforms to DTO (via Mapper)
-    ↓
-11. DTO returned to Controller
-    ↓
-12. Controller sends HTTP Response
+src/
+  app.ts                 # Express setup and wiring
+  server.ts              # Server bootstrap
+  lib/prisma.ts          # Prisma client with pg adapter
+  controller/            # Auth, Module, Concept, Seed controllers
+  services/              # Auth, Module, Concept, UserProgress, Seed services
+  repositories/          # User, RefreshToken, Module, Concept, UserProgress
+  routes/                # auth.routes.ts, module.routes.ts, concept.routes.ts, seed.routes.ts
+  middleware/            # authMiddleware
+  dtos/request|response  # DTO contracts
+  constants/             # responseTypes, userRoleTypes
+  utils/errors.ts        # AuthError
+prisma/schema.prisma     # PostgreSQL schema
+public/media             # Static media served under /media
 ```
 
 ---
 
-
-
-## 9. Deployment Architecture
-
-### 9.1 Deployment Strategy
-```
-Development → Staging → Production
-    ↓           ↓           ↓
-  Local      Render      Render
-   Dev      (Staging)  (Production)
-```
-
-### 9.2 Infrastructure
-- **Hosting:** Render (PaaS)
-- **Database:** Render PostgreSQL
-- **Monitoring:** DataDog / New Relic
-- **CI/CD:** GitHub Actions
-- **Container:** Docker-ready
+## 7. Data & Control Flow (runtime)
+1. HTTP request hits Express route.
+2. Router applies `authMiddleware` where protected (modules, concepts, logout, /me).
+3. Controller parses/validates input (Zod for auth), delegates to service.
+4. Service orchestrates logic, calls repository for DB access (Prisma).
+5. Repository queries Postgres and returns domain data.
+6. Service maps to DTOs; controller sends JSON response (sets/clears cookies for auth flows).
 
 ---
 
+## 8. Deployment & Operations
+- **Hosting:** Render-ready; Docker support via `docker-compose.yml`.
+- **Database:** PostgreSQL; Prisma migrations supported (`npm run prisma:migrate` / `prisma:migrate:deploy`).
+- **Secrets:** `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRY`, `JWT_REFRESH_EXPIRY`, `BCRYPT_SALT_ROUNDS`, `ENABLE_SEED_ENDPOINT`, `SEED_ENDPOINT_TOKEN`.
+- **Static assets:** Served from `public/media` via `/media`.
+- **CI/CD:** GitHub Actions-ready (build + migrate + start).
+
+---
+
+## 9. Authentication Checklist (operational)
+- Set both JWT secrets and expiries in all environments.
+- Serve over HTTPS so refresh cookies remain secure.
+- Allowlisted CORS origins must align with frontend hosts; update `cors` config as needed.
+- Run periodic cleanup of expired refresh tokens (`RefreshTokenRepository.deleteExpiredTokens`) if DB growth becomes an issue.
