@@ -71,9 +71,16 @@ const app = express();
 // 2. Add middleware
 app.use(
   cors({
+    // only the "customer" in the cors origin is allowed to visit our backend store which address is config in server.ts
     origin: ["http://localhost:3002", "http://localhost:3000"],
+
+    // the backend can get sensitive information from cookies in frontend
     credentials: true,
+
+    // Only the listed method is allowed. implementation of "Least Privilege" rule.
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+
+    // Only the listed header is allowed to send. necessary to have for JWT
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
