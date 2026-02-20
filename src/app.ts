@@ -27,6 +27,9 @@ import { ConceptController } from "./controller/ConceptController.js";
 import { ModuleController } from "./controller/ModuleController.js";
 import { SeedController } from "./controller/SeedController.js";
 
+// import middleware
+import { errorHandler } from "./middleware/errorHandler.js";
+
 // import routes
 import { createAuthRoutes } from "./routes/auth.routes.js";
 import { createConceptRoutes } from "./routes/concept.routes.js";
@@ -95,5 +98,8 @@ app.use("/api/modules", createModuleRoutes(moduleController));
 app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
 app.use("/api/admin", createSeedRoutes(seedController));
+
+// 4. Global error handler (must be after all routes)
+app.use(errorHandler);
 
 export { app, prisma };
