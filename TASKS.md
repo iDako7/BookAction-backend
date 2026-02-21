@@ -33,11 +33,11 @@
 
 ### Tasks
 
-- [ ] **Copy CLAUDE.md to project root**
-- [ ] **Copy TASKS.md to project root**
-- [ ] **Create **`.claude/hooks/pre-commit.sh` that runs `npm test` and blocks commit on failure
-- [ ] **Create **`__tests__/integration/` and `__tests__/unit/` directories
-- [ ] **Verify hook works: make a failing test, attempt commit, confirm it's blocked**
+- [x] **Copy CLAUDE.md to project root**
+- [x] **Copy TASKS.md to project root**
+- [x] **Create **`.claude/hooks/pre-commit.sh` that runs `npm test` and blocks commit on failure
+- [x] **Create **`__tests__/integration/` and `__tests__/unit/` directories
+- [x] **Verify hook works: make a failing test, attempt commit, confirm it's blocked**
 - [ ] **Create git branch: **`feature/medal-system`
 
 ### Verification

@@ -14,6 +14,7 @@ import { ConceptRepository } from "./repositories/ConceptRepository.js";
 import { UserProgressRepository } from "./repositories/UserProgressRepository.js";
 import { ModuleRepository } from "./repositories/ModuleRepository.js";
 import { MedalRepository } from "./repositories/MedalRepository.js";
+import { TeacherRepository } from "./repositories/TeacherRepository.js";
 
 // import service
 import { AuthService } from "./services/AuthService.js";
@@ -22,6 +23,7 @@ import { UserProgressService } from "./services/UserProgressService.js";
 import { ModuleService } from "./services/ModuleService.js";
 import { SeedService } from "./services/SeedService.js";
 import { MedalService } from "./services/MedalService.js";
+import { TeacherService } from "./services/TeacherService.js";
 
 // import controller
 import { AuthController } from "./controller/AuthController.js";
@@ -29,6 +31,7 @@ import { ConceptController } from "./controller/ConceptController.js";
 import { ModuleController } from "./controller/ModuleController.js";
 import { SeedController } from "./controller/SeedController.js";
 import { MedalController } from "./controller/MedalController.js";
+import { TeacherController } from "./controller/TeacherController.js";
 
 // import middleware
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -39,6 +42,7 @@ import { createConceptRoutes } from "./routes/concept.routes.js";
 import { createModuleRoutes } from "./routes/module.routes.js";
 import { createSeedRoutes } from "./routes/seed.routes.js";
 import { createMedalRoutes } from "./routes/medal.routes.js";
+import { createTeacherRoutes } from "./routes/teacher.routes.js";
 
 // 1.1 initialize data base
 // why we don't call PrismaClient like repo layer did
@@ -56,6 +60,8 @@ const userProgressRepo = new UserProgressRepository(prismaClient);
 const moduleRepo = new ModuleRepository(prismaClient);
 // for medal system
 const medalRepo = new MedalRepository(prismaClient);
+// for teacher portal
+const teacherRepo = new TeacherRepository(prismaClient);
 
 // 1.3 initialize service
 const authService = new AuthService(userRepo, refreshToken);
@@ -65,6 +71,7 @@ const medalService = new MedalService(medalRepo);
 const userProgressService = new UserProgressService(userProgressRepo, medalService);
 const moduleService = new ModuleService(moduleRepo);
 const seedService = new SeedService(prismaClient);
+const teacherService = new TeacherService(teacherRepo);
 
 // 1.4 initialize controller
 const authController = new AuthController(authService);
@@ -75,6 +82,7 @@ const conceptController = new ConceptController(
 const moduleController = new ModuleController(moduleService);
 const seedController = new SeedController(seedService);
 const medalController = new MedalController(medalService);
+const teacherController = new TeacherController(teacherService);
 
 // ===== typical REST API start part
 // 1. Create app
@@ -108,6 +116,7 @@ app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
 app.use("/api/admin", createSeedRoutes(seedController));
 app.use("/api/medals", createMedalRoutes(medalController));
+app.use("/api/teacher", createTeacherRoutes(teacherController));
 
 // 4. Global error handler (must be after all routes)
 app.use(errorHandler);

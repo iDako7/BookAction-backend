@@ -18,11 +18,13 @@ datasource db {
 // === 1. model related to module directly === 
 // In each module, we have one theme, 1-n concepts, 1-n reflections.
 model Module {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  order_index Int      // to allow us arrange order
-  created_at  DateTime @default(now()) // DateTime + now() stores a Postgres timestamp automatically
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  order_index  Int      // to allow us arrange order
+  created_at   DateTime @default(now()) // DateTime + now() stores a Postgres timestamp automatically
+  is_published Boolean  @default(true)
+  created_by   Int?
 
   // define relations with other data sets
   theme       Theme?
@@ -234,7 +236,7 @@ model User_response {
   @@index([reflection_id, user_id])
 }
 
-// ============ medal data ==========
+// ============ medal system ==========
 
 model User_concept_medal {
   id         Int       @id @default(autoincrement())
