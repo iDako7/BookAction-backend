@@ -122,6 +122,13 @@ This project uses a two-chat workflow:
 - Does NOT modify any files in `__tests__/`
 - Pre-commit hook runs `npm test` — commit is blocked if tests fail
 
+## Git Workflow
+
+- **Never** create new branches, worktrees, or pull requests
+- **Never** use `isolation: "worktree"` in Task tool calls
+- Commit directly to `main` and push: `git add`, `git commit`, `git push`
+- This project uses a single-branch workflow on `main`
+
 ## Commands
 
 ```bash
