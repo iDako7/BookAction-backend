@@ -13,6 +13,7 @@ import { RefreshTokenRepository } from "./repositories/RefreshTokenRepository.js
 import { ConceptRepository } from "./repositories/ConceptRepository.js";
 import { UserProgressRepository } from "./repositories/UserProgressRepository.js";
 import { ModuleRepository } from "./repositories/ModuleRepository.js";
+import { MedalRepository } from "./repositories/MedalRepository.js";
 
 // import service
 import { AuthService } from "./services/AuthService.js";
@@ -20,12 +21,14 @@ import { ConceptService } from "./services/ConceptService.js";
 import { UserProgressService } from "./services/UserProgressService.js";
 import { ModuleService } from "./services/ModuleService.js";
 import { SeedService } from "./services/SeedService.js";
+import { MedalService } from "./services/MedalService.js";
 
 // import controller
 import { AuthController } from "./controller/AuthController.js";
 import { ConceptController } from "./controller/ConceptController.js";
 import { ModuleController } from "./controller/ModuleController.js";
 import { SeedController } from "./controller/SeedController.js";
+import { MedalController } from "./controller/MedalController.js";
 
 // import middleware
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -35,6 +38,7 @@ import { createAuthRoutes } from "./routes/auth.routes.js";
 import { createConceptRoutes } from "./routes/concept.routes.js";
 import { createModuleRoutes } from "./routes/module.routes.js";
 import { createSeedRoutes } from "./routes/seed.routes.js";
+import { createMedalRoutes } from "./routes/medal.routes.js";
 
 // 1.1 initialize data base
 // why we don't call PrismaClient like repo layer did
@@ -50,11 +54,15 @@ const conceptRepo = new ConceptRepository(prismaClient);
 const userProgressRepo = new UserProgressRepository(prismaClient);
 // for module related routes
 const moduleRepo = new ModuleRepository(prismaClient);
+// for medal system
+const medalRepo = new MedalRepository(prismaClient);
 
 // 1.3 initialize service
 const authService = new AuthService(userRepo, refreshToken);
 const conceptService = new ConceptService(conceptRepo);
-const userProgressService = new UserProgressService(userProgressRepo);
+// medalService must be created before userProgressService (it's a dependency)
+const medalService = new MedalService(medalRepo);
+const userProgressService = new UserProgressService(userProgressRepo, medalService);
 const moduleService = new ModuleService(moduleRepo);
 const seedService = new SeedService(prismaClient);
 
@@ -66,6 +74,7 @@ const conceptController = new ConceptController(
 );
 const moduleController = new ModuleController(moduleService);
 const seedController = new SeedController(seedService);
+const medalController = new MedalController(medalService);
 
 // ===== typical REST API start part
 // 1. Create app
@@ -98,6 +107,7 @@ app.use("/api/modules", createModuleRoutes(moduleController));
 app.use("/api/concepts", createConceptRoutes(conceptController));
 app.use("/api/auth", createAuthRoutes(authController));
 app.use("/api/admin", createSeedRoutes(seedController));
+app.use("/api/medals", createMedalRoutes(medalController));
 
 // 4. Global error handler (must be after all routes)
 app.use(errorHandler);

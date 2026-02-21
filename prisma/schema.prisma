@@ -28,6 +28,7 @@ model Module {
   theme       Theme?
   concepts    Concept[]
   reflections Reflection[]
+  medals      User_module_medal[]
 }
 
 model Theme {
@@ -59,6 +60,7 @@ model Concept {
   summary Summary?
   quizzes Quiz[]
   User_concept_progress User_concept_progress[]
+  medals User_concept_medal[]
 
   // actual data
   order_index Int
@@ -141,6 +143,13 @@ enum UserRole {
   ADMIN
 }
 
+enum MedalTier {
+  NONE
+  BRONZE
+  SILVER
+  GOLD
+}
+
 // user's info
 model User {
   // @id set the id as the default index, @default set the default value
@@ -160,6 +169,8 @@ model User {
   response User_response[]
   refresh_tokens RefreshToken[]
   module_reflections Reflection[]
+  concept_medals User_concept_medal[]
+  module_medals User_module_medal[]
 
   // @@index set the additional index for faster lookups, otherwise we need to scan the whole DB to look for it
   @@index([email])
@@ -221,4 +232,36 @@ model User_response {
   // Multiple submissions allowed - track complete history
   @@index([quiz_id, user_id])
   @@index([reflection_id, user_id])
+}
+
+// ============ medal data ==========
+
+model User_concept_medal {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    Int
+  concept    Concept   @relation(fields: [concept_id], references: [id], onDelete: Cascade)
+  concept_id Int
+  tier       MedalTier
+  accuracy   Float
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  @@unique([user_id, concept_id])
+  @@index([user_id])
+}
+
+model User_module_medal {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    Int
+  module     Module    @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  module_id  Int
+  tier       MedalTier
+  accuracy   Float
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  @@unique([user_id, module_id])
+  @@index([user_id])
 }
