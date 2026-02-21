@@ -15,6 +15,8 @@ import { UserProgressRepository } from "./repositories/UserProgressRepository.js
 import { ModuleRepository } from "./repositories/ModuleRepository.js";
 import { MedalRepository } from "./repositories/MedalRepository.js";
 import { TeacherRepository } from "./repositories/TeacherRepository.js";
+import { LearningProfileRepository } from "./repositories/LearningProfileRepository.js";
+import { PracticeCacheRepository } from "./repositories/PracticeCacheRepository.js";
 
 // import service
 import { AuthService } from "./services/AuthService.js";
@@ -24,6 +26,8 @@ import { ModuleService } from "./services/ModuleService.js";
 import { SeedService } from "./services/SeedService.js";
 import { MedalService } from "./services/MedalService.js";
 import { TeacherService } from "./services/TeacherService.js";
+import { LearningStyleService } from "./services/LearningStyleService.js";
+import { PracticeGeneratorService } from "./services/PracticeGeneratorService.js";
 
 // import controller
 import { AuthController } from "./controller/AuthController.js";
@@ -32,6 +36,8 @@ import { ModuleController } from "./controller/ModuleController.js";
 import { SeedController } from "./controller/SeedController.js";
 import { MedalController } from "./controller/MedalController.js";
 import { TeacherController } from "./controller/TeacherController.js";
+import { LearningStyleController } from "./controller/LearningStyleController.js";
+import { PracticeController } from "./controller/PracticeController.js";
 
 // import middleware
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -43,6 +49,8 @@ import { createModuleRoutes } from "./routes/module.routes.js";
 import { createSeedRoutes } from "./routes/seed.routes.js";
 import { createMedalRoutes } from "./routes/medal.routes.js";
 import { createTeacherRoutes } from "./routes/teacher.routes.js";
+import { createLearningStyleRoutes } from "./routes/learningStyle.routes.js";
+import { createPracticeRoutes } from "./routes/practice.routes.js";
 
 // 1.1 initialize data base
 // why we don't call PrismaClient like repo layer did
@@ -62,6 +70,9 @@ const moduleRepo = new ModuleRepository(prismaClient);
 const medalRepo = new MedalRepository(prismaClient);
 // for teacher portal
 const teacherRepo = new TeacherRepository(prismaClient);
+// for AI learning style + practice
+const learningProfileRepo = new LearningProfileRepository(prismaClient);
+const practiceCacheRepo = new PracticeCacheRepository(prismaClient);
 
 // 1.3 initialize service
 const authService = new AuthService(userRepo, refreshToken);
@@ -72,6 +83,12 @@ const userProgressService = new UserProgressService(userProgressRepo, medalServi
 const moduleService = new ModuleService(moduleRepo);
 const seedService = new SeedService(prismaClient);
 const teacherService = new TeacherService(teacherRepo);
+const learningStyleService = new LearningStyleService(learningProfileRepo);
+const practiceGeneratorService = new PracticeGeneratorService(
+  learningProfileRepo,
+  practiceCacheRepo,
+  conceptRepo
+);
 
 // 1.4 initialize controller
 const authController = new AuthController(authService);
@@ -83,6 +100,8 @@ const moduleController = new ModuleController(moduleService);
 const seedController = new SeedController(seedService);
 const medalController = new MedalController(medalService);
 const teacherController = new TeacherController(teacherService);
+const learningStyleController = new LearningStyleController(learningStyleService);
+const practiceController = new PracticeController(practiceGeneratorService);
 
 // ===== typical REST API start part
 // 1. Create app
@@ -117,6 +136,8 @@ app.use("/api/auth", createAuthRoutes(authController));
 app.use("/api/admin", createSeedRoutes(seedController));
 app.use("/api/medals", createMedalRoutes(medalController));
 app.use("/api/teacher", createTeacherRoutes(teacherController));
+app.use("/api/learning-style", createLearningStyleRoutes(learningStyleController));
+app.use("/api/practice", createPracticeRoutes(practiceController));
 
 // 4. Global error handler (must be after all routes)
 app.use(errorHandler);

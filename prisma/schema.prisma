@@ -173,6 +173,7 @@ model User {
   module_reflections Reflection[]
   concept_medals User_concept_medal[]
   module_medals User_module_medal[]
+  learning_profile User_learning_profile?
 
   // @@index set the additional index for faster lookups, otherwise we need to scan the whole DB to look for it
   @@index([email])
@@ -234,6 +235,36 @@ model User_response {
   // Multiple submissions allowed - track complete history
   @@index([quiz_id, user_id])
   @@index([reflection_id, user_id])
+}
+
+// ============ AI + Learning Style ==========
+
+enum LearningStyle {
+  VISUAL
+  VERBAL
+  SCENARIO
+}
+
+model User_learning_profile {
+  id             Int           @id @default(autoincrement())
+  user           User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id        Int           @unique
+  primary_style  LearningStyle
+  style_scores   Json
+  quiz_responses Json
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+}
+
+model AI_practice_cache {
+  id                Int           @id @default(autoincrement())
+  concept_id        Int
+  learning_style    LearningStyle
+  generated_content Json
+  expires_at        DateTime
+  created_at        DateTime      @default(now())
+
+  @@unique([concept_id, learning_style])
 }
 
 // ============ medal system ==========
