@@ -8,13 +8,9 @@ export function errorHandler(
   next: NextFunction,
 ): void {
   if (err instanceof AppError) {
-    res
-      .status(err.statusCode)
-      .json({ error: { code: err.statusCode, message: err.message } });
+    res.status(err.statusCode).json({ error: err.message });
     return;
   }
   console.error("Unhandled error:", err);
-  res
-    .status(500)
-    .json({ error: { code: 500, message: "Internal server error" } });
+  res.status(500).json({ error: "Internal server error" });
 }

@@ -8,21 +8,21 @@ export function createModuleRoutes(moduleController: ModuleController) {
   // Protect all routes
   router.use(authMiddleware);
 
-  router.get("/:moduleId/theme", async (req, res) => {
-    moduleController.getModuleTheme(req, res);
-  });
+  router.get("/:moduleId/theme", (req, res, next) =>
+    moduleController.getModuleTheme(req, res).catch(next)
+  );
 
-  router.get("/:moduleId/reflection", async (req, res) => {
-    moduleController.getModuleReflection(req, res);
-  });
+  router.get("/:moduleId/reflection", (req, res, next) =>
+    moduleController.getModuleReflection(req, res).catch(next)
+  );
 
-  router.get("/overview", async (req, res) => {
-    moduleController.getModulesOverview(req, res);
-  });
+  router.get("/overview", (req, res, next) =>
+    moduleController.getModulesOverview(req, res).catch(next)
+  );
 
-  router.post("/:moduleId/reflection", async (req, res) => {
-    moduleController.saveModuleReflection(req, res);
-  });
+  router.post("/:moduleId/reflection", (req, res, next) =>
+    moduleController.saveModuleReflection(req, res).catch(next)
+  );
 
   return router;
 }

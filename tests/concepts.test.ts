@@ -25,10 +25,10 @@ describe("Concept Endpoints", () => {
       expect(response.body.tutorial).toHaveProperty("badExample");
     });
 
-    it("should return 500 for non-existent concept", async () => {
+    it("should return 404 for non-existent concept", async () => {
       const response = await authGet("/api/concepts/9999/tutorial", authToken);
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(404);
     });
 
     it("should return 400 for invalid concept ID", async () => {

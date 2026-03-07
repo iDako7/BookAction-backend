@@ -10,11 +10,21 @@ export function createTeacherRoutes(teacherController: TeacherController) {
   router.use(requireRole("TEACHER", "ADMIN"));
 
   // NOTE: /reports/export must come BEFORE /students/:id to avoid route collision
-  router.get("/students", (req, res) => teacherController.listStudents(req, res));
-  router.get("/reports/export", (req, res) => teacherController.exportReport(req, res));
-  router.get("/students/:id", (req, res) => teacherController.getStudentDetail(req, res));
-  router.get("/overview", (req, res) => teacherController.getClassOverview(req, res));
-  router.get("/modules/:id/report", (req, res) => teacherController.getModuleReport(req, res));
+  router.get("/students", (req, res, next) =>
+    teacherController.listStudents(req, res).catch(next)
+  );
+  router.get("/reports/export", (req, res, next) =>
+    teacherController.exportReport(req, res).catch(next)
+  );
+  router.get("/students/:id", (req, res, next) =>
+    teacherController.getStudentDetail(req, res).catch(next)
+  );
+  router.get("/overview", (req, res, next) =>
+    teacherController.getClassOverview(req, res).catch(next)
+  );
+  router.get("/modules/:id/report", (req, res, next) =>
+    teacherController.getModuleReport(req, res).catch(next)
+  );
 
   return router;
 }

@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { ConceptService } from "../services/ConceptService.js";
 import { UserProgressService } from "../services/UserProgressService.js";
+import { AppError } from "../utils/errors.js";
 
 export class ConceptController {
   private conceptService: ConceptService;
-  private userProgressService: UserProgressService; // Added dependency
+  private userProgressService: UserProgressService;
 
-  // Update constructor to accept UserProgressService
   constructor(
     conceptService: ConceptService,
     userProgressService: UserProgressService
@@ -15,108 +15,68 @@ export class ConceptController {
     this.userProgressService = userProgressService;
   }
 
-  private parseConceptId(req: Request, res: Response): number | undefined {
+  private parseConceptId(req: Request): number {
     const conceptId = parseInt(req.params.conceptId || "");
-
     if (isNaN(conceptId)) {
-      res.status(400).json({ error: "Invalid concept ID" });
-      return undefined;
+      throw new AppError("Invalid concept ID", 400);
     }
     return conceptId;
   }
 
   async getConceptTutorial(req: Request, res: Response): Promise<void> {
-    try {
-      const conceptId = this.parseConceptId(req, res);
-      if (!conceptId) return;
-
-      const tutorial = await this.conceptService.getTutorialInCpt(conceptId);
-      res.json(tutorial);
-    } catch (error: any) {
-      console.log("Error getting concept tutorial", error);
-      res.status(500).json({ error: error.message });
-    }
+    const conceptId = this.parseConceptId(req);
+    const tutorial = await this.conceptService.getTutorialInCpt(conceptId);
+    res.json(tutorial);
   }
 
   async getConceptQuizzes(req: Request, res: Response): Promise<void> {
-    try {
-      const conceptId = this.parseConceptId(req, res);
-      if (!conceptId) return;
-
-      const quizzes = await this.conceptService.getQuizzesInCpt(conceptId);
-      res.json(quizzes);
-    } catch (error: any) {
-      console.log("Error getting concept quizzes", error);
-      res.status(500).json({ error: error.message });
-    }
+    const conceptId = this.parseConceptId(req);
+    const quizzes = await this.conceptService.getQuizzesInCpt(conceptId);
+    res.json(quizzes);
   }
 
   async getConceptSummary(req: Request, res: Response): Promise<void> {
-    try {
-      const conceptId = this.parseConceptId(req, res);
-      if (!conceptId) return;
-
-      const summary = await this.conceptService.getSummaryInCpt(conceptId);
-      res.json(summary);
-    } catch (error: any) {
-      console.log("Error getting concept summary", error);
-      res.status(500).json({ error: error.message });
-    }
+    const conceptId = this.parseConceptId(req);
+    const summary = await this.conceptService.getSummaryInCpt(conceptId);
+    res.json(summary);
   }
 
   async saveUserQuizAns(req: Request, res: Response): Promise<void> {
-    try {
-      const quizId = parseInt(req.params.quizId || "");
-
-      if (isNaN(quizId)) {
-        res.status(400).json({ error: "Invalid quiz ID" });
-        return;
-      }
-
-      const { responseType, userId, userAnswerIndices, timeSpent } = req.body;
-      if (!responseType || !userAnswerIndices || !userId) {
-        res.status(400).json({ error: "Missing required field(s)" });
-        return;
-      }
-
-      const answerPayload = await this.conceptService.saveQuizAnswers(
-        responseType,
-        quizId,
-        userId,
-        userAnswerIndices,
-        timeSpent
-      );
-
-      res.status(200).json(answerPayload);
-    } catch (error: any) {
-      console.log("Error saving quiz answer", error);
-      res.status(500).json({ error: error.message });
+    const quizId = parseInt(req.params.quizId || "");
+    if (isNaN(quizId)) {
+      throw new AppError("Invalid quiz ID", 400);
     }
+
+    const { responseType, userId, userAnswerIndices, timeSpent } = req.body;
+    if (!responseType || !userAnswerIndices || !userId) {
+      throw new AppError("Missing required field(s)", 400);
+    }
+
+    const answerPayload = await this.conceptService.saveQuizAnswers(
+      responseType,
+      quizId,
+      userId,
+      userAnswerIndices,
+      timeSpent
+    );
+
+    res.status(200).json(answerPayload);
   }
 
-  // New method: Update Concept Progress
   async updateConceptProgress(req: Request, res: Response): Promise<void> {
-    try {
-      const conceptId = this.parseConceptId(req, res);
-      if (!conceptId) return;
+    const conceptId = this.parseConceptId(req);
+    const { userId, isCompleted, timeSpent } = req.body;
 
-      const { userId, isCompleted, timeSpent } = req.body;
-
-      if (!userId || isCompleted === undefined) {
-        res.status(400).json({ error: "Missing userId or isCompleted" });
-        return;
-      }
-
-      const result = await this.userProgressService.saveProgress(conceptId, {
-        userId,
-        isCompleted,
-        timeSpent,
-      });
-
-      res.json(result);
-    } catch (error: any) {
-      console.log("Error updating progress", error);
-      res.status(500).json({ error: error.message });
+    if (!userId || isCompleted === undefined) {
+      throw new AppError("Missing userId or isCompleted", 400);
     }
+
+    const result = await this.userProgressService.saveProgress(conceptId, {
+      userId,
+      isCompleted,
+      timeSpent,
+    });
+
+    res.json(result);
   }
 }

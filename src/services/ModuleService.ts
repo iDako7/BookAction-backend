@@ -6,6 +6,7 @@ import type {
 } from "../dtos/response/ModulesOverviewDTO.js";
 import type { ReflectionDTO } from "../dtos/response/ReflectionDTO.js";
 import type { ResponseType } from "../constants/responseTypes.js";
+import { AppError } from "../utils/errors.js";
 
 /**
  * Service layer for module-related business logic.
@@ -34,7 +35,7 @@ export class ModuleService {
 
     // 2. validation
     if (!module || !module.theme) {
-      throw new Error("Theme not found for module " + moduleId);
+      throw new AppError("Theme not found for module " + moduleId, 404);
     }
 
     // 3. transform to DTO
@@ -60,7 +61,7 @@ export class ModuleService {
     const homePage = await this.moduleRepo.returnModulesOverview(userId);
 
     if (!homePage || !homePage.modules || homePage.modules.length === 0) {
-      throw new Error("Homepage not found");
+      throw new AppError("Homepage not found", 404);
     }
 
     // The transformation is now largely handled in the repo/Prisma query,
@@ -107,7 +108,7 @@ export class ModuleService {
     );
 
     if (!reflection) {
-      throw new Error(`Reflection not found for module ${moduleId}`);
+      throw new AppError(`Reflection not found for module ${moduleId}`, 404);
     }
 
     const reflectionDTO: ReflectionDTO = {

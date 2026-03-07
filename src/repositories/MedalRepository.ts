@@ -17,6 +17,37 @@ export class MedalRepository {
   }
 
   /**
+   * Generic upsert-if-higher helper. Finds existing medal; skips if current
+   * tier is equal or higher; otherwise upserts. Uses find-then-upsert rather
+   * than a raw conditional UPDATE — acceptable for a single-instance app.
+   */
+  private async _upsertMedalIfHigher<
+    W extends Record<string, unknown>,
+    C extends Record<string, unknown>,
+  >(
+    model: {
+      findUnique: (args: { where: W; select: { tier: true } }) => Promise<{ tier: MedalTier } | null>;
+      upsert: (args: { where: W; create: C & { tier: MedalTier; accuracy: number }; update: { tier: MedalTier; accuracy: number } }) => Promise<unknown>;
+    },
+    where: W,
+    createData: C,
+    tier: MedalTier,
+    accuracy: number
+  ): Promise<void> {
+    const existing = await model.findUnique({ where, select: { tier: true } });
+
+    if (existing && TIER_RANK[existing.tier] >= TIER_RANK[tier]) {
+      return;
+    }
+
+    await model.upsert({
+      where,
+      create: { ...createData, tier, accuracy },
+      update: { tier, accuracy },
+    });
+  }
+
+  /**
    * Upsert a concept medal — upgrade only.
    * If an existing medal has an equal or higher tier, this is a no-op.
    */
@@ -26,21 +57,13 @@ export class MedalRepository {
     tier: MedalTier,
     accuracy: number
   ): Promise<void> {
-    const existing = await this.prisma.user_concept_medal.findUnique({
-      where: { user_id_concept_id: { user_id: userId, concept_id: conceptId } },
-      select: { tier: true },
-    });
-
-    if (existing && TIER_RANK[existing.tier] >= TIER_RANK[tier]) {
-      // Current medal is equal or higher — do not downgrade
-      return;
-    }
-
-    await this.prisma.user_concept_medal.upsert({
-      where: { user_id_concept_id: { user_id: userId, concept_id: conceptId } },
-      create: { user_id: userId, concept_id: conceptId, tier, accuracy },
-      update: { tier, accuracy },
-    });
+    await this._upsertMedalIfHigher(
+      this.prisma.user_concept_medal as any,
+      { user_id_concept_id: { user_id: userId, concept_id: conceptId } },
+      { user_id: userId, concept_id: conceptId },
+      tier,
+      accuracy
+    );
   }
 
   /**
@@ -52,20 +75,13 @@ export class MedalRepository {
     tier: MedalTier,
     accuracy: number
   ): Promise<void> {
-    const existing = await this.prisma.user_module_medal.findUnique({
-      where: { user_id_module_id: { user_id: userId, module_id: moduleId } },
-      select: { tier: true },
-    });
-
-    if (existing && TIER_RANK[existing.tier] >= TIER_RANK[tier]) {
-      return;
-    }
-
-    await this.prisma.user_module_medal.upsert({
-      where: { user_id_module_id: { user_id: userId, module_id: moduleId } },
-      create: { user_id: userId, module_id: moduleId, tier, accuracy },
-      update: { tier, accuracy },
-    });
+    await this._upsertMedalIfHigher(
+      this.prisma.user_module_medal as any,
+      { user_id_module_id: { user_id: userId, module_id: moduleId } },
+      { user_id: userId, module_id: moduleId },
+      tier,
+      accuracy
+    );
   }
 
   /**

@@ -333,7 +333,7 @@ describe("AI Practice Generation Endpoints", () => {
       const q2 = Array.isArray(second.body)
         ? second.body
         : second.body.questions;
-      expect(JSON.stringify(q1)).toBe(JSON.stringify(q2));
+      expect(q1).toEqual(q2);
     });
 
     it("second call returns within 500ms (cache hit is fast)", async () => {

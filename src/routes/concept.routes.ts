@@ -8,26 +8,25 @@ export function createConceptRoutes(conceptController: ConceptController) {
   // Protect all routes
   router.use(authMiddleware);
 
-  router.get("/:conceptId/tutorial", async (req, res) => {
-    conceptController.getConceptTutorial(req, res);
-  });
+  router.get("/:conceptId/tutorial", (req, res, next) =>
+    conceptController.getConceptTutorial(req, res).catch(next)
+  );
 
-  router.get("/:conceptId/quiz", async (req, res) => {
-    conceptController.getConceptQuizzes(req, res);
-  });
+  router.get("/:conceptId/quiz", (req, res, next) =>
+    conceptController.getConceptQuizzes(req, res).catch(next)
+  );
 
-  router.get("/:conceptId/summary", async (req, res) => {
-    conceptController.getConceptSummary(req, res);
-  });
+  router.get("/:conceptId/summary", (req, res, next) =>
+    conceptController.getConceptSummary(req, res).catch(next)
+  );
 
-  router.post("/quiz/:quizId/answer", async (req, res) => {
-    conceptController.saveUserQuizAns(req, res);
-  });
+  router.post("/quiz/:quizId/answer", (req, res, next) =>
+    conceptController.saveUserQuizAns(req, res).catch(next)
+  );
 
-  // New Route: Update Progress
-  router.post("/:conceptId/progress", async (req, res) => {
-    conceptController.updateConceptProgress(req, res);
-  });
+  router.post("/:conceptId/progress", (req, res, next) =>
+    conceptController.updateConceptProgress(req, res).catch(next)
+  );
 
   return router;
 }
