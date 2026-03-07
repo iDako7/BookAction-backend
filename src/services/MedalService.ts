@@ -57,14 +57,11 @@ export class MedalService {
     const conceptIds = await this.medalRepo.getConceptIdsByModule(moduleId);
     if (conceptIds.length === 0) return;
 
-    // Parallelize independent queries: completion count + concept medals
-    const [completedCount, conceptMedals] = await Promise.all([
-      this.medalRepo.countCompletedConcepts(userId, conceptIds),
-      this.medalRepo.getConceptMedalsForConcepts(userId, conceptIds),
-    ]);
-
-    // Only award module medal when ALL concepts are completed
+    // Check completion first — skip medal query if not all concepts are done
+    const completedCount = await this.medalRepo.countCompletedConcepts(userId, conceptIds);
     if (completedCount < conceptIds.length) return;
+
+    const conceptMedals = await this.medalRepo.getConceptMedalsForConcepts(userId, conceptIds);
 
     if (conceptMedals.length === 0) return;
 
