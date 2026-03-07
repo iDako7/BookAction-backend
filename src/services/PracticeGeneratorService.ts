@@ -72,9 +72,7 @@ Why it works: ${concept.why_it_works}`,
       // 5. Store in cache
       await this.cacheRepo.upsert(conceptId, learningStyle, questions);
 
-      // 6. Read back from cache so response key order is consistent with cached responses
-      const stored = await this.cacheRepo.findValid(conceptId, learningStyle);
-      return { questions: stored ?? questions };
+      return { questions };
     } catch (_err) {
       // 6. Fallback: return existing quiz records for this concept
       const fallbackQuestions: PracticeQuestion[] = concept.quizzes.map((q) => ({

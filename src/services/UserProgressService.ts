@@ -1,6 +1,7 @@
 import { UserProgressRepository } from "../repositories/UserProgressRepository.js";
 import type { UpdateProgressDTO } from "../dtos/request/UpdateProgressDTO.js";
 import { MedalService } from "./MedalService.js";
+import { AppError } from "../utils/errors.js";
 
 export class UserProgressService {
   private progressRepo: UserProgressRepository;
@@ -17,7 +18,7 @@ export class UserProgressService {
   async saveProgress(conceptId: number, data: UpdateProgressDTO) {
     // Basic validation
     if (!data.userId) {
-      throw new Error("User ID is required");
+      throw new AppError("User ID is required", 400);
     }
 
     // Call repository to upsert

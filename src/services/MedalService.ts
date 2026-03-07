@@ -57,20 +57,11 @@ export class MedalService {
     const conceptIds = await this.medalRepo.getConceptIdsByModule(moduleId);
     if (conceptIds.length === 0) return;
 
-    // Count how many are completed by this user
-    const completedCount = await this.medalRepo.countCompletedConcepts(
-      userId,
-      conceptIds
-    );
-
-    // Only award module medal when ALL concepts are completed
+    // Check completion first — skip medal query if not all concepts are done
+    const completedCount = await this.medalRepo.countCompletedConcepts(userId, conceptIds);
     if (completedCount < conceptIds.length) return;
 
-    // Calculate average accuracy from existing concept medals for this module
-    const conceptMedals = await this.medalRepo.getConceptMedalsForConcepts(
-      userId,
-      conceptIds
-    );
+    const conceptMedals = await this.medalRepo.getConceptMedalsForConcepts(userId, conceptIds);
 
     if (conceptMedals.length === 0) return;
 

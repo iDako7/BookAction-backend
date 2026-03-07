@@ -20,7 +20,6 @@ export class AuthController {
     this.authService = authService;
   }
 
-  // transfer user detail info into user_info for response without sensitive info
   private mapUserToDTO(user: User): UserResponseDTO {
     return {
       id: user.id,
@@ -30,6 +29,16 @@ export class AuthController {
       isActive: user.is_active,
       createdAt: user.created_at,
     };
+  }
+
+  private setRefreshCookie(res: Response, token: string): void {
+    res.cookie("refreshToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge:
+        parseInt(process.env.JWT_REFRESH_EXPIRY || "7") * 24 * 60 * 60 * 1000,
+    });
   }
 
   async register(req: Request, res: Response): Promise<void> {
@@ -44,14 +53,7 @@ export class AuthController {
       // prepare response
       const userRes = this.mapUserToDTO(newUser);
 
-      // Set refresh token as httpOnly cookie
-      res.cookie("refreshToken", newUserTokens.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge:
-          parseInt(process.env.JWT_REFRESH_EXPIRY || "7") * 24 * 60 * 60 * 1000, // 7 days
-      });
+      this.setRefreshCookie(res, newUserTokens.refreshToken);
 
       // send response
       res.status(201).json({
@@ -101,14 +103,7 @@ export class AuthController {
       // ! prepare response(the same logic as register)
       const userRes = this.mapUserToDTO(loginUser);
 
-      // Set refresh token as httpOnly cookie
-      res.cookie("refreshToken", loginTokens.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge:
-          parseInt(process.env.JWT_REFRESH_EXPIRY || "7") * 24 * 60 * 60 * 1000, // 7 days
-      });
+      this.setRefreshCookie(res, loginTokens.refreshToken);
 
       // send response
       res.json({

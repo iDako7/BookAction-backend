@@ -1,4 +1,5 @@
 import { PrismaClient } from "../../generated/prisma/client.js";
+import { UserRole } from "../constants/userRoleTypes.js";
 
 export class TeacherRepository {
   private prisma: PrismaClient;
@@ -7,13 +8,36 @@ export class TeacherRepository {
     this.prisma = prisma;
   }
 
+  /**
+   * Count students who completed ALL concepts in the given set using a single
+   * groupBy query instead of one count() per student (N+1 fix).
+   */
+  private async _countFullyCompletedStudents(
+    conceptIds: number[],
+    studentIds: number[]
+  ): Promise<number> {
+    if (conceptIds.length === 0 || studentIds.length === 0) return 0;
+
+    const counts = await this.prisma.user_concept_progress.groupBy({
+      by: ["user_id"],
+      where: {
+        user_id: { in: studentIds },
+        concept_id: { in: conceptIds },
+        completed: true,
+      },
+      _count: { concept_id: true },
+    });
+
+    return counts.filter((c) => c._count.concept_id === conceptIds.length).length;
+  }
+
   async getStudentList(
     page: number,
     limit: number,
     search?: string
   ): Promise<{ students: { id: number; username: string; email: string; created_at: Date }[]; total: number }> {
     const where = {
-      role: "STUDENT" as const,
+      role: UserRole.STUDENT as const,
       ...(search
         ? {
             OR: [
@@ -98,7 +122,7 @@ export class TeacherRepository {
   async getClassOverview() {
     const [totalStudents, totalModules, totalQuizResponses, correctQuizResponses] =
       await Promise.all([
-        this.prisma.user.count({ where: { role: "STUDENT" } }),
+        this.prisma.user.count({ where: { role: UserRole.STUDENT } }),
         this.prisma.module.count({ where: { is_published: true } }),
         this.prisma.user_response.count({ where: { response_type: "quiz" } }),
         this.prisma.user_response.count({
@@ -111,7 +135,7 @@ export class TeacherRepository {
 
     // Per-user completion rate
     const students = await this.prisma.user.findMany({
-      where: { role: "STUDENT" },
+      where: { role: UserRole.STUDENT },
       select: { id: true },
     });
 
@@ -167,21 +191,14 @@ export class TeacherRepository {
       return { completionRate: 0, avgScore: null };
 
     const students = await this.prisma.user.findMany({
-      where: { role: "STUDENT" },
+      where: { role: UserRole.STUDENT },
       select: { id: true },
     });
 
-    let fullyCompleted = 0;
-    for (const s of students) {
-      const count = await this.prisma.user_concept_progress.count({
-        where: {
-          user_id: s.id,
-          concept_id: { in: conceptIds },
-          completed: true,
-        },
-      });
-      if (count === conceptIds.length) fullyCompleted++;
-    }
+    const fullyCompleted = await this._countFullyCompletedStudents(
+      conceptIds,
+      students.map((s) => s.id)
+    );
 
     const completionRate = totalStudents > 0 ? fullyCompleted / totalStudents : 0;
 
@@ -212,26 +229,17 @@ export class TeacherRepository {
     if (!module) return null;
 
     const conceptIds = module.concepts.map((c) => c.id);
-    const totalStudents = await this.prisma.user.count({ where: { role: "STUDENT" } });
 
     const students = await this.prisma.user.findMany({
-      where: { role: "STUDENT" },
+      where: { role: UserRole.STUDENT },
       select: { id: true },
     });
+    const totalStudents = students.length;
 
-    let fullyCompleted = 0;
-    if (conceptIds.length > 0) {
-      for (const s of students) {
-        const count = await this.prisma.user_concept_progress.count({
-          where: {
-            user_id: s.id,
-            concept_id: { in: conceptIds },
-            completed: true,
-          },
-        });
-        if (count === conceptIds.length) fullyCompleted++;
-      }
-    }
+    const fullyCompleted = await this._countFullyCompletedStudents(
+      conceptIds,
+      students.map((s) => s.id)
+    );
 
     const completionRate = totalStudents > 0 ? fullyCompleted / totalStudents : 0;
 
@@ -262,7 +270,7 @@ export class TeacherRepository {
 
   async getAllStudentsForExport() {
     const students = await this.prisma.user.findMany({
-      where: { role: "STUDENT" },
+      where: { role: UserRole.STUDENT },
       select: {
         id: true,
         username: true,

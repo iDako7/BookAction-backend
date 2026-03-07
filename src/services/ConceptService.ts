@@ -9,6 +9,7 @@ import {
   ConceptSubTypes,
   ConceptRelationMap,
 } from "../repositories/ConceptRepository.js";
+import { AppError } from "../utils/errors.js";
 
 export class ConceptService {
   private conceptRepo: ConceptRepository;
@@ -29,7 +30,7 @@ export class ConceptService {
 
         // validation
         if (!tutorialCpt || !tutorialCpt.tutorial) {
-          throw new Error(`Tutorial not found for concept ${conceptId}`);
+          throw new AppError(`Tutorial not found for concept ${conceptId}`, 404);
         }
 
         return tutorialCpt as ConceptRelationMap[T];
@@ -41,19 +42,19 @@ export class ConceptService {
           !quizzesCpt.quizzes ||
           quizzesCpt.quizzes.length === 0
         ) {
-          throw new Error(`Quizzes not found for concept ${conceptId}`);
+          throw new AppError(`Quizzes not found for concept ${conceptId}`, 404);
         }
         return quizzesCpt as ConceptRelationMap[T];
 
       case "summary":
         const summaryCpt = await this.conceptRepo.findWithSummary(conceptId);
         if (!summaryCpt || !summaryCpt.summary) {
-          throw new Error(`Summary not found for concept ${conceptId}`);
+          throw new AppError(`Summary not found for concept ${conceptId}`, 404);
         }
         return summaryCpt as ConceptRelationMap[T];
 
       default:
-        throw new Error("No matched type for concept sub entity");
+        throw new AppError("No matched type for concept sub entity", 400);
     }
   }
 
@@ -120,14 +121,14 @@ export class ConceptService {
   ): Promise<QuizAnswerValue> {
     // validate user's answer
     if (userAnswer.length === 0) {
-      throw new Error("Answer must be a non-empty array of option indices");
+      throw new AppError("Answer must be a non-empty array of option indices", 400);
     }
 
     // get the standard answer
     const quizData = await this.conceptRepo.findQuizAnswer(quiz_id);
 
     if (!quizData) {
-      throw new Error(`Answer of quiz ${quiz_id} not found`);
+      throw new AppError(`Answer of quiz ${quiz_id} not found`, 404);
     }
 
     const { standardAnswer, realQuizType } = quizData;
@@ -183,7 +184,7 @@ export class ConceptService {
 
       return { score, isCorrect };
     } else {
-      throw new Error(`Unsupported quiz type: ${quizType}`);
+      throw new AppError(`Unsupported quiz type: ${quizType}`, 400);
     }
   }
 }

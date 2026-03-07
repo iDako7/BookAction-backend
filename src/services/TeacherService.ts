@@ -52,8 +52,10 @@ export class TeacherService {
       throw new AppError("Student not found", 404);
     }
 
-    const quizResponses = await this.repo.getQuizResponsesByUserId(id);
-    const modulesCompleted = await this.repo.getStudentModulesCompleted(id);
+    const [quizResponses, modulesCompleted] = await Promise.all([
+      this.repo.getQuizResponsesByUserId(id),
+      this.repo.getStudentModulesCompleted(id),
+    ]);
 
     // Overall accuracy
     const totalQuiz = quizResponses.length;
